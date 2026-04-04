@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Narayani Sales | Professional B2B Marketplace</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; margin: 0; padding: 0; }
+        
+        /* High-end Glassmorphism for the Header */
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+        }
+
+        .hero-gradient {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+
+        .category-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .category-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border-color: #3b82f6;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+        }
+
+        /* Clean Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body>
+
+    <nav class="glass-nav sticky top-0 z-50 w-full">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center gap-10">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-2xl font-black tracking-tighter text-blue-600">NARAYANI<span class="text-slate-900">SALES</span></h1>
+                    </div>
+                    
+                    <div class="hidden md:flex items-center bg-slate-100 rounded-xl px-4 py-2.5 border border-slate-200 focus-within:border-blue-400 focus-within:bg-white transition-all">
+                        <i class="fas fa-search text-slate-400 mr-3"></i>
+                        <input type="text" placeholder="Search for products, brands or sellers..." class="bg-transparent outline-none w-80 text-sm font-medium text-slate-700">
+                    </div>
+                </div>
+
+                <div class="hidden lg:flex items-center gap-8">
+                    <div class="flex gap-6 text-[13px] font-bold text-slate-600 uppercase tracking-wide">
+                        <a href="#" class="hover:text-blue-600 transition">Categories</a>
+                        <a href="#" class="hover:text-blue-600 transition">Bulk Orders</a>
+                        <a href="#" class="hover:text-blue-600 transition">Credit</a>
+                    </div>
+                    
+                    <div class="h-6 w-[1px] bg-slate-200 mx-2"></div>
+                    
+                    <div class="flex items-center gap-3">
+                        <a href="#" class="text-slate-700 font-semibold px-4 py-2 hover:text-blue-600 transition">Login</a>
+                        <a href="#" class="bg-blue-600 text-white px-6 py-2.5 rounded-xl font-bold shadow-sm hover:bg-blue-700 transition transform active:scale-95">
+                            Register Shop
+                        </a>
+                    </div>
+                </div>
+
+                <div class="lg:hidden flex items-center">
+                    <button class="text-slate-600 p-2"><i class="fas fa-bars text-xl"></i></button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero-gradient text-white pt-24 pb-32 px-6">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between">
+            <div class="max-w-2xl text-center md:text-left">
+                <div class="inline-flex items-center gap-2 bg-blue-500/10 border border-blue-500/20 px-4 py-2 rounded-full mb-8">
+                    <span class="flex h-2 w-2 rounded-full bg-blue-400 animate-pulse"></span>
+                    <span class="text-blue-200 text-xs font-bold uppercase tracking-widest">Official B2B Channel</span>
+                </div>
+                <h2 class="text-5xl md:text-7xl font-extrabold mb-6 leading-[1.1]">
+                    The Wholesale <br><span class="text-blue-500">Revolution</span> for Bharat.
+                </h2>
+                <p class="text-slate-400 text-xl font-medium max-w-lg leading-relaxed italic">
+                    "Saath Humara, Tarakki Aapki"
+                </p>
+                
+                <div class="flex flex-wrap justify-center md:justify-start gap-4 mt-12">
+                    <button class="bg-white text-slate-900 px-8 py-4 rounded-2xl font-bold flex items-center gap-3 shadow-lg hover:bg-slate-100 transition">
+                        <i class="fab fa-google-play text-blue-600"></i> Get The App
+                    </button>
+                    <button class="bg-white/5 backdrop-blur-md border border-white/10 px-8 py-4 rounded-2xl font-bold hover:bg-white/10 transition">
+                        Partner with Us
+                    </button>
+                </div>
+            </div>
+
+            <div class="hidden md:block">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-white/5 backdrop-blur-lg p-8 rounded-3xl border border-white/10 text-center">
+                        <h3 class="text-4xl font-bold text-blue-400">50k+</h3>
+                        <p class="text-slate-400 text-sm mt-1">Retailers</p>
+                    </div>
+                    <div class="bg-white/5 backdrop-blur-lg p-8 rounded-3xl border border-white/10 mt-8 text-center">
+                        <h3 class="text-4xl font-bold text-green-400">24h</h3>
+                        <p class="text-slate-400 text-sm mt-1">SLA Payouts</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="max-w-7xl mx-auto px-4 -mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white p-8 rounded-3xl shadow-xl border border-slate-100 flex flex-col gap-4">
+            <div class="h-14 w-14 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 text-2xl">
+                <i class="fas fa-shipping-fast"></i>
+            </div>
+            <h4 class="text-xl font-bold text-slate-800">Smart Logistics</h4>
+            <p class="text-slate-500 text-sm">Efficient doorstep delivery and real-time order tracking for your business.</p>
+        </div>
+        <div class="bg-white p-8 rounded-3xl shadow-xl border border-slate-100 flex flex-col gap-4">
+            <div class="h-14 w-14 bg-green-50 rounded-2xl flex items-center justify-center text-green-600 text-2xl">
+                <i class="fas fa-wallet"></i>
+            </div>
+            <h4 class="text-xl font-bold text-slate-800">Working Capital</h4>
+            <p class="text-slate-500 text-sm">Get credit up to ₹5,00,000 to stock up your shop without financial stress.</p>
+        </div>
+        <div class="bg-white p-8 rounded-3xl shadow-xl border border-slate-100 flex flex-col gap-4">
+            <div class="h-14 w-14 bg-purple-50 rounded-2xl flex items-center justify-center text-purple-600 text-2xl">
+                <i class="fas fa-certificate"></i>
+            </div>
+            <h4 class="text-xl font-bold text-slate-800">Direct Sourcing</h4>
+            <p class="text-slate-500 text-sm">Cut out the middleman. Buy directly from manufacturers for the best margins.</p>
+        </div>
+    </section>
+
+    <section class="py-24 max-w-7xl mx-auto px-4">
+        <div class="mb-12">
+            <h3 class="text-3xl font-bold text-slate-900 tracking-tight">Wholesale Categories</h3>
+            <div class="h-1.5 w-20 bg-blue-600 mt-4 rounded-full"></div>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+            <div class="category-card bg-white border border-slate-200 p-8 rounded-[2rem] text-center cursor-pointer">
+                <i class="fas fa-mobile-screen-button text-4xl text-slate-400 mb-6"></i>
+                <p class="font-bold text-slate-700">Mobiles</p>
+            </div>
+            <div class="category-card bg-white border border-slate-200 p-8 rounded-[2rem] text-center cursor-pointer">
+                <i class="fas fa-plug text-4xl text-slate-400 mb-6"></i>
+                <p class="font-bold text-slate-700">Electronics</p>
+            </div>
+            <div class="category-card bg-white border border-slate-200 p-8 rounded-[2rem] text-center cursor-pointer">
+                <i class="fas fa-shirt text-4xl text-slate-400 mb-6"></i>
+                <p class="font-bold text-slate-700">Clothing</p>
+            </div>
+            <div class="category-card bg-white border border-slate-200 p-8 rounded-[2rem] text-center cursor-pointer">
+                <i class="fas fa-pump-soap text-4xl text-slate-400 mb-6"></i>
+                <p class="font-bold text-slate-700">FMCG</p>
+            </div>
+            <div class="category-card bg-white border border-slate-200 p-8 rounded-[2rem] text-center cursor-pointer">
+                <i class="fas fa-hammer text-4xl text-slate-400 mb-6"></i>
+                <p class="font-bold text-slate-700">Hardware</p>
+            </div>
+            <div class="category-card bg-white border border-slate-200 p-8 rounded-[2rem] text-center cursor-pointer">
+                <i class="fas fa-ellipsis-h text-4xl text-slate-400 mb-6"></i>
+                <p class="font-bold text-slate-700">Others</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-white py-12 px-6 border-t border-slate-100">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8 text-center md:text-left">
+            <div>
+                <h1 class="text-xl font-bold text-blue-600 mb-2">NARAYANI SALES</h1>
+                <p class="text-slate-400 text-sm font-medium">Empowering local commerce through technology.</p>
+            </div>
+            <div class="flex gap-8 text-sm font-bold text-slate-600 uppercase tracking-widest">
+                <a href="#" class="hover:text-blue-600">Privacy</a>
+                <a href="#" class="hover:text-blue-600">Terms</a>
+                <a href="#" class="hover:text-blue-600">Contact</a>
+            </div>
+            <p class="text-slate-400 text-xs">&copy; 2026 Narayani Sales Pvt Ltd.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
