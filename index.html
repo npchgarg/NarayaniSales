@@ -1,3 +1,222 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Narayani Sales | India's Leading B2B Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+        }
+
+        .hero-gradient {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="glass-nav sticky top-0 z-50 py-4 px-6 md:px-12 flex justify-between items-center">
+        <div class="flex items-center gap-8">
+            <h1 class="text-2xl font-bold text-blue-600">NARAYANI<span class="text-slate-800">SALES</span></h1>
+            <div class="hidden lg:flex items-center bg-slate-100 rounded-full px-4 py-2 border border-slate-200">
+                <i class="fas fa-search text-slate-400 mr-2"></i>
+                <input type="text" placeholder="Search for products, brands..." class="bg-transparent outline-none w-80 text-sm">
+            </div>
+        </div>
+        <div class="flex items-center gap-6 text-sm font-semibold text-slate-600">
+            <a href="#" class="hover:text-blue-600">Categories</a>
+            <a href="#" class="hover:text-blue-600">Narayani Capital</a>
+            <a href="#" class="bg-slate-900 text-white px-5 py-2 rounded-lg hover:bg-slate-800 transition">Login / Register</a>
+        </div>
+    </nav>
+
+    <header class="hero-gradient text-white py-20 px-6 md:px-12">
+        <div class="max-w-4xl">
+            <span class="bg-blue-500/20 text-blue-300 px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest">B2B Marketplace</span>
+            <h2 class="text-5xl md:text-6xl font-bold mt-6 leading-tight">
+                Empowering Bharat's <br>Retailers & Wholesalers.
+            </h2>
+            <p class="text-slate-400 mt-6 text-xl italic font-light">"Saath Humara, Tarakki Aapki"</p>
+            
+            <div class="flex flex-wrap gap-4 mt-10">
+                <button class="btn-primary px-8 py-4 rounded-xl font-bold flex items-center gap-3">
+                    <i class="fab fa-google-play"></i> Download App
+                </button>
+                <button class="bg-white/10 backdrop-blur-md border border-white/20 px-8 py-4 rounded-xl font-bold hover:bg-white/20 transition">
+                    Become a Seller
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <section class="grid grid-cols-1 md:grid-cols-4 gap-4 px-6 md:px-12 -mt-10">
+        <div class="bg-white p-6 rounded-2xl shadow-xl flex items-center gap-4">
+            <div class="bg-blue-100 p-3 rounded-lg text-blue-600"><i class="fas fa-truck text-xl"></i></div>
+            <div><h4 class="font-bold text-slate-800">Fast Delivery</h4><p class="text-xs text-slate-500">To your shop doorstep</p></div>
+        </div>
+        <div class="bg-white p-6 rounded-2xl shadow-xl flex items-center gap-4">
+            <div class="bg-green-100 p-3 rounded-lg text-green-600"><i class="fas fa-hand-holding-usd text-xl"></i></div>
+            <div><h4 class="font-bold text-slate-800">Working Capital</h4><p class="text-xs text-slate-500">Credit up to ₹5 Lakhs</p></div>
+        </div>
+        <div class="bg-white p-6 rounded-2xl shadow-xl flex items-center gap-4">
+            <div class="bg-purple-100 p-3 rounded-lg text-purple-600"><i class="fas fa-tags text-xl"></i></div>
+            <div><h4 class="font-bold text-slate-800">Best Margins</h4><p class="text-xs text-slate-500">Direct from brands</p></div>
+        </div>
+        <div class="bg-white p-6 rounded-2xl shadow-xl flex items-center gap-4">
+            <div class="bg-orange-100 p-3 rounded-lg text-orange-600"><i class="fas fa-shield-alt text-xl"></i></div>
+            <div><h4 class="font-bold text-slate-800">Secure Payments</h4><p class="text-xs text-slate-500">100% Buyer protection</p></div>
+        </div>
+    </section>
+
+    <section class="py-20 px-6 md:px-12">
+        <div class="flex justify-between items-end mb-12">
+            <div>
+                <h3 class="text-3xl font-bold text-slate-900">Explore Categories</h3>
+                <p class="text-slate-500 mt-2">Widest range of wholesale products</p>
+            </div>
+            <a href="#" class="text-blue-600 font-semibold hover:underline">View All Categories &rarr;</a>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+            <div class="category-card bg-white border border-slate-200 p-6 rounded-2xl text-center">
+                <div class="h-24 flex items-center justify-center mb-4"><i class="fas fa-mobile-alt text-4xl text-slate-400"></i></div>
+                <p class="font-semibold text-slate-700">Electronics</p>
+            </div>
+            <div class="category-card bg-white border border-slate-200 p-6 rounded-2xl text-center">
+                <div class="h-24 flex items-center justify-center mb-4"><i class="fas fa-tshirt text-4xl text-slate-400"></i></div>
+                <p class="font-semibold text-slate-700">Apparel</p>
+            </div>
+            <div class="category-card bg-white border border-slate-200 p-6 rounded-2xl text-center">
+                <div class="h-24 flex items-center justify-center mb-4"><i class="fas fa-apple-alt text-4xl text-slate-400"></i></div>
+                <p class="font-semibold text-slate-700">FMCG & Food</p>
+            </div>
+            <div class="category-card bg-white border border-slate-200 p-6 rounded-2xl text-center">
+                <div class="h-24 flex items-center justify-center mb-4"><i class="fas fa-tools text-4xl text-slate-400"></i></div>
+                <p class="font-semibold text-slate-700">Hardware</p>
+            </div>
+            <div class="category-card bg-white border border-slate-200 p-6 rounded-2xl text-center">
+                <div class="h-24 flex items-center justify-center mb-4"><i class="fas fa-pills text-4xl text-slate-400"></i></div>
+                <p class="font-semibold text-slate-700">Pharma</p>
+            </div>
+            <div class="category-card bg-white border border-slate-200 p-6 rounded-2xl text-center">
+                <div class="h-24 flex items-center justify-center mb-4"><i class="fas fa-chair text-4xl text-slate-400"></i></div>
+                <p class="font-semibold text-slate-700">Home & Kitchen</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="bg-slate-900 py-20 px-6 md:px-12 text-white overflow-hidden relative">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-16">
+            <div class="flex-1">
+                <h3 class="text-4xl font-bold leading-tight">Get Started in Under <br><span class="text-blue-400">10 Minutes.</span></h3>
+                <ul class="mt-10 space-y-6">
+                    <li class="flex gap-4">
+                        <span class="bg-white/10 h-8 w-8 rounded-full flex items-center justify-center font-bold">1</span>
+                        <p><span class="font-bold block text-lg">Quick Sign-Up</span> Register with your mobile number and business name.</p>
+                    </li>
+                    <li class="flex gap-4">
+                        <span class="bg-white/10 h-8 w-8 rounded-full flex items-center justify-center font-bold">2</span>
+                        <p><span class="font-bold block text-lg">Instant KYC</span> Upload GSTIN or Shop License for instant approval.</p>
+                    </li>
+                    <li class="flex gap-4">
+                        <span class="bg-white/10 h-8 w-8 rounded-full flex items-center justify-center font-bold">3</span>
+                        <p><span class="font-bold block text-lg">Order & Grow</span> Access wholesale prices and flexible credit lines.</p>
+                    </li>
+                </ul>
+            </div>
+            <div class="flex-1">
+                <div class="bg-gradient-to-tr from-blue-500 to-indigo-600 w-full h-[500px] rounded-[3rem] border-[12px] border-slate-800 shadow-2xl relative overflow-hidden">
+                    <div class="absolute inset-0 flex items-center justify-center text-center p-8">
+                        <div>
+                            <i class="fas fa-chart-line text-6xl mb-6 opacity-50"></i>
+                            <h4 class="text-2xl font-bold">Agent Dashboard</h4>
+                            <p class="text-blue-100 mt-2">Track orders, manage credit, and analyze sales performance in real-time.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-white border-t border-slate-200 py-12 px-6 md:px-12">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
+            <div>
+                <h1 class="text-xl font-bold text-blue-600 mb-4">NARAYANI SALES</h1>
+                <p class="text-slate-500 text-sm leading-relaxed">India's leading eB2B platform connecting manufacturers directly with retailers across the nation.</p>
+            </div>
+            <div>
+                <h5 class="font-bold text-slate-800 mb-4">Company</h5>
+                <ul class="text-slate-500 text-sm space-y-2">
+                    <li><a href="#" class="hover:text-blue-600">About Us</a></li>
+                    <li><a href="#" class="hover:text-blue-600">Contact Us</a></li>
+                    <li><a href="#" class="hover:text-blue-600">Newsroom</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="font-bold text-slate-800 mb-4">Support</h5>
+                <ul class="text-slate-500 text-sm space-y-2">
+                    <li><a href="#" class="hover:text-blue-600">Returns Policy</a></li>
+                    <li><a href="#" class="hover:text-blue-600">Terms of Use</a></li>
+                    <li><a href="#" class="hover:text-blue-600">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="font-bold text-slate-800 mb-4">Get the App</h5>
+                <div class="space-y-3">
+                    <div class="bg-slate-900 text-white p-3 rounded-lg flex items-center gap-3 cursor-pointer">
+                        <i class="fab fa-google-play text-2xl"></i>
+                        <div><p class="text-[10px] opacity-70">GET IT ON</p><p class="text-xs font-bold leading-none">Google Play</p></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mt-12 pt-8 border-t border-slate-100 text-center text-slate-400 text-sm">
+            &copy; 2026 Narayani Sales Pvt Ltd. All rights reserved.
+        </div>
+    </footer>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <a href="https://github.com/npchgarg/NarayaniSales/releases/download/V1.0/NarayaniSales.apk" 
    download 
    style="background-color: #24292e; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-family: sans-serif;">
