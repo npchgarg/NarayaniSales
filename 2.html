@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Narayani Sales | Jaipur's Premier B2B FMCG Distributor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
+        
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #fcfcfd; overflow-x: hidden; }
+
+        .glass-header {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .hero-mesh {
+            background-color: #0f172a;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(217,100%,50%,0.15) 0, transparent 50%), 
+                radial-gradient(at 100% 100%, hsla(210,100%,50%,0.1) 0, transparent 50%);
+        }
+
+        .product-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .product-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 30px 60px -12px rgba(0,0,0,0.1);
+            border-color: #3b82f6;
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            box-shadow: 0 10px 20px -5px rgba(37, 99, 235, 0.4);
+        }
+
+        .service-badge {
+            background: rgba(59, 130, 246, 0.1);
+            color: #2563eb;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        /* Micro-animations */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .float-anim { animation: float 4s ease-in-out infinite; }
+    </style>
+</head>
+<body>
+
+    <nav class="glass-header sticky top-0 z-50 py-4 px-6 md:px-12 flex justify-between items-center">
+        <div class="flex items-center gap-2">
+            <div class="h-10 w-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-200">
+                <i class="fas fa-box-open"></i>
+            </div>
+            <h1 class="text-xl font-extrabold text-slate-900 tracking-tight">NARAYANI <span class="text-blue-600">SALES</span></h1>
+        </div>
+        <div class="hidden lg:flex items-center gap-8 text-sm font-bold text-slate-600">
+            <a href="#products" class="hover:text-blue-600 transition">Our Portfolio</a>
+            <a href="#contact" class="hover:text-blue-600 transition">Contact</a>
+            <div class="h-4 w-[1px] bg-slate-200"></div>
+            <a href="https://github.com/npchgarg/NarayaniSales/releases/download/V1.0/NarayaniSales.apk" class="download-btn text-white px-6 py-2.5 rounded-full flex items-center gap-2">
+                <i class="fab fa-android"></i> Download App
+            </a>
+        </div>
+    </nav>
+
+    <header class="hero-mesh text-white py-24 px-6 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-16">
+            <div class="flex-1" data-aos="fade-right">
+                <span class="service-badge px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest mb-6 inline-block">
+                    <i class="fas fa-map-marker-alt mr-2"></i> Serving Jaipur (Select Areas)
+                </span>
+                <h2 class="text-5xl md:text-7xl font-extrabold leading-tight mb-6">
+                    Wholesale Supply <br>Redefined for <span class="text-blue-500">Local Shops.</span>
+                </h2>
+                <p class="text-slate-400 text-lg md:text-xl mb-10 max-w-xl font-medium italic">
+                    "Saath Humara, Tarakki Aapki" — Empowering Jaipur's retailers with direct supply and best margins.
+                </p>
+                <div class="flex flex-wrap gap-4">
+                    <a href="tel:9530305519" class="bg-white text-slate-900 px-8 py-4 rounded-2xl font-bold flex items-center gap-3 hover:bg-slate-100 transition shadow-xl">
+                        <i class="fas fa-phone-alt text-blue-600"></i> 9530305519
+                    </a>
+                    <a href="https://github.com/npchgarg/NarayaniSales/releases/download/V1.0/NarayaniSales.apk" class="bg-blue-600/10 border border-blue-500/30 px-8 py-4 rounded-2xl font-bold flex items-center gap-3 hover:bg-blue-600/20 transition">
+                        <i class="fab fa-android"></i> Install V1.0
+                    </a>
+                </div>
+            </div>
+            <div class="flex-1 hidden md:block" data-aos="zoom-in">
+                <div class="relative">
+                    <div class="absolute -inset-4 bg-blue-500/20 rounded-full blur-3xl"></div>
+                    <img src="https://cdn-icons-png.flaticon.com/512/3081/3081559.png" class="w-80 mx-auto float-anim filter brightness-110" alt="Supply Chain">
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section id="products" class="py-24 px-6 max-w-7xl mx-auto">
+        <div class="text-center mb-16" data-aos="fade-up">
+            <h3 class="text-4xl font-bold text-slate-900 mb-4">Our Wholesale Verticals</h3>
+            <p class="text-slate-500 max-w-2xl mx-auto uppercase tracking-widest text-xs font-bold">Premium Quality Direct From Manufacturers</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="product-card bg-white p-10 rounded-[2.5rem] flex flex-col items-center text-center" data-aos="fade-up" data-aos-delay="100">
+                <div class="h-20 w-20 bg-orange-50 rounded-3xl flex items-center justify-center text-orange-500 text-3xl mb-6">
+                    <i class="fas fa-smoking"></i>
+                </div>
+                <h4 class="text-xl font-bold text-slate-800 mb-3">Tobacco Products</h4>
+                <p class="text-slate-500 text-sm leading-relaxed">Top-selling tobacco brands and variants for your retail counters.</p>
+            </div>
+
+            <div class="product-card bg-white p-10 rounded-[2.5rem] flex flex-col items-center text-center" data-aos="fade-up" data-aos-delay="200">
+                <div class="h-20 w-20 bg-red-50 rounded-3xl flex items-center justify-center text-red-500 text-3xl mb-6">
+                    <i class="fas fa-pepper-hot"></i>
+                </div>
+                <h4 class="text-xl font-bold text-slate-800 mb-3">Authentic Spices</h4>
+                <p class="text-slate-500 text-sm leading-relaxed">Premium quality whole and grounded spices for local groceries.</p>
+            </div>
+
+            <div class="product-card bg-white p-10 rounded-[2.5rem] flex flex-col items-center text-center" data-aos="fade-up" data-aos-delay="300">
+                <div class="h-20 w-20 bg-pink-50 rounded-3xl flex items-center justify-center text-pink-500 text-3xl mb-6">
+                    <i class="fas fa-spa"></i>
+                </div>
+                <h4 class="text-xl font-bold text-slate-800 mb-3">Beauty & Personal Care</h4>
+                <p class="text-slate-500 text-sm leading-relaxed">High-demand cosmetic and skincare products from leading brands.</p>
+            </div>
+
+            <div class="product-card bg-white p-10 rounded-[2.5rem] flex flex-col items-center text-center" data-aos="fade-up" data-aos-delay="400">
+                <div class="h-20 w-20 bg-green-50 rounded-3xl flex items-center justify-center text-green-600 text-3xl mb-6">
+                    <i class="fas fa-leaf"></i>
+                </div>
+                <h4 class="text-xl font-bold text-slate-800 mb-3">Ayurvedic Wellness</h4>
+                <p class="text-slate-500 text-sm leading-relaxed">Natural health products and traditional Ayurvedic medicines.</p>
+            </div>
+
+            <div class="product-card bg-white p-10 rounded-[2.5rem] flex flex-col items-center text-center" data-aos="fade-up" data-aos-delay="500">
+                <div class="h-20 w-20 bg-yellow-50 rounded-3xl flex items-center justify-center text-yellow-600 text-3xl mb-6">
+                    <i class="fas fa-seedling"></i>
+                </div>
+                <h4 class="text-xl font-bold text-slate-800 mb-3">Pulses & Grains</h4>
+                <p class="text-slate-500 text-sm leading-relaxed">Cleaned, graded, and packaged pulses for consistent quality.</p>
+            </div>
+
+            <div class="product-card bg-white p-10 rounded-[2.5rem] flex flex-col items-center text-center" data-aos="fade-up" data-aos-delay="600">
+                <div class="h-20 w-20 bg-blue-50 rounded-3xl flex items-center justify-center text-blue-500 text-3xl mb-6">
+                    <i class="fas fa-shopping-basket"></i>
+                </div>
+                <h4 class="text-xl font-bold text-slate-800 mb-3">Multiple FMCG</h4>
+                <p class="text-slate-500 text-sm leading-relaxed">Diverse daily consumption goods ranging from snacks to home care.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="bg-slate-900 py-24 px-6 text-white">
+        <div class="max-w-7xl mx-auto flex flex-col lg:flex-row gap-16 items-center">
+            <div class="flex-1" data-aos="fade-right">
+                <h3 class="text-4xl font-bold mb-6">Let's Grow Your <br><span class="text-blue-500">Retail Business.</span></h3>
+                <p class="text-slate-400 mb-10 leading-relaxed">
+                    Narayani Sales is dedicated to the retailers of Jaipur. We offer competitive pricing, reliable delivery, and a growing catalog of products tailored for local needs.
+                </p>
+                <div class="space-y-6">
+                    <div class="flex items-center gap-6 group">
+                        <div class="h-14 w-14 bg-white/5 rounded-2xl flex items-center justify-center text-blue-500 group-hover:bg-blue-600 group-hover:text-white transition-all">
+                            <i class="fas fa-phone-alt"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-500 font-bold uppercase tracking-widest">Call Our Agent</p>
+                            <a href="tel:9530305519" class="text-xl font-bold">+91 9530305519</a>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-6 group">
+                        <div class="h-14 w-14 bg-white/5 rounded-2xl flex items-center justify-center text-blue-500 group-hover:bg-blue-600 group-hover:text-white transition-all">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-500 font-bold uppercase tracking-widest">Email Support</p>
+                            <a href="mailto:narayanisales@npch.in" class="text-xl font-bold">narayanisales@npch.in</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex-1 w-full" data-aos="fade-left">
+                <div class="bg-gradient-to-br from-blue-600 to-indigo-700 p-10 rounded-[3rem] shadow-2xl relative overflow-hidden">
+                    <div class="relative z-10">
+                        <h4 class="text-2xl font-bold mb-4 text-white">Ready to Order?</h4>
+                        <p class="text-blue-100 mb-8">Download our exclusive B2B Android App and browse prices in real-time.</p>
+                        <a href="https://github.com/npchgarg/NarayaniSales/releases/download/V1.0/NarayaniSales.apk" class="bg-white text-blue-600 px-8 py-4 rounded-2xl font-bold flex items-center justify-center gap-3 hover:scale-105 transition-transform shadow-xl">
+                            <i class="fab fa-android"></i> Download APK V1.0
+                        </a>
+                    </div>
+                    <div class="absolute -bottom-10 -right-10 h-40 w-40 bg-white/10 rounded-full"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-12 border-t border-slate-100 text-center">
+        <p class="text-slate-400 text-sm">&copy; 2026 Narayani Sales Pvt Ltd | Jaipur Distribution Center</p>
+    </footer>
+
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100
+        });
+    </script>
+</body>
+</html>
