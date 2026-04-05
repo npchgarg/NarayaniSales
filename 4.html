@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop Onboarding</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-teal: #00a88e;
+            --dark-bg: #1f2124;
+            --input-border: #e0e0e0;
+            --text-gray: #757575;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f7f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .card {
+            background: white;
+            width: 90%;
+            max-width: 400px;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            border-top: 6px solid var(--primary-teal);
+        }
+
+        .container {
+            padding: 30px;
+        }
+
+        .brand {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            color: #333;
+        }
+
+        .brand span {
+            color: var(--primary-teal);
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 14px 18px;
+            border: 1px solid var(--input-border);
+            border-radius: 12px;
+            font-size: 15px;
+            box-sizing: border-box;
+            outline: none;
+            font-family: inherit;
+            transition: 0.3s;
+        }
+
+        input:focus, textarea:focus {
+            border-color: var(--primary-teal);
+        }
+
+        button {
+            width: 100%;
+            background: var(--dark-bg);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        button:disabled {
+            background: #ccc;
+        }
+
+        #status {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="container">
+        <div class="brand">Narayani <span>Sales</span></div>
+        
+        <form id="onboardingForm">
+            <div class="input-group">
+                <input type="text" id="name" placeholder="Full Name" required>
+            </div>
+            <div class="input-group">
+                <input type="tel" id="contact" placeholder="Phone Number" required>
+            </div>
+            <div class="input-group">
+                <input type="text" id="shopName" placeholder="Shop Name" required>
+            </div>
+            <div class="input-group">
+                <textarea id="address" placeholder="Full Address" rows="3" required></textarea>
+            </div>
+            <button type="submit" id="submitBtn">Submit Onboarding</button>
+        </form>
+        <div id="status"></div>
+    </div>
+</div>
+
+<script>
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbyHIv1iyVehnXwEG_aYZQxKAWmTCW2-Qeb0BdTuRr-CLNpMW4YKCueDBzZ_e6P6a3af/exec'; // PASTE YOUR URL HERE
+    const form = document.getElementById('onboardingForm');
+    const btn = document.getElementById('submitBtn');
+    const status = document.getElementById('status');
+
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        btn.disabled = true;
+        btn.innerText = 'Processing...';
+
+        const data = {
+            name: document.getElementById('name').value,
+            contact: document.getElementById('contact').value,
+            shopName: document.getElementById('shopName').value,
+            address: document.getElementById('address').value
+        };
+
+        fetch(scriptURL, {
+            method: 'POST',
+            mode: 'no-cors', // Needed for cross-domain App Script calls
+            cache: 'no-cache',
+            body: JSON.stringify(data)
+        })
+        .then(() => {
+            status.innerHTML = '<span style="color: green;">Success! Shop Registered.</span>';
+            form.reset();
+            btn.disabled = false;
+            btn.innerText = 'Submit Onboarding';
+        })
+        .catch(error => {
+            status.innerHTML = '<span style="color: red;">Error submitting form.</span>';
+            btn.disabled = false;
+        });
+    });
+</script>
+
+</body>
+</html>
