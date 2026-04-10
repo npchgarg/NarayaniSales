@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Narayani Sales Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <style>
+        :root { --accent: #00b894; --grad: linear-gradient(135deg, #00b894, #00cec9); --glass: rgba(255, 255, 255, 0.85); }
+        body { font-family: 'Outfit', sans-serif; background: #f0f3f7; color: #2d3436; padding-bottom: 120px; overflow-x: hidden; }
+        .s-card { background: white; border-radius: 24px; border: 1px solid rgba(255,255,255,0.3); box-shadow: 0 10px 30px rgba(0,0,0,0.04); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); overflow: hidden; }
+        .s-card:hover { transform: translateY(-5px) scale(1.01); box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
+        .blink-header { background: var(--glass); backdrop-filter: blur(15px); padding: 15px 20px; position: sticky; top:0; z-index:1000; border-bottom: 1px solid #e1e8ed; }
+        
+        /* 3D Brand Store Animation */
+        .brand-store-section { perspective: 1000px; margin-top: 15px; }
+        .brand-card { background: var(--grad); color: white; border-radius: 20px; padding: 20px; text-align: center; transform: rotateY(-10deg); transition: 0.5s; box-shadow: 10px 10px 20px rgba(0,184,148,0.2); }
+        .brand-card:hover { transform: rotateY(0deg) scale(1.02); }
+        
+        .cat-scroll { display: flex; overflow-x: auto; gap: 12px; padding: 10px 0; scrollbar-width: none; }
+        .cat-pill { padding: 8px 18px; background: white; border-radius: 50px; font-size: 0.85rem; font-weight: 500; white-space: nowrap; box-shadow: 0 4px 10px rgba(0,0,0,0.05); cursor: pointer; border: 1px solid #eee; transition: 0.3s; }
+        .cat-pill.active { background: var(--grad); color: white; border-color: transparent; }
+        .bottom-nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 450px; background: #1e272e; border-radius: 35px; display: flex; justify-content: space-around; padding: 14px; z-index: 2000; box-shadow: 0 15px 35px rgba(0,0,0,0.3); }
+        .nav-item { text-align: center; color: #808e9b; font-size: 0.75rem; cursor: pointer; transition: 0.3s; }
+        .nav-item i { display: block; font-size: 1.5rem; margin-bottom: 3px; }
+        .nav-item.active { color: white; transform: translateY(-3px); }
+        #toast { position: fixed; bottom: 110px; left: 50%; transform: translateX(-50%); background: #2d3436; color: white; padding: 12px 30px; border-radius: 50px; z-index: 4000; opacity: 0; pointer-events: none; transition: 0.4s; }
+        .bill-table { width: 100%; font-size: 0.75rem; margin-top: 10px; border-top: 1px solid #eee; }
+        .out-of-stock { filter: grayscale(1); opacity: 0.7; }
+        .hidden { display: none !important; }
+        .custom-confirm { background: white; border-radius: 20px; border-top: 5px solid #ff7675; }
+    </style>
+</head>
+<body>
+
+<div id="toast">Update Successful</div>
+
+<div id="confirm-modal" class="position-fixed top-50 start-50 translate-middle s-card p-4 hidden animate__animated animate__bounceIn" style="z-index:9999; width:85%; max-width:350px;">
+    <div class="text-center">
+        <h5 class="fw-bold">Are you sure?</h5>
+        <p class="small text-muted" id="confirm-msg">This action cannot be undone.</p>
+        <div class="d-flex gap-2">
+            <button class="btn btn-light w-100 rounded-pill" onclick="closeConfirm()">Cancel</button>
+            <button class="btn btn-danger w-100 rounded-pill" id="confirm-yes">Yes, Delete</button>
+        </div>
+    </div>
+</div>
+
+<div class="blink-header d-flex justify-content-between align-items-center">
+    <div>
+        <div class="fw-bold fs-5" id="header-user-name">Guest</div>
+        <div class="small text-muted" id="header-role">Welcome Back</div>
+    </div>
+    <div id="cart-pill" class="btn btn-dark rounded-pill px-4 py-2 animate__animated animate__bounceIn hidden" onclick="showPage('cart')">
+        🛒 <span id="cart-count">0</span> Items
+    </div>
+</div>
+
+<div class="container mt-3">
+    <div id="search-container" class="hidden">
+        <input type="text" id="p-search" class="form-control search-bar shadow-sm" style="border-radius:50px; padding:12px 20px; border:1px solid #ddd;" placeholder="🔍 Search product name or description..." onkeyup="filterProducts()">
+    </div>
+
+    <div id="page-login" class="animate__animated animate__fadeIn">
+        <div class="s-card p-4 mx-auto mt-5" style="max-width: 400px; border-top: 5px solid var(--accent);">
+            <h3 class="fw-bold mb-4">Narayani <span style="color:var(--accent)">Sales</span></h3>
+            <input type="text" id="l-phone" class="form-control mb-3 py-2" placeholder="Phone Number">
+            <input type="password" id="l-pass" class="form-control mb-4 py-2" placeholder="Password">
+            <button class="btn btn-dark w-100 py-2 rounded-pill shadow" onclick="handleLogin()">Sign In</button>
+        </div>
+    </div>
+
+    <div id="page-shop" class="page hidden animate__animated animate__fadeIn">
+        <h6 class="fw-bold text-muted mb-2">Categories</h6>
+        <div class="cat-scroll" id="cat-slider"></div>
+        <div id="brand-store-container" class="brand-store-section hidden"></div>
+        <div id="product-list-container" class="mt-3"></div>
+    </div>
+
+    <div id="page-orders" class="page hidden animate__animated animate__fadeIn">
+        <h5 class="fw-bold mb-3">Orders & Bills</h5>
+        <div id="order-list"></div>
+    </div>
+
+    <div id="page-usermgmt" class="page hidden animate__animated animate__fadeIn">
+        <div class="d-flex justify-content-between mb-3">
+            <h5 class="fw-bold">User Directory</h5>
+            <button id="btn-create-user" class="btn btn-sm btn-dark rounded-pill" onclick="openUserModal()">+ Create</button>
+        </div>
+        <div class="btn-group w-100 mb-3 rounded-pill overflow-hidden shadow-sm">
+            <button class="btn btn-outline-dark btn-sm active" id="btn-show-users" onclick="toggleUserList('User')">Customers</button>
+            <button class="btn btn-outline-dark btn-sm" id="btn-show-agents" onclick="toggleUserList('Agent')">Agents</button>
+        </div>
+        <div id="user-directory-list"></div>
+    </div>
+
+    <div id="page-profile" class="page hidden animate__animated animate__fadeIn">
+        <div class="s-card p-4 mb-3">
+            <h5 class="fw-bold mb-0" id="prof-name">Name</h5>
+            <p class="small text-muted mb-3" id="prof-sub"></p>
+            <hr>
+            <div class="small">
+                <p><b>Phone:</b> <span id="prof-phone"></span></p>
+                <p><b>Shop:</b> <span id="prof-shop"></span></p>
+            </div>
+            <button class="btn btn-outline-danger btn-sm w-100 rounded-pill mt-2" onclick="logout()">Sign Out</button>
+        </div>
+
+        <div class="s-card p-4 mb-3">
+            <h6 class="fw-bold mb-3">Update Password</h6>
+            <input type="password" id="new-pass" class="form-control mb-3" placeholder="Enter New Password">
+            <button class="btn btn-dark btn-sm w-100 rounded-pill" onclick="changePass()">Change Password</button>
+        </div>
+
+        <div id="admin-tools" class="hidden">
+            <div class="s-card p-3 border-start border-5 border-success mb-3">
+                <h6 class="fw-bold mb-3">Admin Panel</h6>
+                <button class="btn btn-success btn-sm w-100 mb-2 rounded-pill" onclick="openProductModal()">Add New Product</button>
+                <button class="btn btn-dark btn-sm w-100 mb-2 rounded-pill" onclick="showPage('usermgmt')">Manage Users</button>
+                <button class="btn btn-outline-dark btn-sm w-100 mb-2 rounded-pill" onclick="showPage('reports')">Performance Reports</button>
+                <button class="btn btn-warning btn-sm w-100 rounded-pill" onclick="openSettingsModal()">App Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="page-reports" class="page hidden animate__animated animate__fadeIn">
+        <h5 class="fw-bold mb-3">Reports</h5>
+        <div class="row g-2 mb-3">
+            <div class="col-6">
+                <select id="report-type" class="form-select form-select-sm rounded-pill" onchange="generateReport()">
+                    <option value="today">Today</option>
+                    <option value="month">This Month</option>
+                    <option value="year">This Year</option>
+                    <option value="all">Total</option>
+                </select>
+            </div>
+            <div class="col-6">
+                <select id="report-agent" class="form-select form-select-sm rounded-pill" onchange="generateReport()">
+                    <option value="all">All Agents</option>
+                </select>
+            </div>
+            <div class="col-12 mt-2">
+                <input type="date" id="report-date" class="form-control form-control-sm rounded-pill" onchange="generateReport()">
+            </div>
+        </div>
+        <div id="report-stats" class="row g-2 mb-4"></div>
+        <div id="report-list"></div>
+    </div>
+
+    <div id="page-cart" class="page hidden animate__animated animate__slideInUp">
+        <div class="s-card p-4">
+            <h5 class="fw-bold mb-3">Checkout</h5>
+            <div id="cart-items" class="mb-3"></div>
+            <div class="d-flex justify-content-between mb-2 small"><span>Platform Fee:</span><span>₹<span id="cart-fee">0</span></span></div>
+            <div class="d-flex justify-content-between align-items-center mb-4"><span class="text-muted">Payable:</span><h2 class="fw-bold text-success m-0">₹<span id="cart-total">0</span></h2></div>
+            <button class="btn btn-success w-100 py-3 rounded-pill fw-bold" onclick="placeOrder('COD')">Confirm Order</button>
+        </div>
+    </div>
+</div>
+
+<div id="bottom-nav" class="bottom-nav hidden">
+    <div class="nav-item active" id="nav-shop" onclick="showPage('shop', this)"><i>🏠</i>Home</div>
+    <div class="nav-item" onclick="showPage('orders', this)"><i>📦</i>Orders</div>
+    <div class="nav-item" id="nav-users-tab" onclick="showPage('usermgmt', this)"><i>👥</i>Users</div>
+    <div class="nav-item" onclick="showPage('profile', this)"><i>👤</i>Profile</div>
+</div>
+
+<div id="modal-product" class="position-fixed top-50 start-50 translate-middle s-card p-4 hidden animate__animated animate__zoomIn" style="z-index:3000; width:92%; max-width:400px; max-height: 90vh; overflow-y: auto;">
+    <h6 class="fw-bold mb-3">Product Info</h6>
+    <input type="hidden" id="adm-p-id">
+    <input type="text" id="adm-p-name" class="form-control mb-2" placeholder="Product Name">
+    <textarea id="adm-p-desc" class="form-control mb-2" placeholder="Description / Search Keywords"></textarea>
+    <div class="row g-2 mb-2">
+        <div class="col-6"><input type="number" id="adm-p-price" class="form-control" placeholder="Our Price" onkeyup="calcMargin()"></div>
+        <div class="col-6"><input type="number" id="adm-p-saleprice" class="form-control" placeholder="MRP" onkeyup="calcMargin()"></div>
+    </div>
+    <div class="small text-muted mb-2 ps-1" id="margin-display">Margin: ₹0 (0%)</div>
+    <div class="mb-2">
+        <label class="small fw-bold">Categories (Comma separated for multiple)</label>
+        <input type="text" id="adm-p-cat" class="form-control" placeholder="e.g. Snacks, Drinks, Brands">
+    </div>
+    <div class="mb-2">
+        <label class="small fw-bold">Image Source</label>
+        <input type="text" id="adm-p-img" class="form-control mb-1" placeholder="Image URL">
+        <input type="file" id="adm-p-file" class="form-control" accept="image/*" onchange="handleFileUpload(this)">
+    </div>
+    <select id="adm-p-status" class="form-select mb-3">
+        <option value="Live">Live</option>
+        <option value="Out of Stock">Out of Stock</option>
+        <option value="Pending">Pending Approval</option>
+    </select>
+    <button class="btn btn-success w-100 rounded-pill mb-2" onclick="saveProduct()">Save Product</button>
+    <button id="btn-del-prod" class="btn btn-outline-danger btn-sm w-100 rounded-pill hidden" onclick="confirmDelete('product')">Delete Product</button>
+    <button class="btn btn-light w-100 rounded-pill mt-2" onclick="closeModals()">Cancel</button>
+</div>
+
+<script>
+    const API_URL = https://script.google.com/macros/s/AKfycbz3G4D1lraHR3tCd-Cdvl-ng-Ig_n5x-vbAwiM7mAHp8DCpMuuKrW0IPwaVC2F2dpxL/exec";
+    let state = { 
+        user: JSON.parse(localStorage.getItem('narayani_u_v4')), 
+        cart: JSON.parse(localStorage.getItem('narayani_c_v4')) || [], 
+        products: [], agents: [], cats: [], orders: [], allUsers: [], selectedCat: 'All',
+        settings: {}, deleteContext: null
+    };
+
+    async function call(action, data = {}) {
+        const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action, data }) });
+        return await res.json();
+    }
+    
+    function showToast(m) { const t=document.getElementById('toast'); t.innerText=m; t.style.opacity=1; setTimeout(()=>t.style.opacity=0,3000); }
+    
+    window.onload = () => { if(state.user) startSession(); };
+
+    async function handleLogin() {
+        const res = await call('login', { phone: document.getElementById('l-phone').value, password: document.getElementById('l-pass').value });
+        if(res.success) { localStorage.setItem('narayani_u_v4', JSON.stringify(res)); state.user = res; location.reload(); }
+        else showToast("Invalid login.");
+    }
+
+    async function startSession() {
+        document.getElementById('page-login').classList.add('hidden');
+        document.getElementById('bottom-nav').classList.remove('hidden');
+        document.getElementById('search-container').classList.remove('hidden');
+        document.getElementById('header-user-name').innerText = state.user.name;
+        document.getElementById('header-role').innerText = state.user.role;
+        
+        if(state.user.role === 'Admin') document.getElementById('admin-tools').classList.remove('hidden');
+        if(state.user.role !== 'Admin') document.getElementById('nav-users-tab').classList.add('hidden');
+        
+        // Agent Access Logic
+        if(state.user.role === 'Agent') {
+            document.getElementById('nav-shop').classList.add('hidden');
+            showPage('orders');
+        } else {
+            showPage('shop');
+        }
+        loadData();
+    }
+
+    async function loadData() {
+        const [p, a, u, s] = await Promise.all([
+            call('getProducts', {role: state.user.role, allowedCats: state.user.allowedCats}), 
+            call('allUsers'), 
+            call('allUsers'),
+            call('getSettings')
+        ]);
+        state.products = p.products; state.cats = p.categories; 
+        state.agents = u.users.filter(x => x[2] === 'Agent'); 
+        state.allUsers = u.users; state.settings = s;
+        renderCats(); renderProducts(); updateAgentFilter();
+    }
+
+    function renderCats() {
+        const slider = document.getElementById('cat-slider');
+        slider.innerHTML = `<div class="cat-pill ${state.selectedCat=='All'?'active':''}" onclick="filterByCat('All')">All Items</div>` + 
+            state.cats.map(c => `<div class="cat-pill ${state.selectedCat==c?'active':''}" onclick="filterByCat('${c}')">${c}</div>`).join('');
+    }
+
+    function filterByCat(c) { 
+        state.selectedCat = c; 
+        renderCats(); 
+        
+        // 3D Brand Animation Logic
+        const brandBox = document.getElementById('brand-store-container');
+        if(c !== 'All') {
+            brandBox.innerHTML = `<div class="brand-card"><h3>${c} Brand Store</h3><p>Premium B2B Selection</p></div>`;
+            brandBox.classList.remove('hidden');
+        } else {
+            brandBox.classList.add('hidden');
+        }
+        renderProducts(); 
+    }
+
+    function renderProducts(customList = null) {
+        const list = customList || (state.selectedCat === 'All' ? state.products : state.products.filter(p => p[1].includes(state.selectedCat)));
+        const container = document.getElementById('product-list-container');
+        
+        container.innerHTML = `<div class="row g-3">` + list.map(p => {
+            const inCart = state.cart.filter(i => i.id == p[0]).length;
+            const isOut = p[8] === 'Out of Stock';
+            const margin = p[6] || 0;
+            const marginPerc = ((margin / p[3]) * 100).toFixed(1);
+            
+            return `
+            <div class="col-6">
+                <div class="s-card p-2 text-center h-100 ${isOut ? 'out-of-stock' : ''}">
+                    <img src="${p[4] || 'https://via.placeholder.com/100'}" style="height:100px; object-fit:contain; border-radius:12px">
+                    <div class="small fw-bold mt-2 text-truncate">${p[2]}</div>
+                    <div class="small text-muted">MRP: ₹${p[5]}</div>
+                    <div class="text-success small fw-bold">₹${p[3]} <br><span class="text-dark" style="font-size:0.6rem">Margin: ₹${margin} (${marginPerc}%)</span></div>
+                    
+                    ${!isOut ? (inCart > 0 ? `
+                        <div class="d-flex align-items-center justify-content-center bg-success text-white rounded-pill mt-2 py-1">
+                            <span class="px-2" onclick="updateQty('${p[0]}', -1)">-</span>
+                            <span class="px-2">${inCart}</span>
+                            <span class="px-2" onclick="updateQty('${p[0]}', 1)">+</span>
+                        </div>
+                    ` : `<button class="btn btn-sm btn-outline-success w-100 mt-2 rounded-pill" onclick="updateQty('${p[0]}', 1)">ADD</button>`) : '<span class="badge bg-danger mt-2">Sold Out</span>'}
+                    
+                    ${state.user.role === 'Admin' ? `<div class="mt-1 small text-primary" onclick="openProductModal('${p[0]}')">EDIT</div>` : ''}
+                </div>
+            </div>`;
+        }).join('') + `</div>`;
+    }
+
+    function filterProducts() { 
+        const q = document.getElementById('p-search').value.toLowerCase(); 
+        const filtered = state.products.filter(p => 
+            p[2].toLowerCase().includes(q) || 
+            (p[9] && p[9].toLowerCase().includes(q)) || 
+            p[1].toLowerCase().includes(q)
+        ); 
+        renderProducts(filtered); 
+    }
+
+    async function changePass() {
+        const np = document.getElementById('new-pass').value;
+        if(!np) return showToast("Enter password");
+        await call('changePassword', { phone: state.user.phone, newPass: np });
+        showToast("Password Updated!");
+        document.getElementById('new-pass').value = "";
+    }
+
+    function confirmDelete(type, id) {
+        state.deleteContext = { type, id };
+        document.getElementById('confirm-msg').innerText = `Are you sure you want to delete this ${type}?`;
+        document.getElementById('confirm-modal').classList.remove('hidden');
+        document.getElementById('confirm-yes').onclick = executeDelete;
+    }
+
+    function closeConfirm() { document.getElementById('confirm-modal').classList.add('hidden'); }
+
+    async function executeDelete() {
+        const { type, id } = state.deleteContext;
+        let action = type === 'product' ? 'deleteProduct' : (type === 'user' ? 'deleteUser' : 'deleteOrder');
+        let data = type === 'product' ? { id: document.getElementById('adm-p-id').value } : (type === 'user' ? { phone: id } : { id });
+        
+        await call(action, data);
+        showToast("Deleted Successfully");
+        closeConfirm(); closeModals(); loadData();
+    }
+
+    function generateReport() {
+        const type = document.getElementById('report-type').value;
+        const agent = document.getElementById('report-agent').value;
+        const selDate = document.getElementById('report-date').value;
+        
+        let filtered = state.orders.filter(o => {
+            const oDate = new Date(o[6]);
+            let match = true;
+            if(selDate) {
+                match = oDate.toDateString() === new Date(selDate).toDateString();
+            } else if(type === 'month') {
+                match = oDate.getMonth() === new Date().getMonth();
+            } else if(type === 'year') {
+                match = oDate.getFullYear() === new Date().getFullYear();
+            }
+            if(agent !== 'all') match = match && o[7] == agent;
+            return match;
+        });
+
+        const sales = filtered.reduce((s, o) => s + parseFloat(o[3]), 0);
+        document.getElementById('report-stats').innerHTML = `
+            <div class="col-6"><div class="s-card p-3 text-center"><h6>₹${Math.round(sales)}</h6><small>Total Sales</small></div></div>
+            <div class="col-6"><div class="s-card p-3 text-center"><h6>${filtered.length}</h6><small>Orders</small></div></div>
+        `;
+        renderOrders(filtered, 'report-list');
+    }
+
+    function renderOrders(orders, target) {
+        document.getElementById(target).innerHTML = [...orders].reverse().map(o => {
+            const locUrl = o[15];
+            const upiId = state.settings.upi;
+            const waMsg = encodeURIComponent(`*Narayani Sales Pro - Bill*\nOrder ID: #${o[0]}\nAmount: ₹${o[3]}\nStatus: ${o[5]}\n\nPlease pay via UPI: ${upiId}`);
+            
+            return `
+            <div class="s-card p-3 mb-3">
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="badge bg-light text-dark">${new Date(o[6]).toLocaleDateString()}</span>
+                    <span class="badge bg-success">${o[5]}</span>
+                </div>
+                <div class="small"><b>Cust:</b> ${o[11]} | ${o[14]}</div>
+                <div class="small"><b>Fee:</b> ₹${o[9]} | <b>Total:</b> ₹${Math.round(o[3])}</div>
+                
+                <div class="mt-3 d-flex gap-2">
+                    ${(state.user.role === 'Admin' || state.user.role === 'Agent') ? `
+                        <a href="https://wa.me/91${o[14]}?text=${waMsg}" class="btn btn-sm btn-success rounded-pill flex-grow-1">WhatsApp Bill</a>
+                        <button class="btn btn-sm btn-dark rounded-pill" onclick="copyText('${locUrl}')">Copy Loc</button>
+                    ` : ''}
+                </div>
+
+                ${state.user.role === 'Agent' && o[5] !== 'Delivered' ? `
+                    <div class="mt-2 text-center p-2 bg-light rounded">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent('upi://pay?pa='+upiId+'&pn=Narayani&am='+Math.round(o[3]))}" width="100">
+                        <button class="btn btn-sm btn-primary w-100 mt-2" onclick="completeOrder('${o[0]}', 'Paid')">Confirm Delivery</button>
+                    </div>
+                ` : ''}
+                
+                ${state.user.role === 'Admin' ? `<button class="btn btn-link text-danger btn-sm p-0 mt-2" onclick="confirmDelete('order', '${o[0]}')">Delete Order</button>` : ''}
+            </div>`;
+        }).join('');
+    }
+
+    function handleFileUpload(input) {
+        const file = input.files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = new Image();
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const max = 400;
+                let w = img.width, h = img.height;
+                if (w > h) { if (w > max) { h *= max / w; w = max; } }
+                else { if (h > max) { w *= max / h; h = max; } }
+                canvas.width = w; canvas.height = h;
+                ctx.drawImage(img, 0, 0, w, h);
+                document.getElementById('adm-p-img').value = canvas.toDataURL('image/jpeg', 0.7);
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function copyText(txt) { navigator.clipboard.writeText(txt); showToast("Location Copied!"); }
+
+    function showPage(id, el) {
+        document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+        document.getElementById('page-' + id).classList.remove('hidden');
+        if(el) { document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active')); el.classList.add('active'); }
+        if(id === 'orders') loadOrders();
+    }
+
+    async function saveProduct() {
+        const data = {
+            id: document.getElementById('adm-p-id').value,
+            name: document.getElementById('adm-p-name').value,
+            desc: document.getElementById('adm-p-desc').value,
+            price: document.getElementById('adm-p-price').value,
+            salePrice: document.getElementById('adm-p-saleprice').value,
+            category: document.getElementById('adm-p-cat').value,
+            img: document.getElementById('adm-p-img').value,
+            status: document.getElementById('adm-p-status').value,
+            addedBy: state.user.phone,
+            role: state.user.role
+        };
+        await call(data.id ? 'editProduct' : 'addProduct', data);
+        showToast("Saved"); closeModals(); loadData();
+    }
+
+    function openProductModal(id = null) {
+        document.getElementById('modal-product').classList.remove('hidden');
+        document.getElementById('btn-del-prod').classList.toggle('hidden', !id);
+        if(id) { 
+            const p = state.products.find(x => x[0] == id); 
+            document.getElementById('adm-p-id').value = p[0]; 
+            document.getElementById('adm-p-name').value = p[2]; 
+            document.getElementById('adm-p-desc').value = p[9] || "";
+            document.getElementById('adm-p-price').value = p[3]; 
+            document.getElementById('adm-p-saleprice').value = p[5];
+            document.getElementById('adm-p-cat').value = p[1]; 
+            document.getElementById('adm-p-img').value = p[4]; 
+            document.getElementById('adm-p-status').value = p[8];
+            calcMargin();
+        } else {
+            document.getElementById('adm-p-id').value = "";
+            document.querySelectorAll('#modal-product input, #modal-product textarea').forEach(i => i.value="");
+        }
+    }
+
+    function calcMargin() {
+        const p = document.getElementById('adm-p-price').value || 0;
+        const s = document.getElementById('adm-p-saleprice').value || 0;
+        const m = s - p;
+        const perc = p > 0 ? ((m / p) * 100).toFixed(1) : 0;
+        document.getElementById('margin-display').innerText = `Margin: ₹${m} (${perc}%)`;
+    }
+
+    function updateQty(id, delta) {
+        if(delta > 0) { 
+            const p = state.products.find(x => x[0] == id); 
+            state.cart.push({ id: p[0], name: p[2], price: p[3] }); 
+        } else { 
+            const idx = state.cart.findIndex(i => i.id == id); 
+            if(idx > -1) state.cart.splice(idx, 1); 
+        }
+        localStorage.setItem('narayani_c_v4', JSON.stringify(state.cart));
+        updateCartUI(); renderProducts();
+    }
+
+    function updateCartUI() { 
+        document.getElementById('cart-count').innerText = state.cart.length; 
+        document.getElementById('cart-pill').classList.toggle('hidden', state.cart.length === 0); 
+    }
+
+    function closeModals() { document.querySelectorAll('.position-fixed:not(#confirm-modal)').forEach(m => m.classList.add('hidden')); }
+    function logout() { localStorage.clear(); location.reload(); }
+</script>
+</body>
+</html>
