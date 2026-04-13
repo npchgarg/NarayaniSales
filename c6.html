@@ -12,10 +12,17 @@
         body { font-family: 'Outfit', sans-serif; background: #f0f3f7; color: #2d3436; padding-bottom: 120px; overflow-x: hidden; }
         .s-card { background: white; border-radius: 24px; border: 1px solid rgba(255,255,255,0.3); box-shadow: 0 10px 30px rgba(0,0,0,0.04); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); overflow: hidden; }
         .s-card:hover { transform: translateY(-5px) scale(1.01); box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
+        
+        /* Advertisement Section */
         .ad-container { display: flex; overflow-x: auto; gap: 15px; padding: 10px 0; scrollbar-width: none; }
         .ad-card { min-width: 280px; height: 140px; background: #1e272e; border-radius: 20px; position: relative; overflow: hidden; color: white; display: flex; align-items: center; justify-content: space-between; padding: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
         .ad-card::after { content: 'HOT DEAL'; position: absolute; top: 10px; right: -25px; background: #ff7675; padding: 2px 30px; transform: rotate(45deg); font-size: 0.6rem; font-weight: bold; }
+        
+        /* 3D Brand Category Styling */
+        .brand-store-section { perspective: 1000px; margin-bottom: 30px; }
+        .brand-card-wrap { transform-style: preserve-3d; transition: 0.6s; }
         .brand-banner { background: var(--grad); border-radius: 20px; height: 100px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.5rem; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 15px 35px rgba(0,184,148,0.3); border: 2px solid white; }
+
         .blink-header { background: var(--glass); backdrop-filter: blur(15px); padding: 15px 20px; position: sticky; top:0; z-index:1000; border-bottom: 1px solid #e1e8ed; }
         .cat-scroll { display: flex; overflow-x: auto; gap: 12px; padding: 10px 0; scrollbar-width: none; }
         .cat-pill { padding: 8px 18px; background: white; border-radius: 50px; font-size: 0.85rem; font-weight: 500; white-space: nowrap; box-shadow: 0 4px 10px rgba(0,0,0,0.05); cursor: pointer; border: 1px solid #eee; transition: 0.3s; }
@@ -37,6 +44,8 @@
         .out-of-stock { filter: grayscale(1); opacity: 0.8; }
         .stock-badge { position: absolute; top: 10px; right: 10px; background: #ff7675; color: white; font-size: 0.6rem; padding: 2px 8px; border-radius: 50px; z-index: 5; }
         .cat-multi-box { border: 1px solid #dee2e6; border-radius: 12px; padding: 10px; max-height: 150px; overflow-y: auto; background: #fff; }
+        
+        /* Confirm UI Styling */
         .confirm-box { background: white; border-radius: 25px; padding: 25px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.2); }
     </style>
 </head>
@@ -84,13 +93,8 @@
             <div class="ad-container" id="ad-list"></div>
         </div>
 
-        <h6 class="fw-bold text-muted mb-2">Main Categories</h6>
+        <h6 class="fw-bold text-muted mb-2">Categories</h6>
         <div class="cat-scroll" id="cat-slider"></div>
-
-        <div id="featured-cats-section" class="mb-4 mt-3 hidden">
-            <h6 class="fw-bold text-muted mb-2">Featured Categories</h6>
-            <div class="cat-scroll" id="featured-cat-slider"></div>
-        </div>
         
         <div id="product-list-container"></div>
     </div>
@@ -144,15 +148,53 @@
             <div class="s-card p-3 border-start border-5 border-success mb-3">
                 <h6 class="fw-bold mb-3">Admin Panel</h6>
                 <button class="btn btn-success btn-sm w-100 mb-2 rounded-pill" onclick="openProductModal()">Add New Product</button>
+                <button class="btn btn-info btn-sm w-100 mb-2 rounded-pill text-white" onclick="showPage('pending')">Pending Approvals</button>
                 <button class="btn btn-dark btn-sm w-100 mb-2 rounded-pill" onclick="showPage('usermgmt')">Manage Users</button>
                 <button class="btn btn-outline-dark btn-sm w-100 mb-2 rounded-pill" onclick="showPage('reports')">Performance Reports</button>
                 <button class="btn btn-warning btn-sm w-100 rounded-pill" onclick="openSettingsModal()">App Settings</button>
             </div>
         </div>
+        
+        <div id="agent-tools" class="hidden mt-3">
+            <button class="btn btn-success btn-sm w-100 rounded-pill" onclick="openProductModal()">Suggest New Product</button>
+            <button class="btn btn-dark btn-sm w-100 rounded-pill mt-2" onclick="openUserModal()">Register New Customer</button>
+        </div>
+    </div>
+
+    <div id="page-pending" class="page hidden animate__animated animate__fadeIn">
+        <h5 class="fw-bold mb-3">Pending Approvals</h5>
+        <div id="pending-product-list"></div>
     </div>
 
     <div id="page-reports" class="page hidden animate__animated animate__fadeIn">
         <h5 class="fw-bold mb-3">Performance Dashboard</h5>
+        <div class="row g-2 mb-3">
+            <div class="col-4">
+                <label class="small text-muted">Filter By Date</label>
+                <input type="date" id="report-date" class="form-control form-control-sm" onchange="generateReport()">
+            </div>
+            <div class="col-4">
+                <label class="small text-muted">By Month</label>
+                <select id="report-month" class="form-select form-select-sm" onchange="generateReport()">
+                    <option value="">All</option>
+                    <option value="0">Jan</option><option value="1">Feb</option><option value="2">Mar</option><option value="3">Apr</option>
+                    <option value="4">May</option><option value="5">Jun</option><option value="6">Jul</option><option value="7">Aug</option>
+                    <option value="8">Sep</option><option value="9">Oct</option><option value="10">Nov</option><option value="11">Dec</option>
+                </select>
+            </div>
+            <div class="col-4">
+                <label class="small text-muted">By Year</label>
+                <select id="report-year" class="form-select form-select-sm" onchange="generateReport()">
+                    <option value="2025">2025</option>
+                    <option value="2026">2026</option>
+                </select>
+            </div>
+        </div>
+        <div class="mb-3">
+            <select id="report-agent" class="form-select form-select-sm" onchange="generateReport()">
+                <option value="all">All Agents</option>
+            </select>
+        </div>
         <div id="report-stats" class="row g-2 mb-4"></div>
         <div id="report-list"></div>
     </div>
@@ -182,6 +224,11 @@
     <div class="nav-item" onclick="showPage('profile', this)"><i>👤</i>Profile</div>
 </div>
 
+<div id="modal-detail" class="position-fixed top-50 start-50 translate-middle s-card p-4 hidden animate__animated animate__zoomIn" style="z-index:3500; width:92%; max-width:400px;">
+    <div id="detail-content" class="text-center"></div>
+    <button class="btn btn-dark w-100 rounded-pill mt-3" onclick="closeModals()">Close</button>
+</div>
+
 <div id="modal-product" class="position-fixed top-50 start-50 translate-middle s-card p-4 hidden animate__animated animate__zoomIn" style="z-index:3000; width:92%; max-width:400px; max-height: 90vh; overflow-y: auto;">
     <h6 class="fw-bold mb-3">Product Info</h6>
     <input type="hidden" id="adm-p-id">
@@ -191,16 +238,16 @@
         <div class="col-6"><input type="number" id="adm-p-price" class="form-control" placeholder="Our Price" onkeyup="calcMargin()"></div>
         <div class="col-6"><input type="number" id="adm-p-saleprice" class="form-control" placeholder="MRP Price" onkeyup="calcMargin()"></div>
     </div>
+    <div class="small text-muted mb-2 ps-1">Margin: ₹<span id="adm-p-margin">0</span> (<span id="adm-p-margin-perc">0</span>%)</div>
     
-    <div class="mb-2">
-        <label class="small fw-bold">Select Categories</label>
-        <div id="p-cat-multi-select" class="cat-multi-box mb-2"></div>
-        <input type="text" id="adm-p-cat-new" class="form-control form-control-sm" placeholder="+ Add New Category Name">
-    </div>
+    <label class="small fw-bold">Select Category</label>
+    <select id="adm-p-cat-select" class="form-select mb-2" onchange="toggleNewCat(this.value)"></select>
+    <input type="text" id="adm-p-cat-new" class="form-control mb-2 hidden" placeholder="Enter Category">
     
     <div class="mb-3">
-        <label class="small fw-bold">Image URL / Upload</label>
+        <label class="small fw-bold">Image URL</label>
         <input type="text" id="adm-p-img" class="form-control mb-1" placeholder="Image URL">
+        <label class="small fw-bold">OR Upload Image</label>
         <input type="file" id="adm-p-file" class="form-control form-control-sm" accept="image/*" onchange="handleImageUpload(this)">
     </div>
 
@@ -215,7 +262,7 @@
         <div class="col-6">
             <select id="adm-p-is-ad" class="form-select">
                 <option value="No">Normal</option>
-                <option value="Yes">🔥 Featured</option>
+                <option value="Yes">🔥 Advertisement</option>
             </select>
         </div>
     </div>
@@ -261,12 +308,13 @@
 </div>
 
 <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbzyOElsQzhydgkggd8gtCA3x-QP-2IPzAITOmrsyH0YXzqn3SjzB_5NRtXryJf7SqY/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbxy8lZc4hGNGB3hMPxwTegYVh1cO4VKXip_gtfWeEzfpJAsVy3QcP1Ss6YZspKFeyJf/exec";
     let state = { 
         user: JSON.parse(localStorage.getItem('narayani_u_v4')), 
         cart: JSON.parse(localStorage.getItem('narayani_c_v4')) || [], 
         products: [], agents: [], cats: [], orders: [], allUsers: [], selectedCat: 'All',
-        settings: {}, confirmCallback: null
+        settings: {},
+        confirmCallback: null
     };
 
     async function call(action, data = {}) {
@@ -276,6 +324,7 @@
     
     function showToast(m) { const t=document.getElementById('toast'); t.innerText=m; t.style.opacity=1; setTimeout(()=>t.style.opacity=0,3000); }
     
+    // Styled Confirmation Helper
     function confirmAction(msg, callback) {
         document.getElementById('confirm-msg').innerText = msg;
         document.getElementById('modal-confirm').classList.remove('hidden');
@@ -301,8 +350,20 @@
         document.getElementById('search-container').classList.remove('hidden');
         document.getElementById('header-user-name').innerText = state.user.name;
         document.getElementById('header-role').innerText = state.user.role;
+        
         if(state.user.role === 'Admin') document.getElementById('admin-tools').classList.remove('hidden');
-        showPage('shop');
+        if(state.user.role === 'Agent') {
+            document.getElementById('agent-tools').classList.remove('hidden');
+            document.getElementById('nav-shop').classList.add('hidden');
+            document.getElementById('nav-users-tab').classList.add('hidden');
+            showPage('orders');
+        } else if(state.user.role === 'User') {
+            document.getElementById('nav-users-tab').classList.add('hidden');
+            showPage('shop');
+        } else {
+            showPage('shop');
+        }
+
         if(state.user.role !== 'User') document.getElementById('bank-details-box').classList.remove('hidden');
         loadData();
     }
@@ -310,16 +371,19 @@
     async function loadData() {
         const [p, a, u, s] = await Promise.all([
             call('getProducts', {role: state.user.role, allowedCats: state.user.allowedCats}), 
-            call('getAgents'), call('allUsers'), call('getSettings')
+            call('getAgents'), 
+            call('allUsers'),
+            call('getSettings')
         ]);
         state.products = p.products; state.cats = p.categories; state.agents = a.agents; state.allUsers = u.users; state.settings = s;
-        renderCats(); renderProducts(); renderBankInfo(); renderAds();
+        renderCats(); renderProducts(); updateCatDropdown(); renderBankInfo(); updateAgentFilter(); renderAds();
     }
 
     function renderAds() {
         const ads = state.products.filter(p => p[10] === 'Yes');
         const container = document.getElementById('ad-list');
         if(ads.length === 0) { document.getElementById('ad-wrapper').classList.add('hidden'); return; }
+        
         document.getElementById('ad-wrapper').classList.remove('hidden');
         container.innerHTML = ads.map(p => `
             <div class="ad-card" onclick="showProductDetail('${p[0]}')">
@@ -333,52 +397,75 @@
         `).join('');
     }
 
+    function renderBankInfo() {
+        if(!state.settings.bank) return;
+        const b = state.settings.bank;
+        document.getElementById('bank-info-display').innerHTML = `
+            <p class="mb-1"><b>Bank:</b> ${b.name}</p>
+            <p class="mb-1"><b>A/C Name:</b> ${b.acName}</p>
+            <p class="mb-1"><b>A/C No:</b> ${b.acNo}</p>
+            <p class="mb-0"><b>IFSC:</b> ${b.ifsc}</p>
+        `;
+    }
+
     function renderCats() {
         const slider = document.getElementById('cat-slider');
-        const fSlider = document.getElementById('featured-cat-slider');
-        
-        slider.innerHTML = `<div class="cat-pill ${state.selectedCat=='All'?'active':''}" onclick="filterByCat('All')">All</div>` + 
-            state.cats.map(c => `<div class="cat-pill ${state.selectedCat==c?'active':''}" onclick="filterByCat('${c}')">${c}</div>`).join('');
+        slider.innerHTML = `<div class="cat-pill ${state.selectedCat=='All'?'active':''}" onclick="filterByCat('All')">All Products</div>` + 
+            state.cats.map(c => `
+                <div class="cat-pill ${state.selectedCat==c?'active':''}" 
+                     oncontextmenu="markBrand(event, '${c}')"
+                     onclick="filterByCat('${c}')">
+                     ${c}
+                </div>
+            `).join('');
+    }
 
-        // Logic for featured categories (Any category containing featured products)
-        const featuredCatNames = [...new Set(state.products.filter(p => p[10] === 'Yes').flatMap(p => p[1].split(',').map(s => s.trim())))];
-        if(featuredCatNames.length > 0) {
-            document.getElementById('featured-cats-section').classList.remove('hidden');
-            fSlider.innerHTML = featuredCatNames.map(c => `<div class="cat-pill" onclick="filterByCat('${c}')">🔥 ${c}</div>`).join('');
-        }
+    function markBrand(e, cat) {
+        if(state.user.role !== 'Admin') return;
+        e.preventDefault();
+        confirmAction(`Mark ${cat} as a Brand Store with 3D effects?`, () => {
+            state.products.filter(p => p[1] === cat).forEach(p => p[11] = p[11] === 'Yes' ? 'No' : 'Yes');
+            showToast("Store Stylized"); renderProducts();
+        });
     }
 
     function filterByCat(c) { state.selectedCat = c; renderCats(); renderProducts(); }
 
     function renderProducts(customList = null) {
-        const list = customList || (state.selectedCat === 'All' ? state.products : state.products.filter(p => p[1].split(',').map(s=>s.trim()).includes(state.selectedCat)));
+        const list = customList || (state.selectedCat === 'All' ? state.products : state.products.filter(p => p[1] === state.selectedCat));
         const container = document.getElementById('product-list-container');
+        const grouped = list.reduce((acc, p) => { acc[p[1]] = acc[p[1]] || []; acc[p[1]].push(p); return acc; }, {});
         
-        // Grouping logic that handles multi-category products
-        const grouped = {};
-        list.forEach(p => {
-            const pCats = p[1].split(',').map(s => s.trim());
-            pCats.forEach(c => {
-                if(state.selectedCat !== 'All' && c !== state.selectedCat) return;
-                grouped[c] = grouped[c] || [];
-                if(!grouped[c].find(x => x[0] === p[0])) grouped[c].push(p);
-            });
-        });
-
         let html = '';
         for (const cat in grouped) {
-            html += `<div class="category-header">${cat}</div><div class="row g-3">`;
+            const isBrand = grouped[cat][0][11] === 'Yes';
+            if(isBrand) {
+                html += `
+                <div class="brand-store-section mt-4 animate__animated animate__pulse">
+                    <div class="brand-card-wrap">
+                        <div class="brand-banner">${cat} STORE</div>
+                    </div>
+                </div>`;
+            } else {
+                html += `<div class="category-header">${cat}</div>`;
+            }
+
+            html += `<div class="row g-3">`;
             html += grouped[cat].map(p => {
                 const inCart = state.cart.filter(i => i.id == p[0]).length;
                 const isOut = p[8] === 'Out of Stock';
                 const mrp = p[5] || p[3];
+                const marginVal = parseFloat(p[6]) || 0;
+                const marginPerc = mrp > 0 ? ((marginVal / mrp) * 100).toFixed(1) : 0;
+                
                 return `
                 <div class="col-6 col-md-4">
                     <div class="s-card p-2 text-center h-100 position-relative ${isOut?'out-of-stock':''}">
                         ${isOut ? '<span class="stock-badge">Sold Out</span>' : ''}
-                        <img src="${p[4] || 'https://via.placeholder.com/100'}" style="height:100px; width:100%; object-fit:contain; border-radius:15px" onclick="openProductModal('${p[0]}')">
-                        <div class="small fw-bold mt-2 text-truncate">${p[2]}</div>
-                        <div class="text-success small fw-bold">₹${p[3]} <span class="text-muted text-decoration-line-through" style="font-size:0.6rem">₹${mrp}</span></div>
+                        <img src="${p[4] || 'https://via.placeholder.com/100'}" style="height:100px; object-fit:contain; border-radius:15px" onclick="showProductDetail('${p[0]}')">
+                        <div class="small fw-bold mt-2 text-truncate" onclick="showProductDetail('${p[0]}')">${p[2]}</div>
+                        <div class="small text-muted">MRP: ₹${mrp}</div>
+                        <div class="text-success small fw-bold">₹${p[3]} <br> <span class="text-muted" style="font-size:0.6rem">Margin: ₹${marginVal} (${marginPerc}%)</span></div>
                         ${!isOut ? (inCart > 0 ? `
                             <div class="qty-box">
                                 <button class="qty-btn" onclick="updateQty('${p[0]}', -1)">-</button>
@@ -386,7 +473,7 @@
                                 <button class="qty-btn" onclick="updateQty('${p[0]}', 1)">+</button>
                             </div>
                         ` : `<button class="btn btn-sm btn-outline-success w-100 mt-2 rounded-pill" onclick="updateQty('${p[0]}', 1)">ADD</button>`) : ''}
-                        ${state.user.role === 'Admin' ? `<div class="mt-1 small text-primary" onclick="openProductModal('${p[0]}')">EDIT</div>` : ''}
+                        ${state.user.role === 'Admin' || (state.user.role === 'Agent' && isOut === false) ? `<div class="mt-1 small text-primary" onclick="openProductModal('${p[0]}')">EDIT</div>` : ''}
                     </div>
                 </div>`;
             }).join('');
@@ -395,60 +482,199 @@
         container.innerHTML = html || '<p class="text-center mt-5 text-muted">No products found.</p>';
     }
 
-    function shareWhatsApp(phone, orderId, total, itemsJson) {
-        try {
-            const items = JSON.parse(itemsJson);
-            const grouped = items.reduce((acc, curr) => { acc[curr.name] = (acc[curr.name] || 0) + 1; return acc; }, {});
-            let itemText = "";
-            for(const name in grouped) { itemText += `• ${name} x ${grouped[name]}%0A`; }
+    function generateReport() {
+        const filterDate = document.getElementById('report-date').value;
+        const filterMonth = document.getElementById('report-month').value;
+        const filterYear = document.getElementById('report-year').value;
+        const agent = document.getElementById('report-agent').value;
+        
+        let filtered = state.orders.filter(o => {
+            const oDate = new Date(o[6]);
+            let match = true;
             
-            const msg = `*NARAYANI SALES - BILL*%0A--------------------------%0A*Order ID:* ${orderId}%0A*Items:*%0A${itemText}%0A*Total Amount: ₹${total}*%0A--------------------------%0A_Thank you for your order!_`;
-            window.open(`https://wa.me/91${phone}?text=${msg}`, '_blank');
-        } catch(e) { showToast("WhatsApp Error"); }
+            if(filterDate) match = match && oDate.toISOString().split('T')[0] === filterDate;
+            if(filterMonth !== "") match = match && oDate.getMonth() == filterMonth;
+            if(filterYear) match = match && oDate.getFullYear() == filterYear;
+            if(agent !== 'all') match = match && o[7] == agent;
+            
+            return match;
+        });
+
+        const stats = {
+            totalSales: filtered.filter(o => o[5] === 'Delivered').reduce((sum, o) => sum + parseFloat(o[3]), 0),
+            completed: filtered.filter(o => o[5] === 'Delivered').length,
+            pending: filtered.filter(o => o[5] === 'Pending' || o[5] === 'Assigned').length,
+            cancelled: filtered.filter(o => o[5] === 'Cancelled').length
+        };
+
+        document.getElementById('report-stats').innerHTML = `
+            <div class="col-6"><div class="stat-card"><h6>₹${Math.round(stats.totalSales)}</h6><small>Delivered Sales</small></div></div>
+            <div class="col-6"><div class="stat-card"><h6>${stats.completed}</h6><small>Completed</small></div></div>
+            <div class="col-6 mt-2"><div class="stat-card"><h6>${stats.pending}</h6><small>Active</small></div></div>
+            <div class="col-6 mt-2"><div class="stat-card"><h6>${stats.cancelled}</h6><small>Cancelled</small></div></div>
+        `;
+
+        renderOrders(filtered, 'report-list');
+    }
+
+    function copyLoc(url) {
+        navigator.clipboard.writeText(url);
+        showToast("Location Copied!");
+    }
+
+    function shareWhatsApp(phone, orderId, total, items) {
+        const itemText = JSON.parse(items).map(i => `${i.name} (₹${i.price})`).join('%0A');
+        const text = `*Narayani Sales - Bill Summary*%0AOrder ID: ${orderId}%0AItems:%0A${itemText}%0A%0A*Total Payable: ₹${total}*%0A_Thank you for shopping with us!_`;
+        window.open(`https://wa.me/91${phone}?text=${text}`, '_blank');
+    }
+
+    async function changePass() {
+        const oldP = document.getElementById('old-pass').value;
+        const newP = document.getElementById('new-pass').value;
+        if(!oldP || !newP) return showToast("Enter both passwords");
+        
+        const res = await call('changePassword', { phone: state.user.phone, oldPass: oldP, newPass: newP });
+        if(res.success) { showToast("Password Changed!"); document.getElementById('old-pass').value=''; document.getElementById('new-pass').value=''; }
+        else showToast(res.msg);
+    }
+
+    async function deleteProduct() {
+        confirmAction("Permanently delete this product?", async () => {
+            const id = document.getElementById('adm-p-id').value;
+            await call('deleteProduct', { id });
+            showToast("Product Deleted"); closeModals(); loadData();
+        });
+    }
+
+    async function deleteUser() {
+        confirmAction("Permanently delete this account?", async () => {
+            const phone = document.getElementById('adm-u-phone').value;
+            await call('deleteUser', { phone });
+            showToast("User Deleted"); closeModals(); loadData();
+        });
     }
 
     function renderOrders(orders, target) {
         document.getElementById(target).innerHTML = [...orders].reverse().map(o => {
+            const locUrl = o[15];
             const cartItems = JSON.parse(o[2] || "[]");
-            const upiString = `upi://pay?pa=${state.settings.upi}&pn=Narayani%20Sales&am=${Math.round(o[3])}&cu=INR`;
+            const grouped = cartItems.reduce((acc, curr) => { acc[curr.name] = acc[curr.name] || { price: curr.price, qty: 0 }; acc[curr.name].qty++; return acc; }, {});
+            let billRows = Object.keys(grouped).map(name => `<tr><td>${name}</td><td>${grouped[name].qty}</td><td>₹${grouped[name].price}</td><td>₹${grouped[name].qty * grouped[name].price}</td></tr>`).join('');
+            
             return `
             <div class="s-card p-3 mb-3 animate__animated animate__fadeIn">
                 <div class="d-flex justify-content-between mb-2">
                     <span class="badge bg-light text-dark small">${new Date(o[6]).toLocaleDateString()}</span>
                     <span class="badge ${o[5]=='Delivered'?'bg-success':'bg-warning text-dark'}">${o[5]}</span>
                 </div>
-                <div class="small text-muted mb-2">ID: #${o[0]} | Customer: ${o[11]}</div>
-                <div class="d-flex justify-content-between fw-bold text-success border-top pt-2 mt-1"><span>Total</span><span>₹${Math.round(o[3])}</span></div>
+                <div class="small text-muted mb-2">Order ID: #${o[0]}</div>
+                <div class="bg-light p-2 rounded mb-2 small">
+                    <b>Customer:</b> ${o[11]} <br>
+                    <b>Address:</b> ${o[13]} <br>
+                    <b>Phone:</b> <a href="tel:${o[14]}">${o[14]}</a>
+                    ${o[7] ? `<br><b>Agent Phone:</b> ${o[7]}` : ''}
+                    
+                    ${locUrl && state.user.role !== 'User' ? `
+                        <div class="d-flex gap-2 mt-2">
+                            <button onclick="copyLoc('${locUrl}')" class="btn btn-sm btn-dark w-100 rounded-pill">📋 Copy Location</button>
+                        </div>
+                    ` : ''}
+                </div>
+                <table class="bill-table">
+                    <thead><tr><th>Item</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead>
+                    <tbody>${billRows}</tbody>
+                </table>
+                <div class="small text-muted text-end mt-2">Platform Fee: ₹${o[9] || 0}</div>
+                <div class="d-flex justify-content-between fw-bold text-success border-top pt-2 mt-1"><span>Grand Total</span><span>₹${Math.round(o[3])}</span></div>
                 
                 ${state.user.role !== 'User' ? `
-                    <button onclick="shareWhatsApp('${o[14]}', '${o[0]}', '${o[3]}', '${o[2].replace(/'/g, "\\'").replace(/"/g, '\\"')}')" class="btn btn-sm btn-success w-100 rounded-pill mt-3">WhatsApp Bill</button>
+                    <button onclick="shareWhatsApp('${o[14]}', '${o[0]}', '${o[3]}', '${o[2].replace(/'/g, "\\'")}')" class="btn btn-sm btn-success w-100 rounded-pill mt-3">Share Bill on WhatsApp</button>
                 ` : ''}
 
-                ${state.user.role === 'Agent' && o[5] !== 'Delivered' ? `
-                    <div class="mt-3 p-2 bg-white rounded text-center border">
-                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(upiString)}" style="width:120px">
-                        <small class="d-block text-muted">Scan to Pay ₹${Math.round(o[3])}</small>
+                ${state.user.role === 'Agent' ? `
+                    <div class="mt-3 p-3 bg-white rounded text-center border shadow-sm">
+                        <small class="text-muted d-block mb-1">Company QR (Scan to Pay)</small>
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent('upi://pay?pa='+state.settings.upi+'&pn=Narayani&am='+Math.round(o[3]))}" style="width:120px">
                     </div>
-                    <button class="btn btn-sm btn-success w-100 rounded-pill mt-2" onclick="completeOrder('${o[0]}', 'Paid')">Mark Delivered</button>
                 ` : ''}
+
+                <div class="mt-3 d-flex justify-content-between align-items-center">
+                    ${state.user.role=='Admin' ? `<button class="btn btn-sm text-danger" onclick="deleteOrder('${o[0]}')">Delete</button>` : '<span></span>'}
+                    ${state.user.role=='Admin' ? `<select class="form-select form-select-sm w-50 rounded-pill" onchange="assignOrder('${o[0]}', this.value)"><option value="">Assign Agent</option>${state.agents.map(a => `<option value="${a[0]}" ${o[7]==a[0]?'selected':''}>${a[3]}</option>`).join('')}</select>` : ''}
+                    ${state.user.role=='Agent' && o[5]!='Delivered' ? `<button class="btn btn-sm btn-success rounded-pill px-3" onclick="completeOrder('${o[0]}', 'Paid')">Confirm Delivery</button>` : ''}
+                </div>
             </div>`;
         }).join('');
     }
 
-    // Modal Handling for Multi-Category
+    function handleImageUpload(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    const MAX_WIDTH = 400;
+                    const scaleSize = MAX_WIDTH / img.width;
+                    canvas.width = MAX_WIDTH;
+                    canvas.height = img.height * scaleSize;
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    document.getElementById('adm-p-img').value = canvas.toDataURL('image/jpeg', 0.7);
+                    showToast("Image Optimized");
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function filterProducts() { 
+        const q = document.getElementById('p-search').value.toLowerCase(); 
+        const filtered = state.products.filter(p => 
+            p[2].toLowerCase().includes(q) || 
+            p[1].toLowerCase().includes(q) || 
+            (p[9] && p[9].toLowerCase().includes(q))
+        ); 
+        renderProducts(filtered); 
+    }
+
+    function calcMargin() { 
+        const p = parseFloat(document.getElementById('adm-p-price').value) || 0; 
+        const s = parseFloat(document.getElementById('adm-p-saleprice').value) || 0; 
+        const margin = s - p;
+        document.getElementById('adm-p-margin').innerText = margin;
+        document.getElementById('adm-p-margin-perc').innerText = s > 0 ? ((margin / s) * 100).toFixed(1) : 0;
+    }
+
+    // [All other functions like saveProduct, saveUser, showPage remain as per your original logic but using the updated state/GS fixes above]
+    // Note: ensure saveProduct sends data.isAd = document.getElementById('adm-p-is-ad').value;
+    
+    async function saveProduct() {
+        let cat = document.getElementById('adm-p-cat-select').value;
+        if(cat==='NEW') cat=document.getElementById('adm-p-cat-new').value;
+        const data = {
+            id: document.getElementById('adm-p-id').value,
+            name: document.getElementById('adm-p-name').value,
+            desc: document.getElementById('adm-p-desc').value,
+            price: document.getElementById('adm-p-price').value,
+            salePrice: document.getElementById('adm-p-saleprice').value,
+            category: cat,
+            img: document.getElementById('adm-p-img').value,
+            status: document.getElementById('adm-p-status').value,
+            isAd: document.getElementById('adm-p-is-ad').value,
+            addedBy: state.user.phone,
+            role: state.user.role
+        };
+        const res = await call(data.id ? 'editProduct' : 'addProduct', data);
+        showToast(res.pending ? "Submitted for Approval" : "Saved");
+        closeModals(); loadData();
+    }
+
     function openProductModal(id = null) {
         document.getElementById('modal-product').classList.remove('hidden');
         document.getElementById('btn-del-prod').classList.toggle('hidden', !id);
-        
-        // Render multi-select category list
-        const catBox = document.getElementById('p-cat-multi-select');
-        catBox.innerHTML = state.cats.map(c => `
-            <div class="form-check small">
-                <input class="form-check-input p-cat-check" type="checkbox" value="${c}" id="pchk-${c}">
-                <label class="form-check-label" for="pchk-${c}">${c}</label>
-            </div>
-        `).join('');
-
+        document.getElementById('adm-p-file').value = "";
         if(id) { 
             const p = state.products.find(x => x[0] == id); 
             document.getElementById('adm-p-id').value = p[0]; 
@@ -456,48 +682,35 @@
             document.getElementById('adm-p-desc').value = p[9] || "";
             document.getElementById('adm-p-price').value = p[3]; 
             document.getElementById('adm-p-saleprice').value = p[5];
+            document.getElementById('adm-p-cat-select').value = p[1]; 
             document.getElementById('adm-p-img').value = p[4]; 
             document.getElementById('adm-p-status').value = p[8];
             document.getElementById('adm-p-is-ad').value = p[10] || "No";
-            
-            // Check existing categories
-            const selected = p[1].split(',').map(s => s.trim());
-            selected.forEach(c => { if(document.getElementById('pchk-'+c)) document.getElementById('pchk-'+c).checked = true; });
+            calcMargin();
         } else { 
             document.getElementById('adm-p-id').value = ""; 
-            document.querySelectorAll('#modal-product input:not([type=checkbox]), #modal-product textarea').forEach(i => i.value = ""); 
+            document.querySelectorAll('#modal-product input:not([type=file]), #modal-product textarea').forEach(i => i.value = ""); 
         }
     }
 
-    async function saveProduct() {
-        let selectedCats = Array.from(document.querySelectorAll('.p-cat-check:checked')).map(c => c.value);
-        const newCat = document.getElementById('adm-p-cat-new').value.trim();
-        if(newCat) selectedCats.push(newCat);
-        
-        if(selectedCats.length === 0) return showToast("Select at least one category");
-
-        const data = {
-            id: document.getElementById('adm-p-id').value,
-            name: document.getElementById('adm-p-name').value,
-            desc: document.getElementById('adm-p-desc').value,
-            price: document.getElementById('adm-p-price').value,
-            salePrice: document.getElementById('adm-p-saleprice').value,
-            category: selectedCats.join(', '),
-            img: document.getElementById('adm-p-img').value,
-            status: document.getElementById('adm-p-status').value,
-            isAd: document.getElementById('adm-p-is-ad').value,
-            addedBy: state.user.phone, role: state.user.role
-        };
-        const res = await call(data.id ? 'editProduct' : 'addProduct', data);
-        showToast("Product Saved"); closeModals(); loadData();
-    }
+    function closeModals() { document.querySelectorAll('.position-fixed').forEach(m => { if(m.id !== 'bottom-nav') m.classList.add('hidden'); }); }
+    function toggleNewCat(v) { document.getElementById('adm-p-cat-new').classList.toggle('hidden', v !== 'NEW'); }
+    function updateCatDropdown() { document.getElementById('adm-p-cat-select').innerHTML = '<option value="">Category</option><option value="NEW" id="opt-new-cat">+ New</option>' + state.cats.map(c => `<option value="${c}">${c}</option>`).join(''); }
+    function logout() { localStorage.clear(); location.reload(); }
+    function updateCartUI() { document.getElementById('cart-count').innerText = state.cart.length; document.getElementById('cart-pill').classList.toggle('hidden', state.cart.length === 0); }
+    async function deleteOrder(id) { confirmAction("Delete order?", async () => { await call('deleteOrder', { id }); showToast("Order Deleted"); loadOrders(); }); }
+    async function assignOrder(orderId, agentPhone) { if(!agentPhone) return; await call('assignOrder', { orderId, agentPhone }); showToast("Assigned!"); loadOrders(); }
+    async function completeOrder(orderId, payStatus) { await call('agentUpdate', { orderId, payStatus }); showToast("Delivered!"); loadOrders(); }
+    async function placeOrder(method) { await call('addOrder', { phone: state.user.phone, cart: state.cart, total: document.getElementById('cart-total').innerText, method, feePercent: state.settings.fee }); state.cart = []; localStorage.removeItem('narayani_c_v4'); updateCartUI(); showPage('orders'); }
 
     function showPage(id, el) {
         document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
         document.getElementById('page-' + id).classList.remove('hidden');
         if(el) { document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active')); el.classList.add('active'); }
+        if(id === 'cart') renderCart();
         if(id === 'orders') loadOrders();
         if(id === 'usermgmt') toggleUserList('User');
+        if(id === 'reports') generateReport();
         if(id === 'profile') {
             document.getElementById('prof-name').innerText = state.user.name; 
             document.getElementById('prof-sub').innerText = state.user.role;
@@ -506,21 +719,111 @@
             document.getElementById('prof-addr').innerText = state.user.address;
         }
     }
+    
+    function updateQty(id, delta) {
+        if(delta > 0) { const p = state.products.find(x => x[0] == id); state.cart.push({ id: p[0], name: p[2], price: p[3] }); } 
+        else { const idx = state.cart.findIndex(i => i.id == id); if(idx > -1) state.cart.splice(idx, 1); }
+        localStorage.setItem('narayani_c_v4', JSON.stringify(state.cart));
+        updateCartUI(); renderProducts(); if(!document.getElementById('page-cart').classList.contains('hidden')) renderCart();
+    }
 
-    // [All other boilerplate functions remain same but reference the updated logic above]
+    function renderCart() {
+        const grouped = state.cart.reduce((acc, curr) => { acc[curr.id] = acc[curr.id] || { name: curr.name, price: curr.price, qty: 0 }; acc[curr.id].qty++; return acc; }, {});
+        let subtotal = 0;
+        document.getElementById('cart-items').innerHTML = Object.keys(grouped).map(id => {
+            const itm = grouped[id]; subtotal += (itm.price * itm.qty);
+            return `<div class="d-flex justify-content-between mb-2"><div class="small"><b>${itm.name}</b><br>₹${itm.price} x ${itm.qty}</div><div class="fw-bold">₹${itm.price * itm.qty}</div></div>`;
+        }).join('');
+        const fee = (subtotal * (parseFloat(state.settings.fee) || 0)) / 100;
+        document.getElementById('cart-fee').innerText = fee.toFixed(2);
+        document.getElementById('cart-total').innerText = Math.round(subtotal + fee);
+    }
+
     async function loadOrders() { const res = await call('getOrders', { phone: state.user.phone, role: state.user.role }); state.orders = res.orders; renderOrders(res.orders, 'order-list'); }
-    function closeModals() { document.querySelectorAll('.position-fixed').forEach(m => { if(m.id !== 'bottom-nav') m.classList.add('hidden'); }); }
-    function renderBankInfo() { if(!state.settings.bank) return; const b = state.settings.bank; document.getElementById('bank-info-display').innerHTML = `<p class="mb-1"><b>Bank:</b> ${b.name}</p><p class="mb-1"><b>A/C No:</b> ${b.acNo}</p><p class="mb-0"><b>IFSC:</b> ${b.ifsc}</p>`; }
-    function updateCartUI() { document.getElementById('cart-count').innerText = state.cart.length; document.getElementById('cart-pill').classList.toggle('hidden', state.cart.length === 0); }
-    function logout() { localStorage.clear(); location.reload(); }
-    function updateQty(id, delta) { if(delta > 0) { const p = state.products.find(x => x[0] == id); state.cart.push({ id: p[0], name: p[2], price: p[3] }); } else { const idx = state.cart.findIndex(i => i.id == id); if(idx > -1) state.cart.splice(idx, 1); } localStorage.setItem('narayani_c_v4', JSON.stringify(state.cart)); updateCartUI(); renderProducts(); }
-    async function placeOrder(method) { await call('addOrder', { phone: state.user.phone, cart: state.cart, total: document.getElementById('cart-total').innerText, method, feePercent: state.settings.fee }); state.cart = []; localStorage.removeItem('narayani_c_v4'); updateCartUI(); showPage('orders'); }
-    async function completeOrder(orderId, payStatus) { await call('agentUpdate', { orderId, payStatus }); showToast("Delivered!"); loadOrders(); }
-    function openSettingsModal() { const s = state.settings; document.getElementById('set-upi').value = s.upi; document.getElementById('set-contact').value = s.contact; document.getElementById('set-bank-name').value = s.bank.name; document.getElementById('set-ac-name').value = s.bank.acName; document.getElementById('set-ac-no').value = s.bank.acNo; document.getElementById('set-ifsc').value = s.bank.ifsc; document.getElementById('set-fee').value = s.fee; document.getElementById('modal-settings').classList.remove('hidden'); }
-    async function saveSettings() { const data = { role: 'Admin', upi: document.getElementById('set-upi').value, contact: document.getElementById('set-contact').value, bankName: document.getElementById('set-bank-name').value, acName: document.getElementById('set-ac-name').value, acNo: document.getElementById('set-ac-no').value, ifsc: document.getElementById('set-ifsc').value, fee: document.getElementById('set-fee').value }; await call('updateSettings', data); showToast("Settings Updated"); closeModals(); loadData(); }
-    function handleImageUpload(input) { if (input.files && input.files[0]) { const reader = new FileReader(); reader.onload = (e) => { document.getElementById('adm-p-img').value = e.target.result; }; reader.readAsDataURL(input.files[0]); } }
-    function filterProducts() { const q = document.getElementById('p-search').value.toLowerCase(); const filtered = state.products.filter(p => p[2].toLowerCase().includes(q) || p[1].toLowerCase().includes(q)); renderProducts(filtered); }
-    function calcMargin() { const p = parseFloat(document.getElementById('adm-p-price').value) || 0; const s = parseFloat(document.getElementById('adm-p-saleprice').value) || 0; }
+
+    function showProductDetail(id) {
+        const p = state.products.find(x => x[0] == id);
+        document.getElementById('detail-content').innerHTML = `
+            <img src="${p[4]}" class="img-fluid rounded mb-3" style="max-height:200px">
+            <h5 class="fw-bold">${p[2]}</h5>
+            <div class="badge bg-light text-dark mb-3">${p[1]}</div>
+            <p class="text-muted small">${p[9] || 'No description available.'}</p>
+            <h4 class="text-success fw-bold">₹${p[3]}</h4>
+            <div class="small text-muted">MRP: ₹${p[5]} | Saving: ₹${p[6]}</div>
+        `;
+        document.getElementById('modal-detail').classList.remove('hidden');
+    }
+
+    async function saveUser() {
+        const selectedCats = Array.from(document.querySelectorAll('.cat-check:checked')).map(c => c.value).join(',');
+        const data = {
+            executorRole: state.user.role,
+            oldPhone: document.getElementById('adm-u-oldphone').value,
+            phone: document.getElementById('adm-u-phone').value,
+            pass: document.getElementById('adm-u-pass').value,
+            role: document.getElementById('adm-u-role').value,
+            name: document.getElementById('adm-u-name').value,
+            shop: document.getElementById('adm-u-shop').value,
+            addr: document.getElementById('adm-u-addr').value,
+            locUrl: document.getElementById('adm-u-loc').value,
+            allowedCats: selectedCats
+        };
+        await call(data.oldPhone ? 'editUser' : 'createUser', data);
+        showToast("User Saved"); closeModals(); loadData();
+    }
+
+    function openUserModal(phone = null) {
+        document.getElementById('modal-user').classList.remove('hidden');
+        document.getElementById('delete-user-btn').classList.toggle('hidden', !phone || state.user.role === 'Agent');
+        const catBox = document.getElementById('cat-multi-select');
+        catBox.innerHTML = state.cats.map(c => `<div class="form-check small"><input class="form-check-input cat-check" type="checkbox" value="${c}" id="chk-${c}"><label class="form-check-label" for="chk-${c}">${c}</label></div>`).join('');
+        if(phone) { 
+            const u = state.allUsers.find(x => x[0] == phone); 
+            document.getElementById('adm-u-oldphone').value = u[0]; 
+            document.getElementById('adm-u-phone').value = u[0]; 
+            document.getElementById('adm-u-pass').value = u[1]; 
+            document.getElementById('adm-u-role').value = u[2]; 
+            document.getElementById('adm-u-name').value = u[3]; 
+            document.getElementById('adm-u-shop').value = u[4]; 
+            document.getElementById('adm-u-addr').value = u[5]; 
+            document.getElementById('adm-u-loc').value = u[7] || ""; 
+            const allowed = (u[6] || "").split(',');
+            allowed.forEach(c => { if(document.getElementById('chk-'+c.trim())) document.getElementById('chk-'+c.trim()).checked = true; });
+        } else { 
+            document.getElementById('adm-u-oldphone').value = ""; 
+            document.querySelectorAll('#modal-user input').forEach(i => i.value = ""); 
+        }
+    }
+
+    function toggleUserList(role) {
+        document.getElementById('btn-show-users').classList.toggle('active', role === 'User');
+        document.getElementById('btn-show-agents').classList.toggle('active', role === 'Agent');
+        const filtered = state.allUsers.filter(u => u[2] === role);
+        document.getElementById('user-directory-list').innerHTML = filtered.map(u => `<div class="s-card p-3 mb-2 d-flex justify-content-between align-items-center" onclick="${state.user.role === 'Admin' ? `openUserModal('${u[0]}')` : ''}"><div><h6 class="fw-bold m-0">${u[3]}</h6><small class="text-muted">${u[0]}</small></div>${state.user.role === 'Admin' ? '<div class="text-primary">Edit 〉</div>' : ''}</div>`).join('');
+    }
+
+    function openSettingsModal() {
+        const s = state.settings;
+        document.getElementById('set-upi').value = s.upi;
+        document.getElementById('set-contact').value = s.contact;
+        document.getElementById('set-bank-name').value = s.bank.name;
+        document.getElementById('set-ac-name').value = s.bank.acName;
+        document.getElementById('set-ac-no').value = s.bank.acNo;
+        document.getElementById('set-ifsc').value = s.bank.ifsc;
+        document.getElementById('set-fee').value = s.fee;
+        document.getElementById('modal-settings').classList.remove('hidden');
+    }
+
+    async function saveSettings() {
+        const data = { role: 'Admin', upi: document.getElementById('set-upi').value, contact: document.getElementById('set-contact').value, bankName: document.getElementById('set-bank-name').value, acName: document.getElementById('set-ac-name').value, acNo: document.getElementById('set-ac-no').value, ifsc: document.getElementById('set-ifsc').value, fee: document.getElementById('set-fee').value };
+        await call('updateSettings', data);
+        showToast("Settings Updated"); closeModals(); loadData();
+    }
+    
+    function updateAgentFilter() {
+        const sel = document.getElementById('report-agent');
+        if(sel) sel.innerHTML = '<option value="all">All Agents</option>' + state.agents.map(a => `<option value="${a[0]}">${a[3]}</option>`).join('');
+    }
 </script>
 </body>
 </html>
