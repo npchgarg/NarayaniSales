@@ -12,13 +12,24 @@
         body { font-family: 'Outfit', sans-serif; background: #f0f3f7; color: #2d3436; padding-bottom: 120px; overflow-x: hidden; }
         .s-card { background: white; border-radius: 24px; border: 1px solid rgba(255,255,255,0.3); box-shadow: 0 10px 30px rgba(0,0,0,0.04); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); overflow: hidden; }
         .s-card:hover { transform: translateY(-5px) scale(1.01); box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
+        
+        .ad-container { display: flex; overflow-x: auto; gap: 15px; padding: 10px 0; scrollbar-width: none; scroll-behavior: smooth; }
+        .ad-container::-webkit-scrollbar { display: none; }
+        .ad-card { min-width: 280px; height: 140px; background: #1e272e; border-radius: 20px; position: relative; overflow: hidden; color: white; display: flex; align-items: center; justify-content: space-between; padding: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); flex-shrink: 0; }
+        .ad-card::after { content: 'HOT DEAL'; position: absolute; top: 10px; right: -25px; background: #ff7675; padding: 2px 30px; transform: rotate(45deg); font-size: 0.6rem; font-weight: bold; }
+        
+        /* 3D Featured Category Animation */
+        .brand-store-section { perspective: 1000px; margin-bottom: 30px; }
+        .brand-card-wrap { transform-style: preserve-3d; animation: float3d 3s ease-in-out infinite; }
+        .brand-banner { background: var(--grad); border-radius: 20px; height: 100px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.5rem; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 15px 35px rgba(0,184,148,0.3); border: 2px solid white; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
+        @keyframes float3d { 0%, 100% { transform: rotateY(-10deg) rotateX(5deg); } 50% { transform: rotateY(10deg) rotateX(-5deg); } }
+
         .blink-header { background: var(--glass); backdrop-filter: blur(15px); padding: 15px 20px; position: sticky; top:0; z-index:1000; border-bottom: 1px solid #e1e8ed; }
         .cat-scroll { display: flex; overflow-x: auto; gap: 12px; padding: 10px 0; scrollbar-width: none; }
-        .cat-scroll::-webkit-scrollbar { display: none; }
         .cat-pill { padding: 8px 18px; background: white; border-radius: 50px; font-size: 0.85rem; font-weight: 500; white-space: nowrap; box-shadow: 0 4px 10px rgba(0,0,0,0.05); cursor: pointer; border: 1px solid #eee; transition: 0.3s; }
         .cat-pill.active { background: var(--grad); color: white; border-color: transparent; }
         .qty-box { display: flex; align-items: center; justify-content: center; background: var(--accent); color: white; border-radius: 50px; padding: 2px 8px; width: fit-content; margin: 10px auto 0; }
-        .qty-btn { background: none; border: none; color: white; font-weight: bold; padding: 0 8px; cursor: pointer; }
+        .qty-btn { background: none; border: none; color: white; font-weight: bold; padding: 0 12px; cursor: pointer; }
         .bottom-nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 450px; background: #1e272e; border-radius: 35px; display: flex; justify-content: space-around; padding: 14px; z-index: 2000; box-shadow: 0 15px 35px rgba(0,0,0,0.3); }
         .nav-item { text-align: center; color: #808e9b; font-size: 0.75rem; cursor: pointer; transition: 0.3s; }
         .nav-item i { display: block; font-size: 1.5rem; margin-bottom: 3px; }
@@ -31,13 +42,28 @@
         .bill-table { width: 100%; font-size: 0.75rem; margin-top: 10px; border-top: 1px solid #eee; }
         .bill-table th { color: #636e72; padding: 5px 2px; }
         .bill-table td { padding: 4px 2px; border-bottom: 1px solid #f9f9f9; }
-        .out-of-stock { filter: grayscale(1); opacity: 0.6; pointer-events: none; }
-        .stock-badge { position: absolute; top: 10px; right: 10px; background: #ff7675; color: white; font-size: 0.6rem; padding: 2px 8px; border-radius: 50px; }
+        .out-of-stock { filter: grayscale(1); opacity: 0.8; }
+        .stock-badge { position: absolute; top: 10px; right: 10px; background: #ff7675; color: white; font-size: 0.6rem; padding: 2px 8px; border-radius: 50px; z-index: 5; }
         .cat-multi-box { border: 1px solid #dee2e6; border-radius: 12px; padding: 10px; max-height: 150px; overflow-y: auto; background: #fff; }
+        .confirm-box { background: white; border-radius: 25px; padding: 25px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.2); }
+        .close-btn { position: absolute; top: 15px; right: 15px; background: #f1f2f6; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; font-weight: bold; }
+        .margin-label { font-size: 0.65rem; background: #e3faf3; color: #00b894; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-top: 4px; }
     </style>
 </head>
 <body>
 <div id="toast">Update Successful</div>
+
+<div id="modal-confirm" class="position-fixed top-50 start-50 translate-middle hidden animate__animated animate__fadeInUp" style="z-index:9999; width:90%; max-width:350px;">
+    <div class="confirm-box">
+        <h5 class="fw-bold mb-2">Are you sure?</h5>
+        <p class="small text-muted mb-4" id="confirm-msg">Do you really want to proceed with this action?</p>
+        <div class="d-flex gap-2">
+            <button class="btn btn-light w-100 rounded-pill" onclick="closeConfirm(false)">Cancel</button>
+            <button class="btn btn-danger w-100 rounded-pill" onclick="closeConfirm(true)">Confirm</button>
+        </div>
+    </div>
+</div>
+
 <div class="blink-header d-flex justify-content-between align-items-center">
     <div>
         <div class="fw-bold fs-5" id="header-user-name">Guest</div>
@@ -50,7 +76,7 @@
 
 <div class="container mt-3">
     <div id="search-container" class="hidden">
-        <input type="text" id="p-search" class="form-control search-bar" placeholder="🔍 Search products..." onkeyup="filterProducts()">
+        <input type="text" id="p-search" class="form-control search-bar" placeholder="🔍 Search name, category or description..." oninput="filterProducts()">
     </div>
 
     <div id="page-login" class="animate__animated animate__fadeIn">
@@ -63,6 +89,10 @@
     </div>
 
     <div id="page-shop" class="page hidden animate__animated animate__fadeIn">
+        <div id="ad-wrapper" class="mb-4">
+            <h6 class="fw-bold text-muted mb-2">Featured Deals</h6>
+            <div class="ad-container" id="ad-list"></div>
+        </div>
         <h6 class="fw-bold text-muted mb-2">Categories</h6>
         <div class="cat-scroll" id="cat-slider"></div>
         <div id="product-list-container"></div>
@@ -138,17 +168,22 @@
     <div id="page-reports" class="page hidden animate__animated animate__fadeIn">
         <h5 class="fw-bold mb-3">Performance Dashboard</h5>
         <div class="row g-2 mb-3">
-            <div class="col-6">
-                <select id="report-type" class="form-select form-select-sm" onchange="generateReport()">
-                    <option value="all">All Time</option>
-                    <option value="today">Today</option>
-                    <option value="month">This Month</option>
+            <div class="col-4">
+                <label class="small text-muted">Date</label>
+                <input type="date" id="report-date" class="form-control form-control-sm" onchange="generateReport()">
+            </div>
+            <div class="col-4">
+                <label class="small text-muted">Month/Year</label>
+                <select id="report-month" class="form-select form-select-sm" onchange="generateReport()">
+                    <option value="">All Months</option>
+                    <option value="0">Jan</option><option value="1">Feb</option><option value="2">Mar</option><option value="3">Apr</option>
+                    <option value="4">May</option><option value="5">Jun</option><option value="6">Jul</option><option value="7">Aug</option>
+                    <option value="8">Sep</option><option value="9">Oct</option><option value="10">Nov</option><option value="11">Dec</option>
                 </select>
             </div>
-            <div class="col-6">
-                <select id="report-agent" class="form-select form-select-sm" onchange="generateReport()">
-                    <option value="all">All Agents</option>
-                </select>
+            <div class="col-4">
+                <label class="small text-muted">Agent</label>
+                <select id="report-agent" class="form-select form-select-sm" onchange="generateReport()"></select>
             </div>
         </div>
         <div id="report-stats" class="row g-2 mb-4"></div>
@@ -181,8 +216,9 @@
 </div>
 
 <div id="modal-detail" class="position-fixed top-50 start-50 translate-middle s-card p-4 hidden animate__animated animate__zoomIn" style="z-index:3500; width:92%; max-width:400px;">
+    <button class="close-btn" onclick="closeModals()">✕</button>
     <div id="detail-content" class="text-center"></div>
-    <button class="btn btn-dark w-100 rounded-pill mt-3" onclick="closeModals()">Close</button>
+    <div id="detail-cart-action" class="mt-3"></div>
 </div>
 
 <div id="modal-product" class="position-fixed top-50 start-50 translate-middle s-card p-4 hidden animate__animated animate__zoomIn" style="z-index:3000; width:92%; max-width:400px; max-height: 90vh; overflow-y: auto;">
@@ -194,16 +230,41 @@
         <div class="col-6"><input type="number" id="adm-p-price" class="form-control" placeholder="Our Price" onkeyup="calcMargin()"></div>
         <div class="col-6"><input type="number" id="adm-p-saleprice" class="form-control" placeholder="MRP Price" onkeyup="calcMargin()"></div>
     </div>
-    <div class="small text-muted mb-2 ps-1">Margin: ₹<span id="adm-p-margin">0</span></div>
-    <select id="adm-p-cat-select" class="form-select mb-2" onchange="toggleNewCat(this.value)"></select>
-    <input type="text" id="adm-p-cat-new" class="form-control mb-2 hidden" placeholder="Enter Category">
-    <input type="text" id="adm-p-img" class="form-control mb-2" placeholder="Image URL">
-    <select id="adm-p-status" class="form-select mb-3">
-        <option value="Live">Live</option>
-        <option value="Out of Stock">Out of Stock</option>
-    </select>
+    <div class="small text-muted mb-2 ps-1">Margin: ₹<span id="adm-p-margin">0</span> (<span id="adm-p-margin-perc">0</span>%)</div>
+    
+    <label class="small fw-bold">Select Categories</label>
+    <div id="prod-cat-multi-select" class="cat-multi-box mb-2"></div>
+    <input type="text" id="adm-p-cat-new" class="form-control mb-2" placeholder="+ Add New Category (Optional)">
+    
+    <div class="mb-3">
+        <label class="small fw-bold">Image URL</label>
+        <input type="text" id="adm-p-img" class="form-control mb-1" placeholder="Image URL">
+        <label class="small fw-bold">OR Upload Image</label>
+        <input type="file" id="adm-p-file" class="form-control form-control-sm" accept="image/*" onchange="handleImageUpload(this)">
+    </div>
+    <div class="row g-2 mb-3">
+        <div class="col-6">
+            <select id="adm-p-status" class="form-select">
+                <option value="Live">Live</option>
+                <option value="Out of Stock">Out of Stock</option>
+                <option value="Disabled">Hidden</option>
+            </select>
+        </div>
+        <div class="col-6">
+            <select id="adm-p-is-ad" class="form-select">
+                <option value="No">Normal</option>
+                <option value="Yes">🔥 Advertisement</option>
+            </select>
+        </div>
+    </div>
+    <div class="mb-3">
+        <select id="adm-p-is-brand" class="form-select">
+            <option value="No">Regular Category</option>
+            <option value="Yes">⭐ Highlighted (3D Effect)</option>
+        </select>
+    </div>
     <button class="btn btn-success w-100 rounded-pill mb-2" onclick="saveProduct()">Save Product</button>
-    <button id="btn-del-prod" class="btn btn-outline-danger btn-sm w-100 rounded-pill mb-2 hidden" onclick="deleteProduct()">Delete Product</button>
+    <button id="btn-del-prod" class="btn btn-outline-danger btn-sm w-100 rounded-pill mb-2 hidden" onclick="deleteProductJS()">Delete Product</button>
     <button class="btn btn-light w-100 rounded-pill" onclick="closeModals()">Cancel</button>
 </div>
 
@@ -226,11 +287,12 @@
         <div id="cat-multi-select" class="cat-multi-box"></div>
     </div>
     <button class="btn btn-success w-100 rounded-pill mb-2" onclick="saveUser()">Save Account</button>
-    <div id="delete-user-btn" class="hidden"><button class="btn btn-outline-danger btn-sm w-100 rounded-pill mb-2" onclick="deleteUser()">Delete Account</button></div>
+    <div id="delete-user-btn" class="hidden"><button class="btn btn-outline-danger btn-sm w-100 rounded-pill mb-2" onclick="deleteUserJS()">Delete Account</button></div>
     <button class="btn btn-light w-100 rounded-pill" onclick="closeModals()">Close</button>
 </div>
 
 <div id="modal-settings" class="position-fixed top-50 start-50 translate-middle s-card p-4 hidden animate__animated animate__zoomIn" style="z-index:3000; width:92%; max-width:400px;">
+    <button class="close-btn" onclick="closeModals()">✕</button>
     <h6 class="fw-bold mb-3">App Configuration</h6>
     <input type="text" id="set-upi" class="form-control mb-2" placeholder="UPI ID">
     <input type="text" id="set-contact" class="form-control mb-2" placeholder="Contact No">
@@ -243,12 +305,13 @@
 </div>
 
 <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbwd_ELLxVtoTJaDr72bJ_XURZ4bzO06L8taLH0X_Q2uOI4JdcVwm5wYYPLt1eL5ZXBd/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbx9FsNImJcRwfZID9P8xZ66gNhnFHqbHJVvMIvE3Rf8cZ2m6PkEup91_ZOLk-EiUpVm/exec";
     let state = { 
         user: JSON.parse(localStorage.getItem('narayani_u_v4')), 
         cart: JSON.parse(localStorage.getItem('narayani_c_v4')) || [], 
         products: [], agents: [], cats: [], orders: [], allUsers: [], selectedCat: 'All',
-        settings: {}
+        settings: {},
+        confirmCallback: null
     };
 
     async function call(action, data = {}) {
@@ -258,7 +321,26 @@
     
     function showToast(m) { const t=document.getElementById('toast'); t.innerText=m; t.style.opacity=1; setTimeout(()=>t.style.opacity=0,3000); }
     
-    window.onload = () => { if(state.user) startSession(); updateCartUI(); };
+    function confirmAction(msg, callback) {
+        document.getElementById('confirm-msg').innerText = msg;
+        document.getElementById('modal-confirm').classList.remove('hidden');
+        state.confirmCallback = callback;
+    }
+    function closeConfirm(res) {
+        document.getElementById('modal-confirm').classList.add('hidden');
+        if(res && state.confirmCallback) state.confirmCallback();
+        state.confirmCallback = null;
+    }
+
+    window.onload = () => { if(state.user) startSession(); updateCartUI(); startAdSlider(); };
+
+    function startAdSlider() {
+        const container = document.getElementById('ad-list');
+        setInterval(() => {
+            if (container && container.scrollLeft + container.offsetWidth >= container.scrollWidth) { container.scrollLeft = 0; } 
+            else if(container) { container.scrollLeft += 300; }
+        }, 3000);
+    }
 
     async function handleLogin() {
         const res = await call('login', { phone: document.getElementById('l-phone').value, password: document.getElementById('l-pass').value });
@@ -274,13 +356,18 @@
         document.getElementById('header-role').innerText = state.user.role;
         
         if(state.user.role === 'Admin') document.getElementById('admin-tools').classList.remove('hidden');
-        if(state.user.role === 'Agent') document.getElementById('agent-tools').classList.remove('hidden');
-        if(state.user.role === 'User') document.getElementById('nav-users-tab').classList.add('hidden');
-
+        if(state.user.role === 'Agent') {
+            document.getElementById('agent-tools').classList.remove('hidden');
+            document.getElementById('nav-shop').classList.add('hidden');
+            document.getElementById('nav-users-tab').classList.add('hidden');
+            showPage('orders');
+        } else if(state.user.role === 'User') {
+            document.getElementById('nav-users-tab').classList.add('hidden');
+            showPage('shop');
+        } else {
+            showPage('shop');
+        }
         if(state.user.role !== 'User') document.getElementById('bank-details-box').classList.remove('hidden');
-        
-        if(state.user.role === 'Agent') { document.getElementById('nav-shop').classList.add('hidden'); showPage('orders'); }
-        else showPage('shop');
         loadData();
     }
 
@@ -292,7 +379,24 @@
             call('getSettings')
         ]);
         state.products = p.products; state.cats = p.categories; state.agents = a.agents; state.allUsers = u.users; state.settings = s;
-        renderCats(); renderProducts(); updateCatDropdown(); renderBankInfo(); updateAgentFilter();
+        renderCats(); renderProducts(); renderBankInfo(); updateAgentFilter(); renderAds();
+    }
+
+    function renderAds() {
+        const ads = state.products.filter(p => p[10] === 'Yes');
+        const container = document.getElementById('ad-list');
+        if(ads.length === 0) { document.getElementById('ad-wrapper').classList.add('hidden'); return; }
+        document.getElementById('ad-wrapper').classList.remove('hidden');
+        container.innerHTML = ads.map(p => `
+            <div class="ad-card" onclick="showProductDetail('${p[0]}')">
+                <div style="flex:1">
+                    <h6 class="fw-bold mb-1">${p[2]}</h6>
+                    <div class="small mb-2">₹${p[3]} Only</div>
+                    <button class="btn btn-sm btn-light rounded-pill px-3 py-1" style="font-size:0.6rem">View Item</button>
+                </div>
+                <img src="${p[4]}" style="width:80px; height:80px; object-fit:contain">
+            </div>
+        `).join('');
     }
 
     function renderBankInfo() {
@@ -309,32 +413,66 @@
     function renderCats() {
         const slider = document.getElementById('cat-slider');
         slider.innerHTML = `<div class="cat-pill ${state.selectedCat=='All'?'active':''}" onclick="filterByCat('All')">All Products</div>` + 
-            state.cats.map(c => `<div class="cat-pill ${state.selectedCat==c?'active':''}" onclick="filterByCat('${c}')">${c}</div>`).join('');
+            state.cats.map(c => {
+                const isBrand = state.products.some(p => p[1].toString().includes(c) && p[11] === 'Yes');
+                return `
+                <div class="cat-pill ${state.selectedCat==c?'active':''} ${isBrand ? 'border-success border-2 shadow-sm' : ''}" 
+                     onclick="filterByCat('${c}')">
+                     ${isBrand ? '⭐ ' : ''}${c}
+                </div>`;
+            }).join('');
     }
 
     function filterByCat(c) { state.selectedCat = c; renderCats(); renderProducts(); }
 
     function renderProducts(customList = null) {
-        const list = customList || (state.selectedCat === 'All' ? state.products : state.products.filter(p => p[1] === state.selectedCat));
+        const baseList = customList || state.products;
+        const expandedList = [];
+        baseList.forEach(p => {
+            const categories = p[1].toString().split(',').map(c => c.trim());
+            categories.forEach(cat => {
+                if(state.selectedCat === 'All' || cat === state.selectedCat) {
+                    expandedList.push({...p, 0: p[0], 1: cat, displayCat: cat});
+                }
+            });
+        });
+
         const container = document.getElementById('product-list-container');
-        const grouped = list.reduce((acc, p) => { acc[p[1]] = acc[p[1]] || []; acc[p[1]].push(p); return acc; }, {});
+        const grouped = expandedList.reduce((acc, p) => { 
+            acc[p.displayCat] = acc[p.displayCat] || []; 
+            if(!acc[p.displayCat].find(x => x[0] == p[0])) acc[p.displayCat].push(p); 
+            return acc; 
+        }, {});
         
         let html = '';
         for (const cat in grouped) {
-            html += `<div class="category-header">${cat}</div><div class="row g-3">`;
+            const isBrand = state.products.some(p => p[1].toString().includes(cat) && p[11] === 'Yes');
+            if(isBrand) {
+                html += `
+                <div class="brand-store-section mt-4 animate__animated animate__pulse">
+                    <div class="brand-card-wrap">
+                        <div class="brand-banner">${cat} STORE</div>
+                    </div>
+                </div>`;
+            } else {
+                html += `<div class="category-header">${cat}</div>`;
+            }
+
+            html += `<div class="row g-3">`;
             html += grouped[cat].map(p => {
                 const inCart = state.cart.filter(i => i.id == p[0]).length;
                 const isOut = p[8] === 'Out of Stock';
-                const mrp = p[5] || p[3];
-                const margin = p[6] || (parseFloat(p[5]) - parseFloat(p[3])) || 0;
+                const mRs = Math.round(p[6] || 0);
+                const mP = p[5] > 0 ? ((p[6]/p[5])*100).toFixed(1) : 0;
                 return `
                 <div class="col-6 col-md-4">
                     <div class="s-card p-2 text-center h-100 position-relative ${isOut?'out-of-stock':''}">
                         ${isOut ? '<span class="stock-badge">Sold Out</span>' : ''}
                         <img src="${p[4] || 'https://via.placeholder.com/100'}" style="height:100px; object-fit:contain; border-radius:15px" onclick="showProductDetail('${p[0]}')">
                         <div class="small fw-bold mt-2 text-truncate" onclick="showProductDetail('${p[0]}')">${p[2]}</div>
-                        <div class="small text-muted text-decoration-line-through">MRP: ₹${mrp}</div>
-                        <div class="text-success small fw-bold">₹${p[3]} <span class="text-muted" style="font-size:0.6rem">(Save ₹${margin})</span></div>
+                        <div class="small text-muted">MRP: ₹${p[5] || p[3]}</div>
+                        <div class="text-success small fw-bold">₹${p[3]}</div>
+                        <div class="margin-label">Margin: ₹${mRs} (${mP}%)</div>
                         ${!isOut ? (inCart > 0 ? `
                             <div class="qty-box">
                                 <button class="qty-btn" onclick="updateQty('${p[0]}', -1)">-</button>
@@ -342,7 +480,7 @@
                                 <button class="qty-btn" onclick="updateQty('${p[0]}', 1)">+</button>
                             </div>
                         ` : `<button class="btn btn-sm btn-outline-success w-100 mt-2 rounded-pill" onclick="updateQty('${p[0]}', 1)">ADD</button>`) : ''}
-                        ${state.user.role === 'Admin' ? `<div class="mt-1 small text-primary" onclick="openProductModal('${p[0]}')">EDIT</div>` : ''}
+                        ${state.user.role === 'Admin' ? `<div class="mt-1 small text-primary" style="cursor:pointer" onclick="openProductModal('${p[0]}')">EDIT</div>` : ''}
                     </div>
                 </div>`;
             }).join('');
@@ -351,135 +489,109 @@
         container.innerHTML = html || '<p class="text-center mt-5 text-muted">No products found.</p>';
     }
 
-    function generateReport() {
-        const type = document.getElementById('report-type').value;
-        const agent = document.getElementById('report-agent').value;
-        const now = new Date();
-        
-        let filtered = state.orders.filter(o => {
-            const oDate = new Date(o[6]);
-            let matchTime = true;
-            if(type === 'today') matchTime = oDate.toDateString() === now.toDateString();
-            if(type === 'month') matchTime = oDate.getMonth() === now.getMonth() && oDate.getFullYear() === now.getFullYear();
-            
-            let matchAgent = true;
-            if(agent !== 'all') matchAgent = o[7] == agent;
-            
-            return matchTime && matchAgent;
-        });
-
-        const stats = {
-            totalSales: filtered.filter(o => o[5] === 'Delivered').reduce((sum, o) => sum + parseFloat(o[3]), 0),
-            completed: filtered.filter(o => o[5] === 'Delivered').length,
-            pending: filtered.filter(o => o[5] === 'Pending' || o[5] === 'Assigned').length,
-            cancelled: filtered.filter(o => o[5] === 'Cancelled').length
-        };
-
-        document.getElementById('report-stats').innerHTML = `
-            <div class="col-6"><div class="stat-card"><h6>₹${Math.round(stats.totalSales)}</h6><small>Total Sales</small></div></div>
-            <div class="col-6"><div class="stat-card"><h6>${stats.completed}</h6><small>Completed</small></div></div>
-            <div class="col-6 mt-2"><div class="stat-card"><h6>${stats.pending}</h6><small>Pending</small></div></div>
-            <div class="col-6 mt-2"><div class="stat-card"><h6>${stats.cancelled}</h6><small>Cancelled</small></div></div>
-        `;
-
-        renderOrders(filtered, 'report-list');
+    function filterProducts() { 
+        const q = document.getElementById('p-search').value.toLowerCase(); 
+        const filtered = state.products.filter(p => 
+            p[2].toString().toLowerCase().includes(q) || 
+            p[1].toString().toLowerCase().includes(q) ||
+            p[9].toString().toLowerCase().includes(q)
+        ); 
+        renderProducts(filtered); 
     }
 
-    function updateAgentFilter() {
-        const sel = document.getElementById('report-agent');
-        if(sel) sel.innerHTML = '<option value="all">All Agents</option>' + state.agents.map(a => `<option value="${a[0]}">${a[3]}</option>`).join('');
-    }
-
-    function showProductDetail(id) {
-        const p = state.products.find(x => x[0] == id);
-        document.getElementById('detail-content').innerHTML = `
-            <img src="${p[4]}" class="img-fluid rounded mb-3" style="max-height:200px">
-            <h5 class="fw-bold">${p[2]}</h5>
-            <div class="badge bg-light text-dark mb-3">${p[1]}</div>
-            <p class="text-muted small">${p[9] || 'No description available.'}</p>
-            <h4 class="text-success fw-bold">₹${p[3]}</h4>
-            <div class="small text-muted">MRP: ₹${p[5]} | Saving: ₹${p[6]}</div>
-        `;
-        document.getElementById('modal-detail').classList.remove('hidden');
+    function calcMargin() { 
+        const p = parseFloat(document.getElementById('adm-p-price').value) || 0; 
+        const s = parseFloat(document.getElementById('adm-p-saleprice').value) || 0; 
+        const margin = s - p;
+        document.getElementById('adm-p-margin').innerText = margin;
+        document.getElementById('adm-p-margin-perc').innerText = s > 0 ? ((margin / s) * 100).toFixed(1) : 0;
     }
 
     async function saveProduct() {
-        let cat = document.getElementById('adm-p-cat-select').value;
-        if(cat==='NEW') cat=document.getElementById('adm-p-cat-new').value;
+        const selectedCats = Array.from(document.querySelectorAll('.p-cat-check:checked')).map(c => c.value);
+        const newCat = document.getElementById('adm-p-cat-new').value.trim();
+        if(newCat) selectedCats.push(newCat);
+        
         const data = {
             id: document.getElementById('adm-p-id').value,
             name: document.getElementById('adm-p-name').value,
             desc: document.getElementById('adm-p-desc').value,
             price: document.getElementById('adm-p-price').value,
             salePrice: document.getElementById('adm-p-saleprice').value,
-            category: cat,
+            category: selectedCats.join(', '),
             img: document.getElementById('adm-p-img').value,
             status: document.getElementById('adm-p-status').value,
+            isAd: document.getElementById('adm-p-is-ad').value,
+            isBrand: document.getElementById('adm-p-is-brand').value,
             addedBy: state.user.phone,
             role: state.user.role
         };
         const res = await call(data.id ? 'editProduct' : 'addProduct', data);
-        showToast(res.pending ? "Submitted for Approval" : "Saved");
+        showToast(res.pending ? "Submitted for Approval" : "Saved Successfully");
         closeModals(); loadData();
     }
 
-    async function saveUser() {
-        const selectedCats = Array.from(document.querySelectorAll('.cat-check:checked')).map(c => c.value).join(',');
-        const data = {
-            executorRole: state.user.role,
-            oldPhone: document.getElementById('adm-u-oldphone').value,
-            phone: document.getElementById('adm-u-phone').value,
-            pass: document.getElementById('adm-u-pass').value,
-            role: document.getElementById('adm-u-role').value,
-            name: document.getElementById('adm-u-name').value,
-            shop: document.getElementById('adm-u-shop').value,
-            addr: document.getElementById('adm-u-addr').value,
-            locUrl: document.getElementById('adm-u-loc').value,
-            allowedCats: selectedCats
-        };
-        await call(data.oldPhone ? 'editUser' : 'createUser', data);
-        showToast("User Saved"); closeModals(); loadData();
+    function openProductModal(id = null) {
+        document.getElementById('modal-product').classList.remove('hidden');
+        document.getElementById('btn-del-prod').classList.toggle('hidden', !id);
+        
+        const catBox = document.getElementById('prod-cat-multi-select');
+        catBox.innerHTML = state.cats.map(c => `<div class="form-check small"><input class="form-check-input p-cat-check" type="checkbox" value="${c}" id="p-chk-${c}"><label class="form-check-label" for="p-chk-${c}">${c}</label></div>`).join('');
+
+        if(id) { 
+            const p = state.products.find(x => x[0] == id); 
+            document.getElementById('adm-p-id').value = p[0]; 
+            document.getElementById('adm-p-name').value = p[2]; 
+            document.getElementById('adm-p-desc').value = p[9] || "";
+            document.getElementById('adm-p-price').value = p[3]; 
+            document.getElementById('adm-p-saleprice').value = p[5];
+            document.getElementById('adm-p-img').value = p[4]; 
+            document.getElementById('adm-p-status').value = p[8];
+            document.getElementById('adm-p-is-ad').value = p[10] || "No";
+            document.getElementById('adm-p-is-brand').value = p[11] || "No";
+            document.getElementById('adm-p-cat-new').value = "";
+            (p[1] || "").split(',').forEach(c => {
+                const el = document.getElementById('p-chk-'+c.trim());
+                if(el) el.checked = true;
+            });
+            calcMargin();
+        } else { 
+            document.getElementById('adm-p-id').value = ""; 
+            document.querySelectorAll('#modal-product input:not([type=file]), #modal-product textarea').forEach(i => i.value = ""); 
+        }
     }
 
-    function openUserModal(phone = null) {
-        document.getElementById('modal-user').classList.remove('hidden');
-        document.getElementById('delete-user-btn').classList.toggle('hidden', !phone || state.user.role === 'Agent');
-        
-        // Populate Categories Multi-select
-        const catBox = document.getElementById('cat-multi-select');
-        catBox.innerHTML = state.cats.map(c => `
-            <div class="form-check small">
-                <input class="form-check-input cat-check" type="checkbox" value="${c}" id="chk-${c}">
-                <label class="form-check-label" for="chk-${c}">${c}</label>
-            </div>
-        `).join('');
+    function deleteProductJS() {
+        const id = document.getElementById('adm-p-id').value;
+        confirmAction("Delete this product permanently?", async () => {
+            const res = await call('deleteProduct', { id });
+            if(res.success) { showToast("Product Deleted"); closeModals(); loadData(); }
+        });
+    }
 
-        const roleSel = document.getElementById('adm-u-role');
-        if(state.user.role === 'Agent') {
-            roleSel.innerHTML = '<option value="User">Customer</option>';
-            roleSel.disabled = true;
-        } else {
-            roleSel.innerHTML = '<option value="User">Customer</option><option value="Agent">Agent</option><option value="Admin">Admin</option>';
-            roleSel.disabled = false;
-        }
+    function closeModals() { document.querySelectorAll('.position-fixed').forEach(m => { if(m.id !== 'bottom-nav' && m.id !== 'toast') m.classList.add('hidden'); }); }
+    function logout() { localStorage.clear(); location.reload(); }
+    function updateCartUI() { document.getElementById('cart-count').innerText = state.cart.length; document.getElementById('cart-pill').classList.toggle('hidden', state.cart.length === 0); }
+    
+    async function deleteOrder(id) { confirmAction("Delete order permanently?", async () => { await call('deleteOrder', { id }); showToast("Order Deleted"); loadOrders(); }); }
+    async function assignOrder(orderId, agentPhone) { if(!agentPhone) return; await call('assignOrder', { orderId, agentPhone }); showToast("Assigned!"); loadOrders(); }
+    async function completeOrder(orderId, payStatus) { await call('agentUpdate', { orderId, payStatus }); showToast("Order Delivered!"); loadOrders(); }
+    
+    async function placeOrder(method) { 
+        await call('addOrder', { phone: state.user.phone, cart: state.cart, total: state.cart.reduce((a,c)=>a+c.price,0), method, feePercent: state.settings.fee }); 
+        state.cart = []; localStorage.removeItem('narayani_c_v4'); 
+        updateCartUI(); showPage('orders'); showToast("Order Placed Successfully!");
+    }
 
-        if(phone) { 
-            if(state.user.role === 'Agent') { showToast("Permission Denied"); closeModals(); return; }
-            const u = state.allUsers.find(x => x[0] == phone); 
-            document.getElementById('adm-u-oldphone').value = u[0]; 
-            document.getElementById('adm-u-phone').value = u[0]; 
-            document.getElementById('adm-u-pass').value = u[1]; 
-            document.getElementById('adm-u-role').value = u[2]; 
-            document.getElementById('adm-u-name').value = u[3]; 
-            document.getElementById('adm-u-shop').value = u[4]; 
-            document.getElementById('adm-u-addr').value = u[5]; 
-            document.getElementById('adm-u-loc').value = u[7] || ""; 
-            const allowed = (u[6] || "").split(',');
-            allowed.forEach(c => { if(document.getElementById('chk-'+c.trim())) document.getElementById('chk-'+c.trim()).checked = true; });
-        } else { 
-            document.getElementById('adm-u-oldphone').value = ""; 
-            document.querySelectorAll('#modal-user input').forEach(i => i.value = ""); 
-        }
+    function changePass() {
+        const oldPass = document.getElementById('old-pass').value;
+        const newPass = document.getElementById('new-pass').value;
+        if(!oldPass || !newPass) return showToast("Enter passwords");
+        confirmAction("Update your password?", async () => {
+            const res = await call('changePassword', { phone: state.user.phone, oldPass, newPass });
+            if(res.success) { showToast("Password Updated!"); document.getElementById('old-pass').value=''; document.getElementById('new-pass').value=''; }
+            else showToast(res.msg);
+        });
     }
 
     function showPage(id, el) {
@@ -498,6 +610,15 @@
             document.getElementById('prof-addr').innerText = state.user.address;
         }
     }
+    
+    function updateQty(id, delta) {
+        if(delta > 0) { const p = state.products.find(x => x[0] == id); state.cart.push({ id: p[0], name: p[2], price: p[3] }); } 
+        else { const idx = state.cart.findIndex(i => i.id == id); if(idx > -1) state.cart.splice(idx, 1); }
+        localStorage.setItem('narayani_c_v4', JSON.stringify(state.cart));
+        updateCartUI(); renderProducts(); 
+        if(!document.getElementById('page-cart').classList.contains('hidden')) renderCart();
+        if(!document.getElementById('modal-detail').classList.contains('hidden')) showProductDetail(id);
+    }
 
     function renderCart() {
         const grouped = state.cart.reduce((acc, curr) => { acc[curr.id] = acc[curr.id] || { name: curr.name, price: curr.price, qty: 0 }; acc[curr.id].qty++; return acc; }, {});
@@ -506,117 +627,359 @@
             const itm = grouped[id]; subtotal += (itm.price * itm.qty);
             return `<div class="d-flex justify-content-between mb-2"><div class="small"><b>${itm.name}</b><br>₹${itm.price} x ${itm.qty}</div><div class="fw-bold">₹${itm.price * itm.qty}</div></div>`;
         }).join('');
-        
         const fee = (subtotal * (parseFloat(state.settings.fee) || 0)) / 100;
         document.getElementById('cart-fee').innerText = fee.toFixed(2);
-        document.getElementById('cart-total').innerText = Math.round(subtotal + fee); // Roundoff in UI
+        document.getElementById('cart-total').innerText = Math.round(subtotal + fee);
     }
 
     async function loadOrders() { const res = await call('getOrders', { phone: state.user.phone, role: state.user.role }); state.orders = res.orders; renderOrders(res.orders, 'order-list'); }
 
+    function showProductDetail(id) {
+        const p = state.products.find(x => x[0] == id);
+        const inCart = state.cart.filter(i => i.id == p[0]).length;
+        const isOut = p[8] === 'Out of Stock';
+        document.getElementById('detail-content').innerHTML = `
+            <img src="${p[4]}" class="img-fluid rounded mb-3" style="max-height:220px; object-fit:contain">
+            <h5 class="fw-bold">${p[2]}</h5>
+            <div class="badge bg-light text-dark mb-3">${p[1]}</div>
+            <p class="text-muted small">${p[9] || 'Premium quality product.'}</p>
+            <h4 class="text-success fw-bold">₹${p[3]}</h4>
+        `;
+        document.getElementById('detail-cart-action').innerHTML = isOut ? '<div class="alert alert-danger py-2 rounded-pill">Out of Stock</div>' : (inCart > 0 ? `
+            <div class="qty-box mx-auto py-2 px-4" style="font-size:1.2rem"><button class="qty-btn" onclick="updateQty('${p[0]}', -1)">-</button><span class="mx-3">${inCart}</span><button class="qty-btn" onclick="updateQty('${p[0]}', 1)">+</button></div>
+        ` : `<button class="btn btn-success w-100 py-3 rounded-pill fw-bold" onclick="updateQty('${p[0]}', 1)">ADD TO CART</button>`);
+        document.getElementById('modal-detail').classList.remove('hidden');
+    }
+
+    function shareWhatsApp(phone, orderId, total, itemsJson) {
+        try {
+            const items = JSON.parse(itemsJson);
+            const grouped = items.reduce((acc, curr) => { acc[curr.name] = (acc[curr.name] || 0) + 1; return acc; }, {});
+            const itemLines = Object.keys(grouped).map(name => `- ${name} (x${grouped[name]})`).join('%0A');
+            const cleanPhone = phone.toString().replace(/\D/g, ''); 
+            const text = `*NARAYANI SALES - BILL*%0A%0A*Order ID:* %23${orderId}%0A*Total Amount:* ₹${total}%0A%0A*Items:*%0A${itemLines}%0A%0AYour order is confirmed. Thank you!`;
+            window.open(`https://wa.me/91${cleanPhone}?text=${text}`, '_blank');
+        } catch(e) { console.error(e); showToast("WhatsApp Error"); }
+    }
+
+    function copyToClipboard(text) {
+        const el = document.createElement('textarea');
+        el.value = text;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+        showToast("Location Link Copied!");
+    }
+
     function renderOrders(orders, target) {
         document.getElementById(target).innerHTML = [...orders].reverse().map(o => {
-            const locUrl = o[15];
             const cartItems = JSON.parse(o[2] || "[]");
             const grouped = cartItems.reduce((acc, curr) => { acc[curr.name] = acc[curr.name] || { price: curr.price, qty: 0 }; acc[curr.name].qty++; return acc; }, {});
             let billRows = Object.keys(grouped).map(name => `<tr><td>${name}</td><td>${grouped[name].qty}</td><td>₹${grouped[name].price}</td><td>₹${grouped[name].qty * grouped[name].price}</td></tr>`).join('');
             
-            return `
-            <div class="s-card p-3 mb-3">
-                <div class="d-flex justify-content-between mb-2">
-                    <span class="badge bg-light text-dark small">${new Date(o[6]).toLocaleDateString()}</span>
-                    <span class="badge ${o[5]=='Delivered'?'bg-success':'bg-warning text-dark'}">${o[5]}</span>
-                </div>
-                <div class="small text-muted mb-2">Order ID: #${o[0]}</div>
-                <div class="bg-light p-2 rounded mb-2 small">
-                    <b>Customer:</b> ${o[11]} <br>
-                    <b>Address:</b> ${o[13]} <br>
-                    <b>Phone:</b> <a href="tel:${o[14]}">${o[14]}</a>
-                    ${o[7] ? `<br><b>Agent Phone:</b> <a href="tel:${o[7]}">${o[7]}</a>` : ''}
-                    ${locUrl && state.user.role !== 'User' ? `<br><a href="${locUrl}" target="_blank" class="btn btn-sm btn-dark mt-2 w-100 rounded-pill">📍 Open Location</a>` : ''}
-                </div>
-                <table class="bill-table">
-                    <thead><tr><th>Item</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead>
-                    <tbody>${billRows}</tbody>
-                </table>
-                <div class="small text-muted text-end mt-2">Fee: ₹${o[9] || 0}</div>
-                <div class="d-flex justify-content-between fw-bold text-success border-top pt-2 mt-1"><span>Grand Total</span><span>₹${Math.round(o[3])}</span></div>
-                
-                ${state.user.role === 'Agent' ? `
-                    <div class="mt-3 p-3 bg-light rounded text-center border">
-                        <small class="text-muted d-block mb-1">Agent QR (Scan to Pay)</small>
-                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent('upi://pay?pa='+state.settings.upi+'&pn=Narayani&am='+Math.round(o[3]))}" style="width:120px">
-                    </div>
-                ` : ''}
+            const upiUrl = `upi://pay?pa=${state.settings.upi}&pn=Narayani%20Sales&am=${o[3]}&cu=INR`;
+            const qrImg = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(upiUrl)}`;
 
-                <div class="mt-3 d-flex justify-content-between align-items-center">
+            // o[11] Cust Name, o[12] Shop, o[13] Addr, o[14] Phone, o[15] Loc, o[16] AgentName, o[17] AgentPhone
+            return `
+            <div class="s-card p-3 mb-3 animate__animated animate__fadeIn">
+                <div class="d-flex justify-content-between mb-2"><span class="badge bg-light text-dark small">${new Date(o[6]).toLocaleDateString()}</span><span class="badge ${o[5]=='Delivered'?'bg-success':'bg-warning text-dark'}">${o[5]}</span></div>
+                
+                <div class="bg-light p-2 rounded mb-2 small">
+                    <div class="fw-bold border-bottom mb-1 pb-1">Customer Details:</div>
+                    <b>Name:</b> ${o[11]}<br>
+                    <b>Shop:</b> ${o[12]}<br>
+                    <b>Address:</b> ${o[13]}<br>
+                    <b>Phone:</b> ${o[14]}<br>
+                    <div class="mt-2 d-flex gap-2">
+                        <button class="btn btn-sm btn-outline-dark rounded-pill flex-fill" style="font-size:0.65rem" onclick="copyToClipboard('${o[15]}')">📋 Copy Loc</button>
+                        <button class="btn btn-sm btn-dark rounded-pill flex-fill" style="font-size:0.65rem" onclick="window.open('${o[15]}', '_blank')">📍 Open Loc</button>
+                    </div>
+                </div>
+
+                <div class="bg-light p-2 rounded mb-2 small">
+                    <b>Assigned Agent:</b> ${o[16]} ${o[17] ? '| ' + o[17] : ''}
+                </div>
+
+                <table class="bill-table"><thead><tr><th>Item</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead><tbody>${billRows}</tbody></table>
+                <div class="d-flex justify-content-between small text-muted mt-2"><span>Platform Fee</span><span>₹${o[9]||0}</span></div>
+                <div class="d-flex justify-content-between fw-bold text-success border-top pt-2"><span>Payable</span><span>₹${Math.round(o[3])}</span></div>
+                
+                <div class="text-center mt-3 p-2 bg-light rounded">
+                    <img src="${qrImg}" style="width:120px; height:120px;">
+                    <div class="small mt-1 text-muted">Scan to Pay ₹${Math.round(o[3])}</div>
+                </div>
+
+                ${state.user.role !== 'User' ? `<button onclick="shareWhatsApp('${o[14]}', '${o[0]}', '${o[3]}', '${JSON.stringify(cartItems).replace(/'/g, "\\'")}')" class="btn btn-sm btn-success w-100 rounded-pill mt-3">Send WhatsApp Bill</button>` : ''}
+                
+                <div class="mt-3 d-flex justify-content-between gap-2">
                     ${state.user.role=='Admin' ? `<button class="btn btn-sm text-danger" onclick="deleteOrder('${o[0]}')">Delete</button>` : '<span></span>'}
                     ${state.user.role=='Admin' ? `<select class="form-select form-select-sm w-50 rounded-pill" onchange="assignOrder('${o[0]}', this.value)"><option value="">Assign Agent</option>${state.agents.map(a => `<option value="${a[0]}" ${o[7]==a[0]?'selected':''}>${a[3]}</option>`).join('')}</select>` : ''}
-                    ${state.user.role=='Agent' && o[5]!='Delivered' ? `<button class="btn btn-sm btn-success rounded-pill px-3" onclick="completeOrder('${o[0]}', 'Paid')">Confirm Delivery</button>` : ''}
+                    ${state.user.role=='Agent' && o[5]!='Delivered' ? `<button class="btn btn-sm btn-success rounded-pill px-3 flex-fill" onclick="completeOrder('${o[0]}', 'Paid')">Mark Delivered</button>` : ''}
                 </div>
             </div>`;
         }).join('');
     }
 
-    function updateQty(id, delta) {
-        if(delta > 0) { const p = state.products.find(x => x[0] == id); state.cart.push({ id: p[0], name: p[2], price: p[3] }); } 
-        else { const idx = state.cart.findIndex(i => i.id == id); if(idx > -1) state.cart.splice(idx, 1); }
-        localStorage.setItem('narayani_c_v4', JSON.stringify(state.cart));
-        updateCartUI(); renderProducts(); if(!document.getElementById('page-cart').classList.contains('hidden')) renderCart();
+    function generateReport() {
+        const dateVal = document.getElementById('report-date').value;
+        const monthVal = document.getElementById('report-month').value;
+        const agentVal = document.getElementById('report-agent').value;
+        
+        let filtered = state.orders;
+        if(dateVal) filtered = filtered.filter(o => new Date(o[6]).toDateString() === new Date(dateVal).toDateString());
+        if(monthVal !== "") filtered = filtered.filter(o => new Date(o[6]).getMonth().toString() === monthVal);
+        if(agentVal && agentVal !== "all") filtered = filtered.filter(o => o[7].toString() === agentVal);
+
+        let totalSales = 0, totalFees = 0, totalMargin = 0;
+        filtered.forEach(o => {
+            totalSales += parseFloat(o[3] || 0);
+            totalFees += parseFloat(o[9] || 0);
+            const cart = JSON.parse(o[2] || "[]");
+            cart.forEach(item => {
+                const prod = state.products.find(p => p[0] == item.id);
+                if(prod) totalMargin += parseFloat(prod[6] || 0);
+            });
+        });
+
+        document.getElementById('report-stats').innerHTML = `
+            <div class="col-4"><div class="stat-card"><h6>Sales</h6><div class="fw-bold text-success">₹${Math.round(totalSales)}</div></div></div>
+            <div class="col-4"><div class="stat-card"><h6>Profit</h6><div class="fw-bold text-primary">₹${Math.round(totalMargin)}</div></div></div>
+            <div class="col-4"><div class="stat-card"><h6>Fees</h6><div class="fw-bold text-warning">₹${Math.round(totalFees)}</div></div></div>
+        `;
+        renderOrders(filtered, 'report-list');
     }
-    function updateCartUI() { document.getElementById('cart-count').innerText = state.cart.length; document.getElementById('cart-pill').classList.toggle('hidden', state.cart.length === 0); }
-    async function deleteOrder(id) { if(!confirm("Delete permanently?")) return; await call('deleteOrder', { id }); showToast("Order Deleted"); loadOrders(); }
-    async function assignOrder(orderId, agentPhone) { if(!agentPhone) return; await call('assignOrder', { orderId, agentPhone }); showToast("Assigned!"); loadOrders(); }
-    async function completeOrder(orderId, payStatus) { await call('agentUpdate', { orderId, payStatus }); showToast("Delivered!"); loadOrders(); }
-    async function placeOrder(method) { await call('addOrder', { phone: state.user.phone, cart: state.cart, total: document.getElementById('cart-total').innerText, method, feePercent: state.settings.fee }); state.cart = []; localStorage.removeItem('narayani_c_v4'); updateCartUI(); showPage('orders'); }
-    function closeModals() { document.querySelectorAll('.position-fixed').forEach(m => m.classList.add('hidden')); }
-    function toggleNewCat(v) { document.getElementById('adm-p-cat-new').classList.toggle('hidden', v !== 'NEW'); }
-    function updateCatDropdown() { document.getElementById('adm-p-cat-select').innerHTML = '<option value="">Category</option><option value="NEW" id="opt-new-cat">+ New</option>' + state.cats.map(c => `<option value="${c}">${c}</option>`).join(''); }
-    function logout() { localStorage.clear(); location.reload(); }
-    function filterProducts() { const q = document.getElementById('p-search').value.toLowerCase(); const filtered = state.products.filter(p => p[2].toLowerCase().includes(q) || p[1].toLowerCase().includes(q)); renderProducts(filtered); }
-    function calcMargin() { const p = document.getElementById('adm-p-price').value || 0; const s = document.getElementById('adm-p-saleprice').value || 0; document.getElementById('adm-p-margin').innerText = s - p; }
-    
-    function openProductModal(id = null) {
-        document.getElementById('modal-product').classList.remove('hidden');
-        document.getElementById('btn-del-prod').classList.toggle('hidden', !id);
-        if(id) { 
-            const p = state.products.find(x => x[0] == id); 
-            document.getElementById('adm-p-id').value = p[0]; 
-            document.getElementById('adm-p-name').value = p[2]; 
-            document.getElementById('adm-p-desc').value = p[9] || "";
-            document.getElementById('adm-p-price').value = p[3]; 
-            document.getElementById('adm-p-saleprice').value = p[5];
-            document.getElementById('adm-p-cat-select').value = p[1]; 
-            document.getElementById('adm-p-img').value = p[4]; 
-            document.getElementById('adm-p-status').value = p[8];
-            calcMargin();
-        } else { document.getElementById('adm-p-id').value = ""; document.querySelectorAll('#modal-product input, #modal-product textarea').forEach(i => i.value = ""); }
+
+    async function saveUser() {
+        const selectedCats = Array.from(document.querySelectorAll('.cat-check:checked')).map(c => c.value).join(',');
+        const data = { executorRole: state.user.role, oldPhone: document.getElementById('adm-u-oldphone').value, phone: document.getElementById('adm-u-phone').value, pass: document.getElementById('adm-u-pass').value, role: document.getElementById('adm-u-role').value, name: document.getElementById('adm-u-name').value, shop: document.getElementById('adm-u-shop').value, addr: document.getElementById('adm-u-addr').value, locUrl: document.getElementById('adm-u-loc').value, allowedCats: selectedCats };
+        await call(data.oldPhone ? 'editUser' : 'createUser', data);
+        showToast("User Saved"); closeModals(); loadData();
+    }
+
+    function openUserModal(phone = null) {
+        document.getElementById('modal-user').classList.remove('hidden');
+        document.getElementById('delete-user-btn').classList.toggle('hidden', !phone);
+        const catBox = document.getElementById('cat-multi-select');
+        catBox.innerHTML = state.cats.map(c => `<div class="form-check small"><input class="form-check-input cat-check" type="checkbox" value="${c}" id="chk-${c}"><label class="form-check-label" for="chk-${c}">${c}</label></div>`).join('');
+        if(phone) { 
+            const u = state.allUsers.find(x => x[0] == phone); 
+            document.getElementById('adm-u-oldphone').value = u[0]; document.getElementById('adm-u-phone').value = u[0]; document.getElementById('adm-u-pass').value = u[1]; document.getElementById('adm-u-role').value = u[2]; document.getElementById('adm-u-name').value = u[3]; document.getElementById('adm-u-shop').value = u[4]; document.getElementById('adm-u-addr').value = u[5]; document.getElementById('adm-u-loc').value = u[7] || ""; 
+            (u[6] || "").split(',').forEach(c => { if(document.getElementById('chk-'+c.trim())) document.getElementById('chk-'+c.trim()).checked = true; });
+        } else { 
+            document.getElementById('adm-u-oldphone').value = ""; document.querySelectorAll('#modal-user input').forEach(i => i.value = ""); 
+        }
+    }
+
+    function deleteUserJS() {
+        const phone = document.getElementById('adm-u-phone').value;
+        confirmAction("Delete this user account?", async () => {
+            const res = await call('deleteUser', { phone });
+            if(res.success) { showToast("User Deleted"); closeModals(); loadData(); }
+        });
     }
 
     function toggleUserList(role) {
         document.getElementById('btn-show-users').classList.toggle('active', role === 'User');
         document.getElementById('btn-show-agents').classList.toggle('active', role === 'Agent');
         const filtered = state.allUsers.filter(u => u[2] === role);
-        document.getElementById('user-directory-list').innerHTML = filtered.map(u => `<div class="s-card p-3 mb-2 d-flex justify-content-between align-items-center" onclick="${state.user.role === 'Admin' ? `openUserModal('${u[0]}')` : ''}"><div><h6 class="fw-bold m-0">${u[3]}</h6><small class="text-muted">${u[0]}</small></div>${state.user.role === 'Admin' ? '<div class="text-primary">Edit 〉</div>' : ''}</div>`).join('');
+        document.getElementById('user-directory-list').innerHTML = filtered.map(u => `<div class="s-card p-3 mb-2 d-flex justify-content-between align-items-center" onclick="openUserModal('${u[0]}')"><div><h6 class="fw-bold m-0">${u[3]}</h6><small class="text-muted">${u[0]} | ${u[4]||''}</small></div><div class="text-primary">Edit 〉</div></div>`).join('');
     }
 
     function openSettingsModal() {
         const s = state.settings;
-        document.getElementById('set-upi').value = s.upi;
-        document.getElementById('set-contact').value = s.contact;
-        document.getElementById('set-bank-name').value = s.bank.name;
-        document.getElementById('set-ac-name').value = s.bank.acName;
-        document.getElementById('set-ac-no').value = s.bank.acNo;
-        document.getElementById('set-ifsc').value = s.bank.ifsc;
-        document.getElementById('set-fee').value = s.fee;
+        document.getElementById('set-upi').value = s.upi; document.getElementById('set-contact').value = s.contact; document.getElementById('set-bank-name').value = s.bank.name; document.getElementById('set-ac-name').value = s.bank.acName; document.getElementById('set-ac-no').value = s.bank.acNo; document.getElementById('set-ifsc').value = s.bank.ifsc; document.getElementById('set-fee').value = s.fee;
         document.getElementById('modal-settings').classList.remove('hidden');
     }
 
     async function saveSettings() {
         const data = { role: 'Admin', upi: document.getElementById('set-upi').value, contact: document.getElementById('set-contact').value, bankName: document.getElementById('set-bank-name').value, acName: document.getElementById('set-ac-name').value, acNo: document.getElementById('set-ac-no').value, ifsc: document.getElementById('set-ifsc').value, fee: document.getElementById('set-fee').value };
-        await call('updateSettings', data);
-        showToast("Settings Updated"); closeModals(); loadData();
+        await call('updateSettings', data); showToast("Settings Updated"); closeModals(); loadData();
+    }
+    
+    function updateAgentFilter() {
+        const sel = document.getElementById('report-agent');
+        if(sel) sel.innerHTML = '<option value="all">All Agents</option>' + state.agents.map(a => `<option value="${a[0]}">${a[3]}</option>`).join('');
+    }
+
+    function handleImageUpload(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 400;
+                    const scaleSize = MAX_WIDTH / img.width;
+                    canvas.width = MAX_WIDTH;
+                    canvas.height = img.height * scaleSize;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    document.getElementById('adm-p-img').value = canvas.toDataURL('image/jpeg', 0.7);
+                    showToast("Image Optimized");
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
     }
 </script>
 </body>
 </html>
+
+
+
+
+<div id="narayani-preloader-v3">
+    <style>
+        /* Isolation: All styles locked to this specific ID */
+        #narayani-preloader-v3 {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #08080a; /* Professional Deep Matte Black */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999999;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            overflow: hidden;
+            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* 4D Geometric Animation */
+        .n-loader-visual {
+            width: 100px;
+            height: 100px;
+            perspective: 1000px;
+            margin-bottom: 30px;
+        }
+
+        .n-cube-4d {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: n-rotate4d 4s infinite linear;
+        }
+
+        .n-cube-4d div {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(212, 175, 55, 0.05);
+            border: 1.5px solid #d4af37; /* Gold Branding */
+            box-shadow: inset 0 0 15px rgba(212, 175, 55, 0.2), 0 0 20px rgba(212, 175, 55, 0.1);
+        }
+
+        /* 3D Face Positioning */
+        .n-face-1 { transform: rotateY(0deg) translateZ(50px); }
+        .n-face-2 { transform: rotateY(90deg) translateZ(50px); }
+        .n-face-3 { transform: rotateY(180deg) translateZ(50px); }
+        .n-face-4 { transform: rotateY(-90deg) translateZ(50px); }
+        .n-face-5 { transform: rotateX(90deg) translateZ(50px); }
+        .n-face-6 { transform: rotateX(-90deg) translateZ(50px); }
+
+        /* Typography */
+        .n-brand-title {
+            color: #ffffff;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            margin: 0;
+            text-transform: uppercase;
+            text-shadow: 0 0 15px rgba(255,255,255,0.3);
+        }
+
+        .n-tagline {
+            color: #d4af37;
+            font-size: 18px;
+            margin-top: 8px;
+            font-weight: 400;
+            letter-spacing: 1px;
+            opacity: 0;
+            animation: n-fadeInUp 0.8s forwards 0.5s;
+        }
+
+        /* Bottom Attribution */
+        .n-powered {
+            position: absolute;
+            bottom: 40px;
+            color: rgba(255,255,255,0.4);
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .n-powered b {
+            color: #00d2ff; /* Tech Blue for NPCH India */
+            font-weight: 600;
+        }
+
+        /* Micro-Animations */
+        @keyframes n-rotate4d {
+            0% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale3d(1,1,1); }
+            50% { transform: rotateX(180deg) rotateY(360deg) rotateZ(90deg) scale3d(1.2, 1.2, 1.2); }
+            100% { transform: rotateX(360deg) rotateY(720deg) rotateZ(0deg) scale3d(1,1,1); }
+        }
+
+        @keyframes n-fadeInUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Class to remove loader */
+        .n-preloader-hidden {
+            opacity: 0 !important;
+            pointer-events: none !important;
+        }
+
+        /* Stop scrolling when loader is active */
+        body.n-no-scroll {
+            overflow: hidden !important;
+        }
+    </style>
+
+    <div class="n-loader-visual">
+        <div class="n-cube-4d">
+            <div class="n-face-1"></div>
+            <div class="n-face-2"></div>
+            <div class="n-face-3"></div>
+            <div class="n-face-4"></div>
+            <div class="n-face-5"></div>
+            <div class="n-face-6"></div>
+        </div>
+    </div>
+
+    <h1 class="n-brand-title">Narayani Sales</h1>
+    <div class="n-tagline">आपकी दुकान की असली उड़ान</div>
+
+    <div class="n-powered">
+        Powered by <b>NPCH India</b>
+    </div>
+
+    <script>
+        // Disable scrolling immediately
+        document.body.classList.add('n-no-scroll');
+
+        // Remove loader after the site loads + 10-second delay
+        window.addEventListener('load', function() {
+            const preloader = document.getElementById('narayani-preloader-v3');
+            
+            // Timer set to 10000ms (10 seconds)
+            setTimeout(() => {
+                preloader.classList.add('n-preloader-hidden');
+                document.body.classList.remove('n-no-scroll');
+                
+                // Final cleanup from DOM after fade animation
+                setTimeout(() => {
+                    preloader.style.display = 'none';
+                }, 600);
+            }, 10000); 
+        });
+    </script>
+</div>
