@@ -676,202 +676,155 @@
 
 
 
-<!DOCTYPE html>
-<html lang="hi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Hind:wght@400;600&family=Poppins:wght@300;700&display=swap" rel="stylesheet">
+<div id="narayani-preloader-v3">
     <style>
-        :root {
-            --primary-gold: #d4af37;
-            --accent-blue: #00d2ff;
-            --dark-bg: #0a0a0b;
-            --glass: rgba(255, 255, 255, 0.05);
-        }
-
-        body, html {
-            margin: 0;
-            padding: 0;
-            background-color: var(--dark-bg);
-            overflow: hidden;
-        }
-
-        /* Preloader Container */
-        #preloader {
+        /* Isolation: All styles locked to this specific ID */
+        #narayani-preloader-v3 {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            height: 100vh;
-            background: radial-gradient(circle at center, #1a1a1d 0%, #000 100%);
+            height: 100%;
+            background: #08080a; /* Professional Deep Matte Black */
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 9999;
+            z-index: 9999999;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            overflow: hidden;
+            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* 4D Geometric Animation */
+        .n-loader-visual {
+            width: 100px;
+            height: 100px;
             perspective: 1000px;
+            margin-bottom: 30px;
         }
 
-        /* 4D Geometric Background Effect */
-        .bg-glow {
-            position: absolute;
-            width: 300px;
-            height: 300px;
-            background: var(--accent-blue);
-            filter: blur(120px);
-            border-radius: 50%;
-            opacity: 0.15;
-            animation: floatGlow 8s infinite ease-in-out;
-        }
-
-        /* The 4D Core Loader */
-        .loader-cube {
-            width: 80px;
-            height: 80px;
+        .n-cube-4d {
+            width: 100%;
+            height: 100%;
             position: relative;
             transform-style: preserve-3d;
-            animation: rotate3D 3s infinite linear;
-            margin-bottom: 40px;
+            animation: n-rotate4d 4s infinite linear;
         }
 
-        .loader-cube div {
+        .n-cube-4d div {
             position: absolute;
             width: 100%;
             height: 100%;
-            background: transparent;
-            border: 2px solid var(--primary-gold);
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+            background: rgba(212, 175, 55, 0.05);
+            border: 1.5px solid #d4af37; /* Gold Branding */
+            box-shadow: inset 0 0 15px rgba(212, 175, 55, 0.2), 0 0 20px rgba(212, 175, 55, 0.1);
         }
 
-        /* Positioning Cube Faces */
-        .front  { transform: translateZ(40px); }
-        .back   { transform: rotateY(180deg) translateZ(40px); }
-        .left   { transform: rotateY(-90deg) translateZ(40px); }
-        .right  { transform: rotateY(90deg) translateZ(40px); }
-        .top    { transform: rotateX(90deg) translateZ(40px); }
-        .bottom { transform: rotateX(-90deg) translateZ(40px); }
+        /* 3D Face Positioning */
+        .n-face-1 { transform: rotateY(0deg) translateZ(50px); }
+        .n-face-2 { transform: rotateY(90deg) translateZ(50px); }
+        .n-face-3 { transform: rotateY(180deg) translateZ(50px); }
+        .n-face-4 { transform: rotateY(-90deg) translateZ(50px); }
+        .n-face-5 { transform: rotateX(90deg) translateZ(50px); }
+        .n-face-6 { transform: rotateX(-90deg) translateZ(50px); }
 
-        /* Brand Name Styles */
-        .brand-container {
-            text-align: center;
-            transform-style: preserve-3d;
-        }
-
-        .brand-name {
-            font-family: 'Poppins', sans-serif;
+        /* Typography */
+        .n-brand-title {
+            color: #ffffff;
+            font-size: 28px;
             font-weight: 700;
-            font-size: 2.5rem;
-            color: #fff;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
             margin: 0;
             text-transform: uppercase;
-            background: linear-gradient(to right, #fff, var(--primary-gold), #fff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: shimmer 3s infinite;
+            text-shadow: 0 0 15px rgba(255,255,255,0.3);
         }
 
-        .tagline {
-            font-family: 'Hind', sans-serif;
+        .n-tagline {
+            color: #d4af37;
+            font-size: 18px;
+            margin-top: 8px;
             font-weight: 400;
-            color: #ccc;
-            font-size: 1.2rem;
-            margin-top: 10px;
+            letter-spacing: 1px;
             opacity: 0;
-            transform: translateY(20px);
-            animation: fadeInUp 1s forwards 0.5s;
+            animation: n-fadeInUp 0.8s forwards 0.5s;
         }
 
-        /* Footer Attribution */
-        .footer-tag {
+        /* Bottom Attribution */
+        .n-powered {
             position: absolute;
-            bottom: 30px;
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.75rem;
-            color: rgba(255, 255, 255, 0.4);
-            letter-spacing: 3px;
+            bottom: 40px;
+            color: rgba(255,255,255,0.4);
+            font-size: 11px;
+            letter-spacing: 2px;
             text-transform: uppercase;
         }
 
-        .footer-tag span {
-            color: var(--accent-blue);
+        .n-powered b {
+            color: #00d2ff; /* Tech Blue for NPCH */
             font-weight: 600;
         }
 
-        /* Animations */
-        @keyframes rotate3D {
-            0% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
-            100% { transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg); }
+        /* Micro-Animations */
+        @keyframes n-rotate4d {
+            0% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale3d(1,1,1); }
+            50% { transform: rotateX(180deg) rotateY(360deg) rotateZ(90deg) scale3d(1.2, 1.2, 1.2); }
+            100% { transform: rotateX(360deg) rotateY(720deg) rotateZ(0deg) scale3d(1,1,1); }
         }
 
-        @keyframes shimmer {
-            0% { background-position: -200% center; }
-            100% { background-position: 200% center; }
+        @keyframes n-fadeInUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        @keyframes fadeInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        /* Class to remove loader */
+        .n-preloader-hidden {
+            opacity: 0 !important;
+            pointer-events: none !important;
         }
 
-        @keyframes floatGlow {
-            0%, 100% { transform: translate(0, 0); }
-            50% { transform: translate(-30px, 20px); }
-        }
-
-        /* Exit Animation for JS */
-        .fade-out {
-            opacity: 0;
-            transition: opacity 0.8s ease;
-            pointer-events: none;
+        /* Stop scrolling when loader is active */
+        body.n-no-scroll {
+            overflow: hidden !important;
         }
     </style>
-</head>
-<body>
 
-    <div id="preloader">
-        <div class="bg-glow"></div>
-        
-        <div class="loader-cube">
-            <div class="front"></div>
-            <div class="back"></div>
-            <div class="left"></div>
-            <div class="right"></div>
-            <div class="top"></div>
-            <div class="bottom"></div>
-        </div>
-
-        <div class="brand-container">
-            <h1 class="brand-name">Narayani Sales</h1>
-            <p class="tagline">आपकी दुकान की असली उड़ान</p>
-        </div>
-
-        <div class="footer-tag">
-            Powered by <span>NPCH India</span>
+    <div class="n-loader-visual">
+        <div class="n-cube-4d">
+            <div class="n-face-1"></div>
+            <div class="n-face-2"></div>
+            <div class="n-face-3"></div>
+            <div class="n-face-4"></div>
+            <div class="n-face-5"></div>
+            <div class="n-face-6"></div>
         </div>
     </div>
 
-    <div style="padding: 50px; color: white; font-family: sans-serif;">
-        <h2>Welcome to the Store</h2>
-        <p>This content will appear after the loader finishes.</p>
+    <h1 class="n-brand-title">Narayani Sales</h1>
+    <div class="n-tagline">आपकी दुकान की असली उड़ान</div>
+
+    <div class="n-powered">
+        Powered by <b>NPCH India</b>
     </div>
 
     <script>
-        // Smoothly hide preloader after page load
+        // Disable scrolling immediately
+        document.body.classList.add('n-no-scroll');
+
+        // Remove loader only when full site is loaded
         window.addEventListener('load', function() {
-            const loader = document.getElementById('preloader');
+            const preloader = document.getElementById('narayani-preloader-v3');
+            
+            // Add a slight delay (800ms) for visual smoothness
             setTimeout(() => {
-                loader.classList.add('fade-out');
+                preloader.classList.add('n-preloader-hidden');
+                document.body.classList.remove('n-no-scroll');
+                
+                // Remove from DOM after transition to save resources
                 setTimeout(() => {
-                    loader.style.display = 'none';
-                }, 800);
-            }, 2500); // Simulated delay for effect
+                    preloader.style.display = 'none';
+                }, 600);
+            }, 800);
         });
     </script>
-</body>
-</html>
-
-
+</div>
