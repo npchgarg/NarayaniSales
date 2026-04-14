@@ -1,206 +1,407 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="overflow-x: hidden;">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Narayani Sales | Professional B2B Marketplace</title>
+    <title>Narayani Sales | Jaipur's Premier B2B FMCG Distributor</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Poppins:wght@400;600&display=swap');
         
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; margin: 0; padding: 0; }
-        
-        /* High-end Glassmorphism for the Header */
-        .glass-nav {
-            background: rgba(255, 255, 255, 0.75);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+        /* Fixed horizontal overflow by ensuring html and body are constrained */
+        html, body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #fcfcfd; 
+            overflow-x: hidden;
+            width: 100%;
+            margin: 0;
+            padding: 0;
         }
 
-        .hero-gradient {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        .glass-header {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
         }
 
-        .category-card {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        .hero-mesh {
+            background-color: #0f172a;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(217,100%,50%,0.15) 0, transparent 50%), 
+                radial-gradient(at 100% 100%, hsla(210,100%,50%,0.1) 0, transparent 50%);
         }
 
-        .category-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        .product-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .product-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 30px 60px -12px rgba(0,0,0,0.1);
             border-color: #3b82f6;
         }
 
-        .btn-primary {
-            background: #2563eb;
-            transition: all 0.2s ease;
+        .download-btn {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            box-shadow: 0 10px 20px -5px rgba(37, 99, 235, 0.4);
         }
 
-        .btn-primary:hover {
-            background: #1d4ed8;
-            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+        .service-badge {
+            background: rgba(59, 130, 246, 0.1);
+            color: #2563eb;
+            border: 1px solid rgba(59, 130, 246, 0.2);
         }
 
-        /* Clean Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .login-btn-outline {
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        
+        .login-btn-outline:hover {
+            border-color: #3b82f6;
+            color: #3b82f6;
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        /* Micro-animations */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .float-anim { animation: float 4s ease-in-out infinite; }
+
+        /* --- Registration Modal Styles --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: none; /* Hidden by default */
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-card {
+            background: white;
+            width: 100%;
+            max-width: 400px;
+            border-radius: 25px;
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            border-top: 6px solid #00a88e;
+            font-family: 'Poppins', sans-serif;
+            animation: modalFadeIn 0.3s ease-out;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 24px;
+            color: #64748b;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .close-btn:hover { color: #ef4444; }
+
+        .modal-container { padding: 30px; }
+        .modal-brand { font-size: 24px; font-weight: 600; margin-bottom: 25px; color: #333; }
+        .modal-brand span { color: #00a88e; }
+
+        .form-input-group { margin-bottom: 15px; }
+        .form-input-group input, .form-input-group textarea {
+            width: 100%; padding: 14px 18px; border: 1px solid #e0e0e0;
+            border-radius: 12px; font-size: 15px; outline: none; transition: 0.3s;
+        }
+        .form-input-group input:focus, .form-input-group textarea:focus { border-color: #00a88e; }
+
+        .modal-submit-btn {
+            width: 100%; background: #1f2124; color: white; border: none;
+            padding: 15px; border-radius: 30px; font-size: 16px; font-weight: 600;
+            cursor: pointer; margin-top: 10px; transition: 0.3s;
+        }
+        .modal-submit-btn:hover { background: #000; transform: translateY(-2px); }
+        .modal-submit-btn:disabled { background: #ccc; cursor: not-allowed; }
     </style>
 </head>
 <body>
 
-    <nav class="glass-nav sticky top-0 z-50 w-full">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-20">
-                <div class="flex items-center gap-10">
-                    <div class="flex-shrink-0">
-                        <h1 class="text-2xl font-black tracking-tighter text-blue-600">NARAYANI<span class="text-slate-900">SALES</span></h1>
+    <div id="onboardingModal" class="modal-overlay">
+        <div class="modal-card">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <div class="modal-container">
+                <div class="modal-brand">Narayani <span>Sales</span></div>
+                <form id="onboardingForm">
+                    <div class="form-input-group">
+                        <input type="text" id="name" placeholder="Full Name" required>
                     </div>
-                    
-                    <div class="hidden md:flex items-center bg-slate-100 rounded-xl px-4 py-2.5 border border-slate-200 focus-within:border-blue-400 focus-within:bg-white transition-all">
-                        <i class="fas fa-search text-slate-400 mr-3"></i>
-                        <input type="text" placeholder="Search for products, brands or sellers..." class="bg-transparent outline-none w-80 text-sm font-medium text-slate-700">
+                    <div class="form-input-group">
+                        <input type="tel" id="contact_num" placeholder="Phone Number" required>
                     </div>
-                </div>
-
-                <div class="hidden lg:flex items-center gap-8">
-                    <div class="flex gap-6 text-[13px] font-bold text-slate-600 uppercase tracking-wide">
-                        <a href="#" class="hover:text-blue-600 transition">Categories</a>
-                        <a href="#" class="hover:text-blue-600 transition">Bulk Orders</a>
-                        <a href="#" class="hover:text-blue-600 transition">Credit</a>
+                    <div class="form-input-group">
+                        <input type="text" id="shopName" placeholder="Shop Name" required>
                     </div>
-                    
-                    <div class="h-6 w-[1px] bg-slate-200 mx-2"></div>
-                    
-                    <div class="flex items-center gap-3">
-                        <a href="#" class="text-slate-700 font-semibold px-4 py-2 hover:text-blue-600 transition">Login</a>
-                        <a href="#" class="bg-blue-600 text-white px-6 py-2.5 rounded-xl font-bold shadow-sm hover:bg-blue-700 transition transform active:scale-95">
-                            Register Shop
-                        </a>
+                    <div class="form-input-group">
+                        <textarea id="address" placeholder="Full Address" rows="3" required></textarea>
                     </div>
-                </div>
-
-                <div class="lg:hidden flex items-center">
-                    <button class="text-slate-600 p-2"><i class="fas fa-bars text-xl"></i></button>
-                </div>
+                    <button type="submit" id="submitBtn" class="modal-submit-btn">Submit Onboarding</button>
+                </form>
+                <div id="status" class="text-center mt-4 text-sm"></div>
             </div>
+        </div>
+    </div>
+
+    <nav class="glass-header sticky top-0 z-50 py-4 px-6 md:px-12 flex justify-between items-center">
+        <div class="flex items-center gap-2">
+            <div class="h-10 w-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-200">
+                <i class="fas fa-box-open"></i>
+            </div>
+            <h1 class="text-xl font-extrabold text-slate-900 tracking-tight">NARAYANI <span class="text-blue-600">SALES</span></h1>
+        </div>
+        <div class="hidden lg:flex items-center gap-6 text-sm font-bold text-slate-600">
+            <a href="#products" class="hover:text-blue-600 transition">Our Portfolio</a>
+            <a href="#contact" class="hover:text-blue-600 transition">Contact</a>
+            
+            <div class="h-4 w-[1px] bg-slate-200"></div>
+            
+            <button onclick="openModal()" class="flex items-center gap-2 text-teal-600 hover:text-teal-700 transition">
+                <i class="fas fa-store text-xs"></i> Shop Onboarding
+            </button>
+
+            <a href="https://narayanisales.npch.in/login" class="login-btn-outline text-slate-700 px-5 py-2.5 rounded-xl flex items-center gap-2">
+                <i class="fas fa-user-circle text-xs"></i> Login
+            </a>
+
+            <a href="https://github.com/npchgarg/NarayaniSales/releases/download/V1.0/NarayaniSales.apk" class="download-btn text-white px-6 py-2.5 rounded-full flex items-center gap-2">
+                <i class="fab fa-android"></i> Download App
+            </a>
+        </div>
+        <div class="lg:hidden flex items-center gap-4">
+            <button onclick="openModal()" class="text-teal-600 font-bold text-sm">Register</button>
+            <a href="https://narayanisales.npch.in/login" class="text-blue-600 font-bold text-sm">Login</a>
         </div>
     </nav>
 
-    <header class="hero-gradient text-white pt-24 pb-32 px-6">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between">
-            <div class="max-w-2xl text-center md:text-left">
-                <div class="inline-flex items-center gap-2 bg-blue-500/10 border border-blue-500/20 px-4 py-2 rounded-full mb-8">
-                    <span class="flex h-2 w-2 rounded-full bg-blue-400 animate-pulse"></span>
-                    <span class="text-blue-200 text-xs font-bold uppercase tracking-widest">Official B2B Channel</span>
-                </div>
-                <h2 class="text-5xl md:text-7xl font-extrabold mb-6 leading-[1.1]">
-                    The Wholesale <br><span class="text-blue-500">Revolution</span> for Bharat.
+    <header class="hero-mesh text-white py-24 px-6 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-16">
+            <div class="flex-1" data-aos="fade-right">
+                <span class="service-badge px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest mb-6 inline-block">
+                    <i class="fas fa-map-marker-alt mr-2"></i> Serving Jaipur (Select Areas)
+                </span>
+                <h2 class="text-5xl md:text-7xl font-extrabold leading-tight mb-6 break-words">
+                    Wholesale Supply <br>Redefined for <span class="text-blue-500">Local Shops.</span>
                 </h2>
-                <p class="text-slate-400 text-xl font-medium max-w-lg leading-relaxed italic">
-                    "Saath Humara, Tarakki Aapki"
+                <p class="text-slate-400 text-lg md:text-xl mb-10 max-w-xl font-medium italic">
+                    "Saath Humara, Tarakki Aapki" — Empowering Jaipur's retailers with direct supply and best margins.
                 </p>
-                
-                <div class="flex flex-wrap justify-center md:justify-start gap-4 mt-12">
-                    <button class="bg-white text-slate-900 px-8 py-4 rounded-2xl font-bold flex items-center gap-3 shadow-lg hover:bg-slate-100 transition">
-                        <i class="fab fa-google-play text-blue-600"></i> Get The App
-                    </button>
-                    <button class="bg-white/5 backdrop-blur-md border border-white/10 px-8 py-4 rounded-2xl font-bold hover:bg-white/10 transition">
-                        Partner with Us
+                <div class="flex flex-wrap gap-4">
+                    <a href="https://narayanisales.npch.in/login" class="bg-white text-slate-900 px-8 py-4 rounded-2xl font-bold flex items-center gap-3 hover:bg-slate-100 transition shadow-xl">
+                        Partner Login <i class="fas fa-arrow-right text-blue-600"></i>
+                    </a>
+                    
+                    <a href="https://github.com/npchgarg/NarayaniSales/releases/download/V1.0/NarayaniSales.apk" class="bg-blue-600/10 border border-blue-500/30 text-white px-8 py-4 rounded-2xl font-bold flex items-center gap-3 hover:bg-blue-600/20 transition">
+                        <i class="fab fa-android"></i> Install App
+                    </a>
+
+                    <button onclick="openModal()" class="w-full sm:w-auto bg-teal-500 text-white px-8 py-4 rounded-2xl font-bold flex items-center justify-center gap-3 hover:bg-teal-600 transition shadow-lg">
+                        <i class="fas fa-store"></i> Register Shop
                     </button>
                 </div>
             </div>
-
-            <div class="hidden md:block">
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="bg-white/5 backdrop-blur-lg p-8 rounded-3xl border border-white/10 text-center">
-                        <h3 class="text-4xl font-bold text-blue-400">50k+</h3>
-                        <p class="text-slate-400 text-sm mt-1">Retailers</p>
-                    </div>
-                    <div class="bg-white/5 backdrop-blur-lg p-8 rounded-3xl border border-white/10 mt-8 text-center">
-                        <h3 class="text-4xl font-bold text-green-400">24h</h3>
-                        <p class="text-slate-400 text-sm mt-1">SLA Payouts</p>
-                    </div>
+            <div class="flex-1 hidden md:block" data-aos="zoom-in">
+                <div class="relative">
+                    <div class="absolute -inset-4 bg-blue-500/20 rounded-full blur-3xl"></div>
+                    <img src="https://cdn-icons-png.flaticon.com/512/3081/3081559.png" class="w-80 mx-auto float-anim filter brightness-110" alt="Supply Chain">
                 </div>
             </div>
         </div>
     </header>
 
-    <section class="max-w-7xl mx-auto px-4 -mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="bg-white p-8 rounded-3xl shadow-xl border border-slate-100 flex flex-col gap-4">
-            <div class="h-14 w-14 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 text-2xl">
-                <i class="fas fa-shipping-fast"></i>
-            </div>
-            <h4 class="text-xl font-bold text-slate-800">Smart Logistics</h4>
-            <p class="text-slate-500 text-sm">Efficient doorstep delivery and real-time order tracking for your business.</p>
+    <section id="products" class="py-24 px-6 max-w-7xl mx-auto overflow-hidden">
+        <div class="text-center mb-16" data-aos="fade-up">
+            <h3 class="text-4xl font-bold text-slate-900 mb-4">Our Wholesale Verticals</h3>
+            <p class="text-slate-500 max-w-2xl mx-auto uppercase tracking-widest text-xs font-bold">Premium Quality Direct From Manufacturers</p>
         </div>
-        <div class="bg-white p-8 rounded-3xl shadow-xl border border-slate-100 flex flex-col gap-4">
-            <div class="h-14 w-14 bg-green-50 rounded-2xl flex items-center justify-center text-green-600 text-2xl">
-                <i class="fas fa-wallet"></i>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="product-card bg-white p-10 rounded-[2.5rem] flex flex-col items-center text-center" data-aos="fade-up" data-aos-delay="100">
+                <div class="h-20 w-20 bg-orange-50 rounded-3xl flex items-center justify-center text-orange-500 text-3xl mb-6">
+                    <i class="fas fa-smoking"></i>
+                </div>
+                <h4 class="text-xl font-bold text-slate-800 mb-3">Tobacco Products</h4>
+                <p class="text-slate-500 text-sm leading-relaxed">Top-selling tobacco brands and variants for your retail counters.</p>
             </div>
-            <h4 class="text-xl font-bold text-slate-800">Working Capital</h4>
-            <p class="text-slate-500 text-sm">Get credit up to ₹5,00,000 to stock up your shop without financial stress.</p>
-        </div>
-        <div class="bg-white p-8 rounded-3xl shadow-xl border border-slate-100 flex flex-col gap-4">
-            <div class="h-14 w-14 bg-purple-50 rounded-2xl flex items-center justify-center text-purple-600 text-2xl">
-                <i class="fas fa-certificate"></i>
+
+            <div class="product-card bg-white p-10 rounded-[2.5rem] flex flex-col items-center text-center" data-aos="fade-up" data-aos-delay="200">
+                <div class="h-20 w-20 bg-red-50 rounded-3xl flex items-center justify-center text-red-500 text-3xl mb-6">
+                    <i class="fas fa-pepper-hot"></i>
+                </div>
+                <h4 class="text-xl font-bold text-slate-800 mb-3">Authentic Spices</h4>
+                <p class="text-slate-500 text-sm leading-relaxed">Premium quality whole and grounded spices for local groceries.</p>
             </div>
-            <h4 class="text-xl font-bold text-slate-800">Direct Sourcing</h4>
-            <p class="text-slate-500 text-sm">Cut out the middleman. Buy directly from manufacturers for the best margins.</p>
+
+            <div class="product-card bg-white p-10 rounded-[2.5rem] flex flex-col items-center text-center" data-aos="fade-up" data-aos-delay="300">
+                <div class="h-20 w-20 bg-pink-50 rounded-3xl flex items-center justify-center text-pink-500 text-3xl mb-6">
+                    <i class="fas fa-spa"></i>
+                </div>
+                <h4 class="text-xl font-bold text-slate-800 mb-3">Beauty & Personal Care</h4>
+                <p class="text-slate-500 text-sm leading-relaxed">High-demand cosmetic and skincare products from leading brands.</p>
+            </div>
+
+            <div class="product-card bg-white p-10 rounded-[2.5rem] flex flex-col items-center text-center" data-aos="fade-up" data-aos-delay="400">
+                <div class="h-20 w-20 bg-green-50 rounded-3xl flex items-center justify-center text-green-600 text-3xl mb-6">
+                    <i class="fas fa-leaf"></i>
+                </div>
+                <h4 class="text-xl font-bold text-slate-800 mb-3">Ayurvedic Wellness</h4>
+                <p class="text-slate-500 text-sm leading-relaxed">Natural health products and traditional Ayurvedic medicines.</p>
+            </div>
+
+            <div class="product-card bg-white p-10 rounded-[2.5rem] flex flex-col items-center text-center" data-aos="fade-up" data-aos-delay="500">
+                <div class="h-20 w-20 bg-yellow-50 rounded-3xl flex items-center justify-center text-yellow-600 text-3xl mb-6">
+                    <i class="fas fa-seedling"></i>
+                </div>
+                <h4 class="text-xl font-bold text-slate-800 mb-3">Pulses & Grains</h4>
+                <p class="text-slate-500 text-sm leading-relaxed">Cleaned, graded, and packaged pulses for consistent quality.</p>
+            </div>
+
+            <div class="product-card bg-white p-10 rounded-[2.5rem] flex flex-col items-center text-center" data-aos="fade-up" data-aos-delay="600">
+                <div class="h-20 w-20 bg-blue-50 rounded-3xl flex items-center justify-center text-blue-500 text-3xl mb-6">
+                    <i class="fas fa-shopping-basket"></i>
+                </div>
+                <h4 class="text-xl font-bold text-slate-800 mb-3">Multiple FMCG</h4>
+                <p class="text-slate-500 text-sm leading-relaxed">Diverse daily consumption goods ranging from snacks to home care.</p>
+            </div>
         </div>
     </section>
 
-    <section class="py-24 max-w-7xl mx-auto px-4">
-        <div class="mb-12">
-            <h3 class="text-3xl font-bold text-slate-900 tracking-tight">Wholesale Categories</h3>
-            <div class="h-1.5 w-20 bg-blue-600 mt-4 rounded-full"></div>
-        </div>
-
-        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
-            <div class="category-card bg-white border border-slate-200 p-8 rounded-[2rem] text-center cursor-pointer">
-                <i class="fas fa-mobile-screen-button text-4xl text-slate-400 mb-6"></i>
-                <p class="font-bold text-slate-700">Mobiles</p>
+    <section id="contact" class="bg-slate-900 py-24 px-6 text-white overflow-hidden">
+        <div class="max-w-7xl mx-auto flex flex-col lg:flex-row gap-16 items-center">
+            <div class="flex-1" data-aos="fade-right">
+                <h3 class="text-4xl font-bold mb-6">Let's Grow Your <br><span class="text-blue-500">Retail Business.</span></h3>
+                <p class="text-slate-400 mb-10 leading-relaxed">
+                    Narayani Sales is dedicated to the retailers of Jaipur. We offer competitive pricing, reliable delivery, and a growing catalog of products tailored for local needs.
+                </p>
+                <div class="space-y-6">
+                    <div class="flex items-center gap-6 group">
+                        <div class="h-14 w-14 bg-white/5 rounded-2xl flex items-center justify-center text-blue-500 group-hover:bg-blue-600 group-hover:text-white transition-all">
+                            <i class="fas fa-phone-alt"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-500 font-bold uppercase tracking-widest">Call Our Agent</p>
+                            <a href="tel:9530305519" class="text-xl font-bold">+91 9530305519</a>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-6 group">
+                        <div class="h-14 w-14 bg-white/5 rounded-2xl flex items-center justify-center text-blue-500 group-hover:bg-blue-600 group-hover:text-white transition-all">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-500 font-bold uppercase tracking-widest">Email Support</p>
+                            <a href="mailto:narayanisales@npch.in" class="text-xl font-bold">narayanisales@npch.in</a>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="category-card bg-white border border-slate-200 p-8 rounded-[2rem] text-center cursor-pointer">
-                <i class="fas fa-plug text-4xl text-slate-400 mb-6"></i>
-                <p class="font-bold text-slate-700">Electronics</p>
-            </div>
-            <div class="category-card bg-white border border-slate-200 p-8 rounded-[2rem] text-center cursor-pointer">
-                <i class="fas fa-shirt text-4xl text-slate-400 mb-6"></i>
-                <p class="font-bold text-slate-700">Clothing</p>
-            </div>
-            <div class="category-card bg-white border border-slate-200 p-8 rounded-[2rem] text-center cursor-pointer">
-                <i class="fas fa-pump-soap text-4xl text-slate-400 mb-6"></i>
-                <p class="font-bold text-slate-700">FMCG</p>
-            </div>
-            <div class="category-card bg-white border border-slate-200 p-8 rounded-[2rem] text-center cursor-pointer">
-                <i class="fas fa-hammer text-4xl text-slate-400 mb-6"></i>
-                <p class="font-bold text-slate-700">Hardware</p>
-            </div>
-            <div class="category-card bg-white border border-slate-200 p-8 rounded-[2rem] text-center cursor-pointer">
-                <i class="fas fa-ellipsis-h text-4xl text-slate-400 mb-6"></i>
-                <p class="font-bold text-slate-700">Others</p>
+            
+            <div class="flex-1 w-full" data-aos="fade-left">
+                <div class="bg-gradient-to-br from-blue-600 to-indigo-700 p-10 rounded-[3rem] shadow-2xl relative overflow-hidden">
+                    <div class="relative z-10">
+                        <h4 class="text-2xl font-bold mb-4 text-white">Ready to Order?</h4>
+                        <p class="text-blue-100 mb-8">Download our exclusive B2B Android App and browse prices in real-time.</p>
+                        <a href="https://github.com/npchgarg/NarayaniSales/releases/download/V1.0/NarayaniSales.apk" class="bg-white text-blue-600 px-8 py-4 rounded-2xl font-bold flex items-center justify-center gap-3 hover:scale-105 transition-transform shadow-xl">
+                            <i class="fab fa-android"></i> Download App
+                        </a>
+                    </div>
+                    <div class="absolute -bottom-10 -right-10 h-40 w-40 bg-white/10 rounded-full"></div>
+                </div>
             </div>
         </div>
     </section>
 
-    <footer class="bg-white py-12 px-6 border-t border-slate-100">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8 text-center md:text-left">
-            <div>
-                <h1 class="text-xl font-bold text-blue-600 mb-2">NARAYANI SALES</h1>
-                <p class="text-slate-400 text-sm font-medium">Empowering local commerce through technology.</p>
-            </div>
-            <div class="flex gap-8 text-sm font-bold text-slate-600 uppercase tracking-widest">
-                <a href="#" class="hover:text-blue-600">Privacy</a>
-                <a href="#" class="hover:text-blue-600">Terms</a>
-                <a href="#" class="hover:text-blue-600">Contact</a>
-            </div>
-            <p class="text-slate-400 text-xs">&copy; 2026 Narayani Sales Pvt Ltd.</p>
-        </div>
+    <footer class="py-12 border-t border-slate-100 text-center">
+        <p class="text-slate-400 text-sm">&copy; 2026 Narayani Sales Pvt Ltd | Jaipur Distribution Center</p>
     </footer>
 
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100
+        });
+
+        // Modal Control Functions
+        function openModal() {
+            document.getElementById('onboardingModal').style.display = 'flex';
+            document.body.style.overflow = 'hidden'; // Prevent background scroll
+        }
+
+        function closeModal() {
+            document.getElementById('onboardingModal').style.display = 'none';
+            document.body.style.overflow = 'auto'; // Restore scroll
+        }
+
+        // Form Submission logic
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbyHIv1iyVehnXwEG_aYZQxKAWmTCW2-Qeb0BdTuRr-CLNpMW4YKCueDBzZ_e6P6a3af/exec';
+        const form = document.getElementById('onboardingForm');
+        const btn = document.getElementById('submitBtn');
+        const status = document.getElementById('status');
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            btn.disabled = true;
+            btn.innerText = 'Processing...';
+
+            const data = {
+                name: document.getElementById('name').value,
+                contact: document.getElementById('contact_num').value,
+                shopName: document.getElementById('shopName').value,
+                address: document.getElementById('address').value
+            };
+
+            fetch(scriptURL, {
+                method: 'POST',
+                mode: 'no-cors',
+                cache: 'no-cache',
+                body: JSON.stringify(data)
+            })
+            .then(() => {
+                status.innerHTML = '<span style="color: green; font-weight: 600;">Success! Shop Registered.</span>';
+                form.reset();
+                btn.disabled = false;
+                btn.innerText = 'Submit Onboarding';
+                // Close modal after success
+                setTimeout(closeModal, 2000);
+            })
+            .catch(error => {
+                status.innerHTML = '<span style="color: red;">Error submitting form.</span>';
+                btn.disabled = false;
+                btn.innerText = 'Submit Onboarding';
+            });
+        });
+
+        // Close modal on outside click
+        window.onclick = function(event) {
+            const modal = document.getElementById('onboardingModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+    </script>
 </body>
 </html>
