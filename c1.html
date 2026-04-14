@@ -672,3 +672,206 @@
 </script>
 </body>
 </html>
+
+
+
+
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Hind:wght@400;600&family=Poppins:wght@300;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gold: #d4af37;
+            --accent-blue: #00d2ff;
+            --dark-bg: #0a0a0b;
+            --glass: rgba(255, 255, 255, 0.05);
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            background-color: var(--dark-bg);
+            overflow: hidden;
+        }
+
+        /* Preloader Container */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: radial-gradient(circle at center, #1a1a1d 0%, #000 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            perspective: 1000px;
+        }
+
+        /* 4D Geometric Background Effect */
+        .bg-glow {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: var(--accent-blue);
+            filter: blur(120px);
+            border-radius: 50%;
+            opacity: 0.15;
+            animation: floatGlow 8s infinite ease-in-out;
+        }
+
+        /* The 4D Core Loader */
+        .loader-cube {
+            width: 80px;
+            height: 80px;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: rotate3D 3s infinite linear;
+            margin-bottom: 40px;
+        }
+
+        .loader-cube div {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            border: 2px solid var(--primary-gold);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+        }
+
+        /* Positioning Cube Faces */
+        .front  { transform: translateZ(40px); }
+        .back   { transform: rotateY(180deg) translateZ(40px); }
+        .left   { transform: rotateY(-90deg) translateZ(40px); }
+        .right  { transform: rotateY(90deg) translateZ(40px); }
+        .top    { transform: rotateX(90deg) translateZ(40px); }
+        .bottom { transform: rotateX(-90deg) translateZ(40px); }
+
+        /* Brand Name Styles */
+        .brand-container {
+            text-align: center;
+            transform-style: preserve-3d;
+        }
+
+        .brand-name {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 2.5rem;
+            color: #fff;
+            letter-spacing: 2px;
+            margin: 0;
+            text-transform: uppercase;
+            background: linear-gradient(to right, #fff, var(--primary-gold), #fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 3s infinite;
+        }
+
+        .tagline {
+            font-family: 'Hind', sans-serif;
+            font-weight: 400;
+            color: #ccc;
+            font-size: 1.2rem;
+            margin-top: 10px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 1s forwards 0.5s;
+        }
+
+        /* Footer Attribution */
+        .footer-tag {
+            position: absolute;
+            bottom: 30px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.4);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .footer-tag span {
+            color: var(--accent-blue);
+            font-weight: 600;
+        }
+
+        /* Animations */
+        @keyframes rotate3D {
+            0% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+            100% { transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes floatGlow {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-30px, 20px); }
+        }
+
+        /* Exit Animation for JS */
+        .fade-out {
+            opacity: 0;
+            transition: opacity 0.8s ease;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="preloader">
+        <div class="bg-glow"></div>
+        
+        <div class="loader-cube">
+            <div class="front"></div>
+            <div class="back"></div>
+            <div class="left"></div>
+            <div class="right"></div>
+            <div class="top"></div>
+            <div class="bottom"></div>
+        </div>
+
+        <div class="brand-container">
+            <h1 class="brand-name">Narayani Sales</h1>
+            <p class="tagline">आपकी दुकान की असली उड़ान</p>
+        </div>
+
+        <div class="footer-tag">
+            Powered by <span>NPCH India</span>
+        </div>
+    </div>
+
+    <div style="padding: 50px; color: white; font-family: sans-serif;">
+        <h2>Welcome to the Store</h2>
+        <p>This content will appear after the loader finishes.</p>
+    </div>
+
+    <script>
+        // Smoothly hide preloader after page load
+        window.addEventListener('load', function() {
+            const loader = document.getElementById('preloader');
+            setTimeout(() => {
+                loader.classList.add('fade-out');
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                }, 800);
+            }, 2500); // Simulated delay for effect
+        });
+    </script>
+</body>
+</html>
+
+
