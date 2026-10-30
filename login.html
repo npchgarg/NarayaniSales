@@ -48,6 +48,9 @@
         .confirm-box { background: white; border-radius: 25px; padding: 25px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.2); }
         .close-btn { position: absolute; top: 15px; right: 15px; background: #f1f2f6; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; font-weight: bold; }
         .margin-label { font-size: 0.65rem; background: #e3faf3; color: #00b894; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-top: 4px; }
+        
+        /* Agent Mode Selector */
+        .agent-target-box { background: #ffeaa7; border-radius: 15px; padding: 10px 15px; border: 1px solid #fdcb6e; margin-bottom: 15px; }
     </style>
 </head>
 <body>
@@ -75,6 +78,17 @@
 </div>
 
 <div class="container mt-3">
+    <!-- Agent Customer Selection Bar -->
+    <div id="agent-customer-select-bar" class="agent-target-box hidden animate__animated animate__fadeIn">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="small fw-bold text-dark">👤 Billing For Customer:</div>
+            <button class="btn btn-xs btn-outline-dark rounded-pill py-0 px-2" onclick="openUserModal()">+ New Customer</button>
+        </div>
+        <select id="agent-target-customer" class="form-select form-select-sm mt-1" onchange="onAgentTargetChange()">
+            <option value="">-- Select Customer --</option>
+        </select>
+    </div>
+
     <div id="search-container" class="hidden">
         <input type="text" id="p-search" class="form-control search-bar" placeholder="🔍 Search name, category or description..." oninput="filterProducts()">
     </div>
@@ -101,6 +115,19 @@
     <div id="page-orders" class="page hidden animate__animated animate__fadeIn">
         <h5 class="fw-bold mb-3">Order Tracking</h5>
         <div id="order-list"></div>
+    </div>
+
+    <!-- KHATA PAGE -->
+    <div id="page-khata" class="page hidden animate__animated animate__fadeIn">
+        <h5 class="fw-bold mb-3">Khata Directory</h5>
+        
+        <div id="khata-stats" class="row g-2 mb-4">
+            <div class="col-4"><div class="stat-card"><h6>Total Sale</h6><div id="kh-total-sale" class="fw-bold text-dark">₹0</div></div></div>
+            <div class="col-4"><div class="stat-card"><h6>Recovered</h6><div id="kh-total-rec" class="fw-bold text-success">₹0</div></div></div>
+            <div class="col-4"><div class="stat-card"><h6>Pending</h6><div id="kh-total-pend" class="fw-bold text-danger">₹0</div></div></div>
+        </div>
+
+        <div id="khata-customer-list"></div>
     </div>
 
     <div id="page-usermgmt" class="page hidden animate__animated animate__fadeIn">
@@ -150,7 +177,7 @@
                 <button class="btn btn-info btn-sm w-100 mb-2 rounded-pill text-white" onclick="showPage('pending')">Pending Approvals</button>
                 <button class="btn btn-dark btn-sm w-100 mb-2 rounded-pill" onclick="showPage('usermgmt')">Manage Users</button>
                 <button class="btn btn-outline-dark btn-sm w-100 mb-2 rounded-pill" onclick="showPage('reports')">Performance Reports</button>
-                <button class="btn btn-warning btn-sm w-100 rounded-pill" onclick="openSettingsModal()">App Settings</button>
+                <button class="btn btn-warning btn-sm w-100 rounded-pill" onclick="openSettingsModal()">App Configuration & GST</button>
             </div>
         </div>
         
@@ -194,16 +221,32 @@
         <div class="s-card p-4">
             <h5 class="fw-bold mb-3">Checkout</h5>
             <div id="cart-items" class="mb-3"></div>
+            
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="text-muted small">Subtotal:</span>
+                <span class="small fw-bold">₹<span id="cart-subtotal">0</span></span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="text-muted small">GST (<span id="cart-gst-perc">0</span>%):</span>
+                <span class="small fw-bold">₹<span id="cart-gst">0</span></span>
+            </div>
             <div class="d-flex justify-content-between align-items-center mb-2">
                 <span class="text-muted small">Platform Fee:</span>
                 <span class="small fw-bold">₹<span id="cart-fee">0</span></span>
             </div>
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <span class="text-muted">Payable:</span>
+                <span class="text-muted">Payable Total:</span>
                 <h2 class="fw-bold text-success m-0">₹<span id="cart-total">0</span></h2>
             </div>
+
+            <!-- Agent Payment Mode Options -->
+            <div id="agent-payment-controls" class="hidden mb-3">
+                <label class="small fw-bold">Collected Amount from Customer:</label>
+                <input type="number" id="agent-collected-amt" class="form-control mb-2" placeholder="Amount Received (0 if Credit)">
+            </div>
+
             <button class="btn btn-success w-100 py-3 rounded-pill mb-2 fw-bold" onclick="placeOrder('UPI')">Place Order (UPI)</button>
-            <button class="btn btn-outline-secondary w-100 py-2 rounded-pill" onclick="placeOrder('COD')">Pay on Delivery</button>
+            <button class="btn btn-outline-secondary w-100 py-2 rounded-pill" onclick="placeOrder('COD')">Pay on Delivery / Credit</button>
         </div>
     </div>
 </div>
@@ -211,6 +254,7 @@
 <div id="bottom-nav" class="bottom-nav hidden">
     <div class="nav-item active" id="nav-shop" onclick="showPage('shop', this)"><i>🏠</i>Home</div>
     <div class="nav-item" onclick="showPage('orders', this)"><i>📦</i>Orders</div>
+    <div class="nav-item" id="nav-khata-tab" onclick="showPage('khata', this)"><i>📖</i>Khata</div>
     <div class="nav-item" id="nav-users-tab" onclick="showPage('usermgmt', this)"><i>👥</i>Users</div>
     <div class="nav-item" onclick="showPage('profile', this)"><i>👤</i>Profile</div>
 </div>
@@ -291,11 +335,13 @@
     <button class="btn btn-light w-100 rounded-pill" onclick="closeModals()">Close</button>
 </div>
 
-<div id="modal-settings" class="position-fixed top-50 start-50 translate-middle s-card p-4 hidden animate__animated animate__zoomIn" style="z-index:3000; width:92%; max-width:400px;">
+<div id="modal-settings" class="position-fixed top-50 start-50 translate-middle s-card p-4 hidden animate__animated animate__zoomIn" style="z-index:3000; width:92%; max-width:400px; max-height: 90vh; overflow-y: auto;">
     <button class="close-btn" onclick="closeModals()">✕</button>
     <h6 class="fw-bold mb-3">App Configuration</h6>
     <input type="text" id="set-upi" class="form-control mb-2" placeholder="UPI ID">
-    <input type="text" id="set-contact" class="form-control mb-2" placeholder="Contact No">
+    <input type="text" id="set-contact" class="form-control mb-2" placeholder="Admin WhatsApp Contact No">
+    <input type="text" id="set-gstin" class="form-control mb-2" placeholder="GSTIN / GST Reg No">
+    <input type="number" id="set-gst" class="form-control mb-2" placeholder="GST Tax %">
     <input type="text" id="set-bank-name" class="form-control mb-2" placeholder="Bank Name">
     <input type="text" id="set-ac-name" class="form-control mb-2" placeholder="A/C Name">
     <input type="text" id="set-ac-no" class="form-control mb-2" placeholder="A/C Number">
@@ -304,14 +350,25 @@
     <button class="btn btn-dark w-100 rounded-pill" onclick="saveSettings()">Save Configuration</button>
 </div>
 
+<!-- KHATA PAYMENT MODAL (ADMIN ONLY) -->
+<div id="modal-khata-pay" class="position-fixed top-50 start-50 translate-middle s-card p-4 hidden animate__animated animate__zoomIn" style="z-index:3000; width:92%; max-width:380px;">
+    <button class="close-btn" onclick="closeModals()">✕</button>
+    <h6 class="fw-bold mb-3">Update Payment Entry</h6>
+    <input type="hidden" id="kh-pay-phone">
+    <p class="small text-muted mb-2">Customer: <b id="kh-pay-name"></b></p>
+    <input type="number" id="kh-pay-amount" class="form-control mb-3" placeholder="Enter Amount Received (₹)">
+    <button class="btn btn-success w-100 rounded-pill" onclick="submitKhataPayment()">Record Payment</button>
+</div>
+
 <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbwNun9kDGSjZNFw3_wfigSatURJ4_zhiT15_y0hE4Xy6ljqFONGfrbwc3GhmeVJGcC3/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbwZgewwJg6llVF_al9jtahtLIc1bxKxg4JQRQo_aq_O80AoDSTmv_0M4hSQc-E4mPwQ/exec";
     let state = { 
         user: JSON.parse(localStorage.getItem('narayani_u_v4')), 
         cart: JSON.parse(localStorage.getItem('narayani_c_v4')) || [], 
         products: [], agents: [], cats: [], orders: [], allUsers: [], selectedCat: 'All',
         settings: {},
-        confirmCallback: null
+        confirmCallback: null,
+        selectedCustomerForAgent: null
     };
 
     async function call(action, data = {}) {
@@ -356,13 +413,15 @@
         document.getElementById('header-role').innerText = state.user.role;
         
         if(state.user.role === 'Admin') document.getElementById('admin-tools').classList.remove('hidden');
+        
         if(state.user.role === 'Agent') {
             document.getElementById('agent-tools').classList.remove('hidden');
-            document.getElementById('nav-shop').classList.add('hidden');
-            document.getElementById('nav-users-tab').classList.add('hidden');
-            showPage('orders');
+            document.getElementById('agent-customer-select-bar').classList.remove('hidden');
+            document.getElementById('agent-payment-controls').classList.remove('hidden');
+            showPage('shop');
         } else if(state.user.role === 'User') {
             document.getElementById('nav-users-tab').classList.add('hidden');
+            document.getElementById('nav-khata-tab').classList.add('hidden');
             showPage('shop');
         } else {
             showPage('shop');
@@ -379,7 +438,28 @@
             call('getSettings')
         ]);
         state.products = p.products; state.cats = p.categories; state.agents = a.agents; state.allUsers = u.users; state.settings = s;
+        
+        populateCustomerDropdown();
         renderCats(); renderProducts(); renderBankInfo(); updateAgentFilter(); renderAds();
+    }
+
+    function populateCustomerDropdown() {
+        const custs = state.allUsers.filter(u => u[2] === 'User');
+        const sel = document.getElementById('agent-target-customer');
+        if(sel) {
+            sel.innerHTML = '<option value="">-- Select Customer --</option>' + 
+                custs.map(c => `<option value="${c[0]}">${c[3]} (${c[4] || c[0]})</option>`).join('');
+        }
+    }
+
+    function onAgentTargetChange() {
+        const phone = document.getElementById('agent-target-customer').value;
+        if(phone) {
+            state.selectedCustomerForAgent = state.allUsers.find(u => u[0] == phone);
+            showToast("Ordering for " + state.selectedCustomerForAgent[3]);
+        } else {
+            state.selectedCustomerForAgent = null;
+        }
     }
 
     function renderAds() {
@@ -578,7 +658,34 @@
     async function completeOrder(orderId, payStatus) { await call('agentUpdate', { orderId, payStatus }); showToast("Order Delivered!"); loadOrders(); }
     
     async function placeOrder(method) { 
-        await call('addOrder', { phone: state.user.phone, cart: state.cart, total: state.cart.reduce((a,c)=>a+c.price,0), method, feePercent: state.settings.fee }); 
+        if(state.cart.length === 0) return showToast("Cart is empty");
+        
+        let targetPhone = state.user.phone;
+        let assignedAgent = '';
+        let paidAmt = 0;
+
+        if(state.user.role === 'Agent') {
+            if(!state.selectedCustomerForAgent) {
+                return showToast("Please select a customer first!");
+            }
+            targetPhone = state.selectedCustomerForAgent[0];
+            assignedAgent = state.user.phone;
+            paidAmt = parseFloat(document.getElementById('agent-collected-amt').value) || 0;
+        }
+
+        const subtotal = state.cart.reduce((a,c)=>a+c.price, 0);
+
+        await call('addOrder', { 
+            phone: targetPhone, 
+            cart: state.cart, 
+            total: subtotal, 
+            method, 
+            feePercent: state.settings.fee,
+            gstPercent: state.settings.gst,
+            assignedAgent: assignedAgent,
+            paidAmt: paidAmt
+        }); 
+
         state.cart = []; localStorage.removeItem('narayani_c_v4'); 
         updateCartUI(); showPage('orders'); showToast("Order Placed Successfully!");
     }
@@ -600,6 +707,7 @@
         if(el) { document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active')); el.classList.add('active'); }
         if(id === 'cart') renderCart();
         if(id === 'orders') loadOrders();
+        if(id === 'khata') loadKhata();
         if(id === 'usermgmt') toggleUserList('User');
         if(id === 'reports') generateReport();
         if(id === 'profile') {
@@ -627,9 +735,19 @@
             const itm = grouped[id]; subtotal += (itm.price * itm.qty);
             return `<div class="d-flex justify-content-between mb-2"><div class="small"><b>${itm.name}</b><br>₹${itm.price} x ${itm.qty}</div><div class="fw-bold">₹${itm.price * itm.qty}</div></div>`;
         }).join('');
-        const fee = (subtotal * (parseFloat(state.settings.fee) || 0)) / 100;
-        document.getElementById('cart-fee').innerText = fee.toFixed(2);
-        document.getElementById('cart-total').innerText = Math.round(subtotal + fee);
+
+        const gstPerc = parseFloat(state.settings.gst) || 0;
+        const feePerc = parseFloat(state.settings.fee) || 0;
+        
+        const gstAmt = (subtotal * gstPerc) / 100;
+        const feeAmt = (subtotal * feePerc) / 100;
+        const payable = Math.round(subtotal + gstAmt + feeAmt);
+
+        document.getElementById('cart-subtotal').innerText = subtotal;
+        document.getElementById('cart-gst-perc').innerText = gstPerc;
+        document.getElementById('cart-gst').innerText = gstAmt.toFixed(2);
+        document.getElementById('cart-fee').innerText = feeAmt.toFixed(2);
+        document.getElementById('cart-total').innerText = payable;
     }
 
     async function loadOrders() { const res = await call('getOrders', { phone: state.user.phone, role: state.user.role }); state.orders = res.orders; renderOrders(res.orders, 'order-list'); }
@@ -651,14 +769,24 @@
         document.getElementById('modal-detail').classList.remove('hidden');
     }
 
-    function shareWhatsApp(phone, orderId, total, itemsJson) {
+    // WHATSAPP BILL SENDING (CUSTOMER & ADMIN)
+    function shareWhatsAppBill(custPhone, orderId, subtotal, gstAmt, feeAmt, grandTotal, itemsJson, recipientRole) {
         try {
             const items = JSON.parse(itemsJson);
             const grouped = items.reduce((acc, curr) => { acc[curr.name] = (acc[curr.name] || 0) + 1; return acc; }, {});
             const itemLines = Object.keys(grouped).map(name => `- ${name} (x${grouped[name]})`).join('%0A');
-            const cleanPhone = phone.toString().replace(/\D/g, ''); 
-            const text = `*NARAYANI SALES - BILL*%0A%0A*Order ID:* %23${orderId}%0A*Total Amount:* ₹${total}%0A%0A*Items:*%0A${itemLines}%0A%0AYour order is confirmed. Thank you!`;
-            window.open(`https://wa.me/91${cleanPhone}?text=${text}`, '_blank');
+            
+            const gstinText = state.settings.gstin ? `%0A*GSTIN:* ${state.settings.gstin}` : '';
+            
+            const billMsg = `*NARAYANI SALES - TAX INVOICE*${gstinText}%0A%0A*Order ID:* %23${orderId}%0A*Subtotal:* ₹${subtotal}%0A*GST Tax:* ₹${gstAmt}%0A*Platform Fee:* ₹${feeAmt}%0A*Grand Total:* ₹${grandTotal}%0A%0A*Items:*%0A${itemLines}%0A%0AThank you for doing business with us!`;
+
+            let targetNumber = custPhone;
+            if (recipientRole === 'Admin') {
+                targetNumber = state.settings.contact || custPhone;
+            }
+
+            const cleanPhone = targetNumber.toString().replace(/\D/g, ''); 
+            window.open(`https://wa.me/91${cleanPhone}?text=${billMsg}`, '_blank');
         } catch(e) { console.error(e); showToast("WhatsApp Error"); }
     }
 
@@ -681,29 +809,31 @@
             const upiUrl = `upi://pay?pa=${state.settings.upi}&pn=Narayani%20Sales&am=${o[3]}&cu=INR`;
             const qrImg = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(upiUrl)}`;
 
-            // o[11] Cust Name, o[12] Shop, o[13] Addr, o[14] Phone, o[15] Loc, o[16] AgentName, o[17] AgentPhone
+            // o[13] Cust Name, o[14] Shop, o[15] Addr, o[16] Phone, o[17] Loc, o[18] AgentName, o[19] AgentPhone
             return `
             <div class="s-card p-3 mb-3 animate__animated animate__fadeIn">
                 <div class="d-flex justify-content-between mb-2"><span class="badge bg-light text-dark small">${new Date(o[6]).toLocaleDateString()}</span><span class="badge ${o[5]=='Delivered'?'bg-success':'bg-warning text-dark'}">${o[5]}</span></div>
                 
                 <div class="bg-light p-2 rounded mb-2 small">
                     <div class="fw-bold border-bottom mb-1 pb-1">Customer Details:</div>
-                    <b>Name:</b> ${o[11]}<br>
-                    <b>Shop:</b> ${o[12]}<br>
-                    <b>Address:</b> ${o[13]}<br>
-                    <b>Phone:</b> ${o[14]}<br>
+                    <b>Name:</b> ${o[13]}<br>
+                    <b>Shop:</b> ${o[14]}<br>
+                    <b>Address:</b> ${o[15]}<br>
+                    <b>Phone:</b> ${o[16]}<br>
                     <div class="mt-2 d-flex gap-2">
-                        <button class="btn btn-sm btn-outline-dark rounded-pill flex-fill" style="font-size:0.65rem" onclick="copyToClipboard('${o[15]}')">📋 Copy Loc</button>
-                        <button class="btn btn-sm btn-dark rounded-pill flex-fill" style="font-size:0.65rem" onclick="window.open('${o[15]}', '_blank')">📍 Open Loc</button>
+                        <button class="btn btn-sm btn-outline-dark rounded-pill flex-fill" style="font-size:0.65rem" onclick="copyToClipboard('${o[17]}')">📋 Copy Loc</button>
+                        <button class="btn btn-sm btn-dark rounded-pill flex-fill" style="font-size:0.65rem" onclick="window.open('${o[17]}', '_blank')">📍 Open Loc</button>
                     </div>
                 </div>
 
                 <div class="bg-light p-2 rounded mb-2 small">
-                    <b>Assigned Agent:</b> ${o[16]} ${o[17] ? '| ' + o[17] : ''}
+                    <b>Assigned Agent:</b> ${o[18]} ${o[19] ? '| ' + o[19] : ''}
                 </div>
 
                 <table class="bill-table"><thead><tr><th>Item</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead><tbody>${billRows}</tbody></table>
-                <div class="d-flex justify-content-between small text-muted mt-2"><span>Platform Fee</span><span>₹${o[9]||0}</span></div>
+                <div class="d-flex justify-content-between small text-muted mt-2"><span>Subtotal</span><span>₹${o[10]||0}</span></div>
+                <div class="d-flex justify-content-between small text-muted"><span>GST Tax</span><span>₹${o[11]||0}</span></div>
+                <div class="d-flex justify-content-between small text-muted"><span>Platform Fee</span><span>₹${o[9]||0}</span></div>
                 <div class="d-flex justify-content-between fw-bold text-success border-top pt-2"><span>Payable</span><span>₹${Math.round(o[3])}</span></div>
                 
                 <div class="text-center mt-3 p-2 bg-light rounded">
@@ -711,7 +841,11 @@
                     <div class="small mt-1 text-muted">Scan to Pay ₹${Math.round(o[3])}</div>
                 </div>
 
-                ${state.user.role !== 'User' ? `<button onclick="shareWhatsApp('${o[14]}', '${o[0]}', '${o[3]}', '${JSON.stringify(cartItems).replace(/'/g, "\\'")}')" class="btn btn-sm btn-success w-100 rounded-pill mt-3">Send WhatsApp Bill</button>` : ''}
+                ${state.user.role !== 'User' ? `
+                <div class="d-flex gap-2 mt-3">
+                    <button onclick="shareWhatsAppBill('${o[16]}', '${o[0]}', '${o[10]}', '${o[11]}', '${o[9]}', '${o[3]}', '${JSON.stringify(cartItems).replace(/'/g, "\\'")}', 'Customer')" class="btn btn-sm btn-success rounded-pill flex-fill" style="font-size:0.75rem">📲 Bill to Cust</button>
+                    <button onclick="shareWhatsAppBill('${o[16]}', '${o[0]}', '${o[10]}', '${o[11]}', '${o[9]}', '${o[3]}', '${JSON.stringify(cartItems).replace(/'/g, "\\'")}', 'Admin')" class="btn btn-sm btn-dark rounded-pill flex-fill" style="font-size:0.75rem">📲 Bill to Admin</button>
+                </div>` : ''}
                 
                 <div class="mt-3 d-flex justify-content-between gap-2">
                     ${state.user.role=='Admin' ? `<button class="btn btn-sm text-danger" onclick="deleteOrder('${o[0]}')">Delete</button>` : '<span></span>'}
@@ -720,6 +854,56 @@
                 </div>
             </div>`;
         }).join('');
+    }
+
+    // KHATA FUNCTIONS
+    async function loadKhata() {
+        const res = await call('getKhata');
+        if(res.success) {
+            document.getElementById('kh-total-sale').innerText = '₹' + Math.round(res.summary.totalSale);
+            document.getElementById('kh-total-rec').innerText = '₹' + Math.round(res.summary.totalRecovery);
+            document.getElementById('kh-total-pend').innerText = '₹' + Math.round(res.summary.totalPending);
+            
+            document.getElementById('khata-customer-list').innerHTML = res.customers.map(c => `
+                <div class="s-card p-3 mb-2">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <h6 class="fw-bold m-0">${c.name}</h6>
+                        <span class="badge ${c.pendingAmount > 0 ? 'bg-danger' : 'bg-success'}">${c.pendingAmount > 0 ? 'Pending' : 'Clear'}</span>
+                    </div>
+                    <div class="small text-muted mb-2">${c.shop} (${c.phone})</div>
+                    <div class="row g-1 text-center bg-light p-2 rounded small">
+                        <div class="col-4"><b>Billed:</b><br>₹${Math.round(c.totalBilling)}</div>
+                        <div class="col-4 text-success"><b>Paid:</b><br>₹${Math.round(c.paidAmount)}</div>
+                        <div class="col-4 text-danger"><b>Due:</b><br>₹${Math.round(c.pendingAmount)}</div>
+                    </div>
+                    ${state.user.role === 'Admin' ? `
+                        <button class="btn btn-sm btn-outline-dark rounded-pill w-100 mt-2" onclick="openKhataPayModal('${c.phone}', '${c.name}')">Record Payment Received</button>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+    }
+
+    function openKhataPayModal(phone, name) {
+        document.getElementById('kh-pay-phone').value = phone;
+        document.getElementById('kh-pay-name').innerText = name;
+        document.getElementById('kh-pay-amount').value = '';
+        document.getElementById('modal-khata-pay').classList.remove('hidden');
+    }
+
+    async function submitKhataPayment() {
+        const custPhone = document.getElementById('kh-pay-phone').value;
+        const addAmount = document.getElementById('kh-pay-amount').value;
+        if(!addAmount || addAmount <= 0) return showToast("Enter valid amount");
+
+        const res = await call('updateKhataPayment', { role: state.user.role, custPhone, addAmount });
+        if(res.success) {
+            showToast("Payment Recorded!");
+            closeModals();
+            loadKhata();
+        } else {
+            showToast(res.msg || "Error");
+        }
     }
 
     function generateReport() {
@@ -789,12 +973,31 @@
 
     function openSettingsModal() {
         const s = state.settings;
-        document.getElementById('set-upi').value = s.upi; document.getElementById('set-contact').value = s.contact; document.getElementById('set-bank-name').value = s.bank.name; document.getElementById('set-ac-name').value = s.bank.acName; document.getElementById('set-ac-no').value = s.bank.acNo; document.getElementById('set-ifsc').value = s.bank.ifsc; document.getElementById('set-fee').value = s.fee;
+        document.getElementById('set-upi').value = s.upi; 
+        document.getElementById('set-contact').value = s.contact; 
+        document.getElementById('set-bank-name').value = s.bank.name; 
+        document.getElementById('set-ac-name').value = s.bank.acName; 
+        document.getElementById('set-ac-no').value = s.bank.acNo; 
+        document.getElementById('set-ifsc').value = s.bank.ifsc; 
+        document.getElementById('set-fee').value = s.fee;
+        document.getElementById('set-gst').value = s.gst || 0;
+        document.getElementById('set-gstin').value = s.gstin || '';
         document.getElementById('modal-settings').classList.remove('hidden');
     }
 
     async function saveSettings() {
-        const data = { role: 'Admin', upi: document.getElementById('set-upi').value, contact: document.getElementById('set-contact').value, bankName: document.getElementById('set-bank-name').value, acName: document.getElementById('set-ac-name').value, acNo: document.getElementById('set-ac-no').value, ifsc: document.getElementById('set-ifsc').value, fee: document.getElementById('set-fee').value };
+        const data = { 
+            role: 'Admin', 
+            upi: document.getElementById('set-upi').value, 
+            contact: document.getElementById('set-contact').value, 
+            bankName: document.getElementById('set-bank-name').value, 
+            acName: document.getElementById('set-ac-name').value, 
+            acNo: document.getElementById('set-ac-no').value, 
+            ifsc: document.getElementById('set-ifsc').value, 
+            fee: document.getElementById('set-fee').value,
+            gst: document.getElementById('set-gst').value,
+            gstin: document.getElementById('set-gstin').value
+        };
         await call('updateSettings', data); showToast("Settings Updated"); closeModals(); loadData();
     }
     
@@ -825,22 +1028,16 @@
         }
     }
 </script>
-</body>
-</html>
-
-
-
 
 <div id="narayani-preloader-v3">
     <style>
-        /* Isolation: All styles locked to this specific ID */
         #narayani-preloader-v3 {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: #08080a; /* Professional Deep Matte Black */
+            background: #08080a;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -851,7 +1048,6 @@
             transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* 4D Geometric Animation */
         .n-loader-visual {
             width: 100px;
             height: 100px;
@@ -872,11 +1068,10 @@
             width: 100%;
             height: 100%;
             background: rgba(212, 175, 55, 0.05);
-            border: 1.5px solid #d4af37; /* Gold Branding */
+            border: 1.5px solid #d4af37;
             box-shadow: inset 0 0 15px rgba(212, 175, 55, 0.2), 0 0 20px rgba(212, 175, 55, 0.1);
         }
 
-        /* 3D Face Positioning */
         .n-face-1 { transform: rotateY(0deg) translateZ(50px); }
         .n-face-2 { transform: rotateY(90deg) translateZ(50px); }
         .n-face-3 { transform: rotateY(180deg) translateZ(50px); }
@@ -884,7 +1079,6 @@
         .n-face-5 { transform: rotateX(90deg) translateZ(50px); }
         .n-face-6 { transform: rotateX(-90deg) translateZ(50px); }
 
-        /* Typography */
         .n-brand-title {
             color: #ffffff;
             font-size: 28px;
@@ -905,7 +1099,6 @@
             animation: n-fadeInUp 0.8s forwards 0.5s;
         }
 
-        /* Bottom Attribution */
         .n-powered {
             position: absolute;
             bottom: 40px;
@@ -916,11 +1109,10 @@
         }
 
         .n-powered b {
-            color: #00d2ff; /* Tech Blue for NPCH India */
+            color: #00d2ff;
             font-weight: 600;
         }
 
-        /* Micro-Animations */
         @keyframes n-rotate4d {
             0% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale3d(1,1,1); }
             50% { transform: rotateX(180deg) rotateY(360deg) rotateZ(90deg) scale3d(1.2, 1.2, 1.2); }
@@ -932,13 +1124,11 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Class to remove loader */
         .n-preloader-hidden {
             opacity: 0 !important;
             pointer-events: none !important;
         }
 
-        /* Stop scrolling when loader is active */
         body.n-no-scroll {
             overflow: hidden !important;
         }
@@ -963,19 +1153,12 @@
     </div>
 
     <script>
-        // Disable scrolling immediately
         document.body.classList.add('n-no-scroll');
-
-        // Remove loader after the site loads + 10-second delay
         window.addEventListener('load', function() {
             const preloader = document.getElementById('narayani-preloader-v3');
-            
-            // Timer set to 10000ms (10 seconds)
             setTimeout(() => {
                 preloader.classList.add('n-preloader-hidden');
                 document.body.classList.remove('n-no-scroll');
-                
-                // Final cleanup from DOM after fade animation
                 setTimeout(() => {
                     preloader.style.display = 'none';
                 }, 600);
@@ -983,3 +1166,5 @@
         });
     </script>
 </div>
+</body>
+</html>
