@@ -428,7 +428,7 @@
 </div>
 
 <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbzyfD16Cms3xIhFQjebMbkMOdxe3bPQ_egzdbWstSnO7fcSfJUMy8LG7w6_5qi45QpTcw/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbwIYmEPEgmIbvZeUjQ7g5JXmiYvrFokQqxHbodcZZ-KG2fBJoey7LYp4rr0FQ3QVgPFvA/exec";
     let state = { 
         user: JSON.parse(localStorage.getItem('narayani_u_v4')), 
         cart: JSON.parse(localStorage.getItem('narayani_c_v4')) || [], 
@@ -467,8 +467,8 @@
     }
 
     async function handleLogin() {
-        const phone = document.getElementById('l-phone').value;
-        const pass = document.getElementById('l-pass').value;
+        const phone = document.getElementById('l-phone').value.trim();
+        const pass = document.getElementById('l-pass').value.trim();
         if(!phone || !pass) return showToast("Please fill in login details");
 
         const btn = document.getElementById('btn-login-submit');
@@ -483,16 +483,16 @@
             const res = await call('login', { phone, password: pass });
             progressFill.style.width = '80%';
 
-            if(res.success) {
+            if(res && res.success) {
                 progressFill.style.width = '100%';
                 localStorage.setItem('narayani_u_v4', JSON.stringify(res));
                 state.user = res;
-                setTimeout(() => location.reload(), 300);
+                setTimeout(() => location.reload(), 400);
             } else {
                 btn.disabled = false;
                 progressWrap.classList.add('hidden');
                 progressFill.style.width = '0%';
-                showToast("Invalid Credentials");
+                showToast(res && res.msg ? res.msg : "Invalid Credentials");
             }
         } catch(e) {
             btn.disabled = false;
