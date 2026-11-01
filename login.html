@@ -8,21 +8,40 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <style>
-        :root { --accent: #00b894; --grad: linear-gradient(135deg, #00b894, #00cec9); --glass: rgba(255, 255, 255, 0.85); }
-        body { font-family: 'Outfit', sans-serif; background: #f0f3f7; color: #2d3436; padding-bottom: 120px; overflow-x: hidden; }
-        .s-card { background: white; border-radius: 24px; border: 1px solid rgba(255,255,255,0.3); box-shadow: 0 10px 30px rgba(0,0,0,0.04); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); overflow: hidden; }
-        .s-card:hover { transform: translateY(-5px) scale(1.01); box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
+        :root { 
+            --accent: #00b894; 
+            --grad: linear-gradient(135deg, #00b894, #00cec9); 
+            --glass: rgba(255, 255, 255, 0.88); 
+        }
+        body { 
+            font-family: 'Outfit', sans-serif; 
+            background: #f0f3f7; 
+            color: #2d3436; 
+            padding-bottom: 120px; 
+            overflow-x: hidden; 
+        }
+        .s-card { 
+            background: white; 
+            border-radius: 20px; 
+            border: 1px solid rgba(255,255,255,0.4); 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.04); 
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); 
+            overflow: hidden; 
+        }
+        .s-card:hover { 
+            transform: translateY(-4px); 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.08); 
+        }
         
         .ad-container { display: flex; overflow-x: auto; gap: 15px; padding: 10px 0; scrollbar-width: none; scroll-behavior: smooth; }
         .ad-container::-webkit-scrollbar { display: none; }
         .ad-card { min-width: 280px; height: 140px; background: #1e272e; border-radius: 20px; position: relative; overflow: hidden; color: white; display: flex; align-items: center; justify-content: space-between; padding: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); flex-shrink: 0; }
         .ad-card::after { content: 'HOT DEAL'; position: absolute; top: 10px; right: -25px; background: #ff7675; padding: 2px 30px; transform: rotate(45deg); font-size: 0.6rem; font-weight: bold; }
         
-        /* 3D Featured Category Animation */
         .brand-store-section { perspective: 1000px; margin-bottom: 30px; }
         .brand-card-wrap { transform-style: preserve-3d; animation: float3d 3s ease-in-out infinite; }
         .brand-banner { background: var(--grad); border-radius: 20px; height: 100px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.5rem; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 15px 35px rgba(0,184,148,0.3); border: 2px solid white; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
-        @keyframes float3d { 0%, 100% { transform: rotateY(-10deg) rotateX(5deg); } 50% { transform: rotateY(10deg) rotateX(-5deg); } }
+        @keyframes float3d { 0%, 100% { transform: rotateY(-8deg) rotateX(4deg); } 50% { transform: rotateY(8deg) rotateX(-4deg); } }
 
         .blink-header { background: var(--glass); backdrop-filter: blur(15px); padding: 15px 20px; position: sticky; top:0; z-index:1000; border-bottom: 1px solid #e1e8ed; }
         .cat-scroll { display: flex; overflow-x: auto; gap: 12px; padding: 10px 0; scrollbar-width: none; }
@@ -38,7 +57,7 @@
         .search-bar { background: #fff; border-radius: 50px; padding: 10px 20px; border: 1px solid #eee; margin-bottom: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.03); }
         .hidden { display: none !important; }
         .category-header { background: #e9ecef; padding: 8px 15px; border-radius: 12px; margin: 20px 0 10px 0; font-weight: 700; color: #495057; font-size: 0.9rem; text-transform: uppercase; }
-        .stat-card { background: white; padding: 15px; border-radius: 20px; text-align: center; border-bottom: 4px solid var(--accent); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .stat-card { background: white; padding: 12px; border-radius: 16px; text-align: center; border-bottom: 4px solid var(--accent); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
         .bill-table { width: 100%; font-size: 0.75rem; margin-top: 10px; border-top: 1px solid #eee; }
         .bill-table th { color: #636e72; padding: 5px 2px; }
         .bill-table td { padding: 4px 2px; border-bottom: 1px solid #f9f9f9; }
@@ -48,9 +67,29 @@
         .confirm-box { background: white; border-radius: 25px; padding: 25px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.2); }
         .close-btn { position: absolute; top: 15px; right: 15px; background: #f1f2f6; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; font-weight: bold; }
         .margin-label { font-size: 0.65rem; background: #e3faf3; color: #00b894; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-top: 4px; }
-        
-        /* Agent Mode Selector */
         .agent-target-box { background: #ffeaa7; border-radius: 15px; padding: 10px 15px; border: 1px solid #fdcb6e; margin-bottom: 15px; }
+
+        .progress-bar-wrap {
+            height: 4px;
+            width: 100%;
+            background: #dfe6e9;
+            overflow: hidden;
+            border-radius: 2px;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--accent);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .user-id-badge {
+            background: #6c5ce7;
+            color: white;
+            font-size: 0.7rem;
+            padding: 3px 10px;
+            border-radius: 50px;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
@@ -69,7 +108,10 @@
 
 <div class="blink-header d-flex justify-content-between align-items-center">
     <div>
-        <div class="fw-bold fs-5" id="header-user-name">Guest</div>
+        <div class="d-flex align-items-center gap-2">
+            <span class="fw-bold fs-5" id="header-user-name">Guest</span>
+            <span id="header-user-id" class="user-id-badge hidden">NS100000</span>
+        </div>
         <div class="small text-muted" id="header-role">Welcome Back</div>
     </div>
     <div id="cart-pill" class="btn btn-dark rounded-pill px-4 py-2 animate__animated animate__bounceIn hidden" onclick="showPage('cart')">
@@ -78,7 +120,6 @@
 </div>
 
 <div class="container mt-3">
-    <!-- Agent Customer Selection Bar -->
     <div id="agent-customer-select-bar" class="agent-target-box hidden animate__animated animate__fadeIn">
         <div class="d-flex justify-content-between align-items-center">
             <div class="small fw-bold text-dark">👤 Billing For Customer:</div>
@@ -95,10 +136,20 @@
 
     <div id="page-login" class="animate__animated animate__fadeIn">
         <div class="s-card p-4 mx-auto mt-5" style="max-width: 400px; border-top: 5px solid var(--accent);">
-            <h3 class="fw-bold mb-4">Narayani <span style="color:var(--accent)">Sales</span></h3>
+            <h3 class="fw-bold mb-1">Narayani <span style="color:var(--accent)">Sales</span></h3>
+            <p class="small text-muted mb-4">Your Smart Business Application</p>
+            
             <input type="text" id="l-phone" class="form-control mb-3 py-2" placeholder="Phone Number">
             <input type="password" id="l-pass" class="form-control mb-4 py-2" placeholder="Password">
-            <button class="btn btn-dark w-100 py-2 rounded-pill shadow" onclick="handleLogin()">Sign In</button>
+            
+            <button id="btn-login-submit" class="btn btn-dark w-100 py-2 rounded-pill shadow" onclick="handleLogin()">Sign In</button>
+
+            <div id="login-progress-wrap" class="mt-3 hidden">
+                <div class="small text-muted mb-1 text-center">Logging in...</div>
+                <div class="progress-bar-wrap">
+                    <div id="login-progress-fill" class="progress-bar-fill"></div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -117,7 +168,6 @@
         <div id="order-list"></div>
     </div>
 
-    <!-- KHATA PAGE -->
     <div id="page-khata" class="page hidden animate__animated animate__fadeIn">
         <h5 class="fw-bold mb-3">Khata Directory</h5>
         
@@ -147,6 +197,7 @@
             <div class="text-center">
                 <div class="mx-auto bg-light rounded-circle mb-2" style="width:80px; height:80px; display:flex; align-items:center; justify-content:center; font-size:2rem">👤</div>
                 <h5 class="fw-bold mb-0" id="prof-name">Name</h5>
+                <span class="user-id-badge mb-2 d-inline-block" id="prof-userid-badge">NS000000</span>
                 <p class="small text-muted mb-3" id="prof-sub"></p>
             </div>
             <hr>
@@ -154,20 +205,24 @@
                 <p><b>Shop:</b> <span id="prof-shop"></span></p>
                 <p><b>Address:</b> <span id="prof-addr"></span></p>
                 <p><b>Phone:</b> <span id="prof-phone"></span></p>
+                <p><b>Location URL:</b> <span id="prof-loc"></span></p>
             </div>
             <button class="btn btn-outline-danger btn-sm w-100 rounded-pill mt-2" onclick="logout()">Sign Out</button>
+        </div>
+
+        <div class="s-card p-4 mb-3">
+            <h6 class="fw-bold mb-3">Edit Profile & Account Settings</h6>
+            <input type="text" id="edit-p-name" class="form-control mb-2" placeholder="Full Name">
+            <input type="text" id="edit-p-shop" class="form-control mb-2" placeholder="Shop Name">
+            <input type="text" id="edit-p-addr" class="form-control mb-2" placeholder="Address">
+            <input type="text" id="edit-p-loc" class="form-control mb-2" placeholder="Google Maps Location URL">
+            <input type="password" id="edit-p-pass" class="form-control mb-3" placeholder="New Password (optional)">
+            <button class="btn btn-dark btn-sm w-100 rounded-pill" onclick="saveSelfProfile()">Save Profile Changes</button>
         </div>
 
         <div id="bank-details-box" class="s-card p-4 mb-3 hidden">
             <h6 class="fw-bold mb-3">Company Bank Details</h6>
             <div class="small" id="bank-info-display"></div>
-        </div>
-
-        <div class="s-card p-4 mb-3">
-            <h6 class="fw-bold mb-3">Change Password</h6>
-            <input type="password" id="old-pass" class="form-control mb-2" placeholder="Current Password">
-            <input type="password" id="new-pass" class="form-control mb-3" placeholder="New Password">
-            <button class="btn btn-dark btn-sm w-100 rounded-pill" onclick="changePass()">Update Password</button>
         </div>
 
         <div id="admin-tools" class="hidden">
@@ -227,7 +282,7 @@
                 <span class="small fw-bold">₹<span id="cart-subtotal">0</span></span>
             </div>
             <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="text-muted small">GST (<span id="cart-gst-perc">0</span>%):</span>
+                <span class="text-muted small">Calculated Total GST:</span>
                 <span class="small fw-bold">₹<span id="cart-gst">0</span></span>
             </div>
             <div class="d-flex justify-content-between align-items-center mb-2">
@@ -239,7 +294,6 @@
                 <h2 class="fw-bold text-success m-0">₹<span id="cart-total">0</span></h2>
             </div>
 
-            <!-- Agent Payment Mode Options -->
             <div id="agent-payment-controls" class="hidden mb-3">
                 <label class="small fw-bold">Collected Amount from Customer:</label>
                 <input type="number" id="agent-collected-amt" class="form-control mb-2" placeholder="Amount Received (0 if Credit)">
@@ -270,10 +324,17 @@
     <input type="hidden" id="adm-p-id">
     <input type="text" id="adm-p-name" class="form-control mb-2" placeholder="Product Name">
     <textarea id="adm-p-desc" class="form-control mb-2" placeholder="Product Description"></textarea>
+    
     <div class="row g-2 mb-2">
         <div class="col-6"><input type="number" id="adm-p-price" class="form-control" placeholder="Our Price" onkeyup="calcMargin()"></div>
         <div class="col-6"><input type="number" id="adm-p-saleprice" class="form-control" placeholder="MRP Price" onkeyup="calcMargin()"></div>
     </div>
+    
+    <div class="mb-2">
+        <label class="small fw-bold">Custom GST Rate % (Leave blank for default)</label>
+        <input type="number" id="adm-p-gst" class="form-control form-control-sm" placeholder="e.g. 18 (Optional)">
+    </div>
+
     <div class="small text-muted mb-2 ps-1">Margin: ₹<span id="adm-p-margin">0</span> (<span id="adm-p-margin-perc">0</span>%)</div>
     
     <label class="small fw-bold">Select Categories</label>
@@ -335,13 +396,20 @@
     <button class="btn btn-light w-100 rounded-pill" onclick="closeModals()">Close</button>
 </div>
 
+<div id="modal-cust-bills" class="position-fixed top-50 start-50 translate-middle s-card p-4 hidden animate__animated animate__zoomIn" style="z-index:3200; width:92%; max-width:420px; max-height: 85vh; overflow-y: auto;">
+    <button class="close-btn" onclick="closeModals()">✕</button>
+    <h6 class="fw-bold mb-1" id="cust-bills-title">Customer Bills</h6>
+    <div class="small text-muted mb-3" id="cust-bills-subtitle">Filter</div>
+    <div id="cust-bills-container"></div>
+</div>
+
 <div id="modal-settings" class="position-fixed top-50 start-50 translate-middle s-card p-4 hidden animate__animated animate__zoomIn" style="z-index:3000; width:92%; max-width:400px; max-height: 90vh; overflow-y: auto;">
     <button class="close-btn" onclick="closeModals()">✕</button>
     <h6 class="fw-bold mb-3">App Configuration</h6>
     <input type="text" id="set-upi" class="form-control mb-2" placeholder="UPI ID">
     <input type="text" id="set-contact" class="form-control mb-2" placeholder="Admin WhatsApp Contact No">
     <input type="text" id="set-gstin" class="form-control mb-2" placeholder="GSTIN / GST Reg No">
-    <input type="number" id="set-gst" class="form-control mb-2" placeholder="GST Tax %">
+    <input type="number" id="set-gst" class="form-control mb-2" placeholder="Default GST Tax %">
     <input type="text" id="set-bank-name" class="form-control mb-2" placeholder="Bank Name">
     <input type="text" id="set-ac-name" class="form-control mb-2" placeholder="A/C Name">
     <input type="text" id="set-ac-no" class="form-control mb-2" placeholder="A/C Number">
@@ -350,7 +418,6 @@
     <button class="btn btn-dark w-100 rounded-pill" onclick="saveSettings()">Save Configuration</button>
 </div>
 
-<!-- KHATA PAYMENT MODAL (ADMIN ONLY) -->
 <div id="modal-khata-pay" class="position-fixed top-50 start-50 translate-middle s-card p-4 hidden animate__animated animate__zoomIn" style="z-index:3000; width:92%; max-width:380px;">
     <button class="close-btn" onclick="closeModals()">✕</button>
     <h6 class="fw-bold mb-3">Update Payment Entry</h6>
@@ -361,7 +428,7 @@
 </div>
 
 <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbwZgewwJg6llVF_al9jtahtLIc1bxKxg4JQRQo_aq_O80AoDSTmv_0M4hSQc-E4mPwQ/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbwIYmEPEgmIbvZeUjQ7g5JXmiYvrFokQqxHbodcZZ-KG2fBJoey7LYp4rr0FQ3QVgPFvA/exec";
     let state = { 
         user: JSON.parse(localStorage.getItem('narayani_u_v4')), 
         cart: JSON.parse(localStorage.getItem('narayani_c_v4')) || [], 
@@ -400,9 +467,39 @@
     }
 
     async function handleLogin() {
-        const res = await call('login', { phone: document.getElementById('l-phone').value, password: document.getElementById('l-pass').value });
-        if(res.success) { localStorage.setItem('narayani_u_v4', JSON.stringify(res)); state.user = res; location.reload(); }
-        else showToast("Invalid login.");
+        const phone = document.getElementById('l-phone').value.trim();
+        const pass = document.getElementById('l-pass').value.trim();
+        if(!phone || !pass) return showToast("Please fill in login details");
+
+        const btn = document.getElementById('btn-login-submit');
+        const progressWrap = document.getElementById('login-progress-wrap');
+        const progressFill = document.getElementById('login-progress-fill');
+
+        btn.disabled = true;
+        progressWrap.classList.remove('hidden');
+        progressFill.style.width = '30%';
+
+        try {
+            const res = await call('login', { phone, password: pass });
+            progressFill.style.width = '80%';
+
+            if(res && res.success) {
+                progressFill.style.width = '100%';
+                localStorage.setItem('narayani_u_v4', JSON.stringify(res));
+                state.user = res;
+                setTimeout(() => location.reload(), 400);
+            } else {
+                btn.disabled = false;
+                progressWrap.classList.add('hidden');
+                progressFill.style.width = '0%';
+                showToast(res && res.msg ? res.msg : "Invalid Credentials");
+            }
+        } catch(e) {
+            btn.disabled = false;
+            progressWrap.classList.add('hidden');
+            progressFill.style.width = '0%';
+            showToast("Login Request Failed");
+        }
     }
 
     async function startSession() {
@@ -412,6 +509,12 @@
         document.getElementById('header-user-name').innerText = state.user.name;
         document.getElementById('header-role').innerText = state.user.role;
         
+        if(state.user.userId) {
+            const uIdEl = document.getElementById('header-user-id');
+            uIdEl.innerText = state.user.userId;
+            uIdEl.classList.remove('hidden');
+        }
+
         if(state.user.role === 'Admin') document.getElementById('admin-tools').classList.remove('hidden');
         
         if(state.user.role === 'Agent') {
@@ -433,8 +536,8 @@
     async function loadData() {
         const [p, a, u, s] = await Promise.all([
             call('getProducts', {role: state.user.role, allowedCats: state.user.allowedCats}), 
-            call('getAgents'), 
-            call('allUsers'),
+            call('getAgents', {role: state.user.role}), 
+            call('allUsers', {role: state.user.role}),
             call('getSettings')
         ]);
         state.products = p.products; state.cats = p.categories; state.agents = a.agents; state.allUsers = u.users; state.settings = s;
@@ -448,7 +551,7 @@
         const sel = document.getElementById('agent-target-customer');
         if(sel) {
             sel.innerHTML = '<option value="">-- Select Customer --</option>' + 
-                custs.map(c => `<option value="${c[0]}">${c[3]} (${c[4] || c[0]})</option>`).join('');
+                custs.map(c => `<option value="${c[0]}">${c[3]} (${c[4] || c[0]}) - ${c[8]||''}</option>`).join('');
         }
     }
 
@@ -544,6 +647,7 @@
                 const isOut = p[8] === 'Out of Stock';
                 const mRs = Math.round(p[6] || 0);
                 const mP = p[5] > 0 ? ((p[6]/p[5])*100).toFixed(1) : 0;
+                const pGst = (p[12] !== undefined && p[12] !== '') ? p[12] : (state.settings.gst || 0);
                 return `
                 <div class="col-6 col-md-4">
                     <div class="s-card p-2 text-center h-100 position-relative ${isOut?'out-of-stock':''}">
@@ -551,7 +655,7 @@
                         <img src="${p[4] || 'https://via.placeholder.com/100'}" style="height:100px; object-fit:contain; border-radius:15px" onclick="showProductDetail('${p[0]}')">
                         <div class="small fw-bold mt-2 text-truncate" onclick="showProductDetail('${p[0]}')">${p[2]}</div>
                         <div class="small text-muted">MRP: ₹${p[5] || p[3]}</div>
-                        <div class="text-success small fw-bold">₹${p[3]}</div>
+                        <div class="text-success small fw-bold">₹${p[3]} <span class="text-muted" style="font-size:0.65rem">(GST: ${pGst}%)</span></div>
                         <div class="margin-label">Margin: ₹${mRs} (${mP}%)</div>
                         ${!isOut ? (inCart > 0 ? `
                             <div class="qty-box">
@@ -598,6 +702,7 @@
             desc: document.getElementById('adm-p-desc').value,
             price: document.getElementById('adm-p-price').value,
             salePrice: document.getElementById('adm-p-saleprice').value,
+            productGST: document.getElementById('adm-p-gst').value,
             category: selectedCats.join(', '),
             img: document.getElementById('adm-p-img').value,
             status: document.getElementById('adm-p-status').value,
@@ -625,6 +730,7 @@
             document.getElementById('adm-p-desc').value = p[9] || "";
             document.getElementById('adm-p-price').value = p[3]; 
             document.getElementById('adm-p-saleprice').value = p[5];
+            document.getElementById('adm-p-gst').value = p[12] !== undefined ? p[12] : '';
             document.getElementById('adm-p-img').value = p[4]; 
             document.getElementById('adm-p-status').value = p[8];
             document.getElementById('adm-p-is-ad').value = p[10] || "No";
@@ -657,6 +763,19 @@
     async function assignOrder(orderId, agentPhone) { if(!agentPhone) return; await call('assignOrder', { orderId, agentPhone }); showToast("Assigned!"); loadOrders(); }
     async function completeOrder(orderId, payStatus) { await call('agentUpdate', { orderId, payStatus }); showToast("Order Delivered!"); loadOrders(); }
     
+    async function updateOrderPaymentStatus(orderId, payStatus) {
+        confirmAction(`Mark Order #${orderId} as ${payStatus}?`, async () => {
+            const res = await call('updatePayStatus', { role: state.user.role, orderId, payStatus });
+            if(res.success) {
+                showToast(`Payment marked as ${payStatus}`);
+                loadOrders();
+                if(!document.getElementById('page-khata').classList.contains('hidden')) loadKhata();
+            } else {
+                showToast("Failed to update status");
+            }
+        });
+    }
+
     async function placeOrder(method) { 
         if(state.cart.length === 0) return showToast("Cart is empty");
         
@@ -690,15 +809,31 @@
         updateCartUI(); showPage('orders'); showToast("Order Placed Successfully!");
     }
 
-    function changePass() {
-        const oldPass = document.getElementById('old-pass').value;
-        const newPass = document.getElementById('new-pass').value;
-        if(!oldPass || !newPass) return showToast("Enter passwords");
-        confirmAction("Update your password?", async () => {
-            const res = await call('changePassword', { phone: state.user.phone, oldPass, newPass });
-            if(res.success) { showToast("Password Updated!"); document.getElementById('old-pass').value=''; document.getElementById('new-pass').value=''; }
-            else showToast(res.msg);
+    async function saveSelfProfile() {
+        const name = document.getElementById('edit-p-name').value;
+        const shop = document.getElementById('edit-p-shop').value;
+        const address = document.getElementById('edit-p-addr').value;
+        const locUrl = document.getElementById('edit-p-loc').value;
+        const password = document.getElementById('edit-p-pass').value;
+
+        if(!name) return showToast("Name is required");
+
+        const res = await call('updateProfile', {
+            phone: state.user.phone,
+            name, shop, address, locUrl, password
         });
+
+        if(res.success) {
+            state.user.name = name;
+            state.user.shop = shop;
+            state.user.address = address;
+            state.user.locUrl = locUrl;
+            localStorage.setItem('narayani_u_v4', JSON.stringify(state.user));
+            showToast("Profile Updated!");
+            startSession();
+        } else {
+            showToast(res.msg || "Update failed");
+        }
     }
 
     function showPage(id, el) {
@@ -716,12 +851,26 @@
             document.getElementById('prof-phone').innerText = state.user.phone;
             document.getElementById('prof-shop').innerText = state.user.shop;
             document.getElementById('prof-addr').innerText = state.user.address;
+            document.getElementById('prof-loc').innerText = state.user.locUrl || 'N/A';
+            document.getElementById('prof-userid-badge').innerText = state.user.userId || 'NS000000';
+
+            document.getElementById('edit-p-name').value = state.user.name || '';
+            document.getElementById('edit-p-shop').value = state.user.shop || '';
+            document.getElementById('edit-p-addr').value = state.user.address || '';
+            document.getElementById('edit-p-loc').value = state.user.locUrl || '';
+            document.getElementById('edit-p-pass').value = '';
         }
     }
     
     function updateQty(id, delta) {
-        if(delta > 0) { const p = state.products.find(x => x[0] == id); state.cart.push({ id: p[0], name: p[2], price: p[3] }); } 
-        else { const idx = state.cart.findIndex(i => i.id == id); if(idx > -1) state.cart.splice(idx, 1); }
+        if(delta > 0) { 
+            const p = state.products.find(x => x[0] == id); 
+            const pGst = (p[12] !== undefined && p[12] !== '') ? p[12] : (state.settings.gst || 0);
+            state.cart.push({ id: p[0], name: p[2], price: p[3], productGST: pGst }); 
+        } else { 
+            const idx = state.cart.findIndex(i => i.id == id); 
+            if(idx > -1) state.cart.splice(idx, 1); 
+        }
         localStorage.setItem('narayani_c_v4', JSON.stringify(state.cart));
         updateCartUI(); renderProducts(); 
         if(!document.getElementById('page-cart').classList.contains('hidden')) renderCart();
@@ -729,23 +878,41 @@
     }
 
     function renderCart() {
-        const grouped = state.cart.reduce((acc, curr) => { acc[curr.id] = acc[curr.id] || { name: curr.name, price: curr.price, qty: 0 }; acc[curr.id].qty++; return acc; }, {});
+        const grouped = state.cart.reduce((acc, curr) => { 
+            acc[curr.id] = acc[curr.id] || { name: curr.name, price: curr.price, productGST: curr.productGST, qty: 0 }; 
+            acc[curr.id].qty++; 
+            return acc; 
+        }, {});
+        
         let subtotal = 0;
+        let totalGstAmt = 0;
+        const defaultGst = parseFloat(state.settings.gst) || 0;
+
         document.getElementById('cart-items').innerHTML = Object.keys(grouped).map(id => {
-            const itm = grouped[id]; subtotal += (itm.price * itm.qty);
-            return `<div class="d-flex justify-content-between mb-2"><div class="small"><b>${itm.name}</b><br>₹${itm.price} x ${itm.qty}</div><div class="fw-bold">₹${itm.price * itm.qty}</div></div>`;
+            const itm = grouped[id]; 
+            const itemSub = (itm.price * itm.qty);
+            const rate = itm.productGST !== undefined && itm.productGST !== '' ? parseFloat(itm.productGST) : defaultGst;
+            const itemGst = (itemSub * rate) / 100;
+            
+            subtotal += itemSub;
+            totalGstAmt += itemGst;
+
+            return `
+            <div class="d-flex justify-content-between mb-2">
+                <div class="small">
+                    <b>${itm.name}</b> <span class="text-muted" style="font-size:0.7rem">(GST ${rate}%)</span><br>
+                    ₹${itm.price} x ${itm.qty}
+                </div>
+                <div class="fw-bold">₹${itemSub}</div>
+            </div>`;
         }).join('');
 
-        const gstPerc = parseFloat(state.settings.gst) || 0;
         const feePerc = parseFloat(state.settings.fee) || 0;
-        
-        const gstAmt = (subtotal * gstPerc) / 100;
         const feeAmt = (subtotal * feePerc) / 100;
-        const payable = Math.round(subtotal + gstAmt + feeAmt);
+        const payable = Math.round(subtotal + totalGstAmt + feeAmt);
 
         document.getElementById('cart-subtotal').innerText = subtotal;
-        document.getElementById('cart-gst-perc').innerText = gstPerc;
-        document.getElementById('cart-gst').innerText = gstAmt.toFixed(2);
+        document.getElementById('cart-gst').innerText = totalGstAmt.toFixed(2);
         document.getElementById('cart-fee').innerText = feeAmt.toFixed(2);
         document.getElementById('cart-total').innerText = payable;
     }
@@ -756,10 +923,13 @@
         const p = state.products.find(x => x[0] == id);
         const inCart = state.cart.filter(i => i.id == p[0]).length;
         const isOut = p[8] === 'Out of Stock';
+        const pGst = (p[12] !== undefined && p[12] !== '') ? p[12] : (state.settings.gst || 0);
+        
         document.getElementById('detail-content').innerHTML = `
             <img src="${p[4]}" class="img-fluid rounded mb-3" style="max-height:220px; object-fit:contain">
             <h5 class="fw-bold">${p[2]}</h5>
-            <div class="badge bg-light text-dark mb-3">${p[1]}</div>
+            <div class="badge bg-light text-dark mb-2">${p[1]}</div>
+            <div class="small text-muted mb-2">GST Rate: <b>${pGst}%</b></div>
             <p class="text-muted small">${p[9] || 'Premium quality product.'}</p>
             <h4 class="text-success fw-bold">₹${p[3]}</h4>
         `;
@@ -769,16 +939,33 @@
         document.getElementById('modal-detail').classList.remove('hidden');
     }
 
-    // WHATSAPP BILL SENDING (CUSTOMER & ADMIN)
-    function shareWhatsAppBill(custPhone, orderId, subtotal, gstAmt, feeAmt, grandTotal, itemsJson, recipientRole) {
+    function shareWhatsAppBill(custPhone, orderId, subtotal, gstAmt, feeAmt, grandTotal, itemsJson, recipientRole, custName, custShop, userId) {
         try {
-            const items = JSON.parse(itemsJson);
-            const grouped = items.reduce((acc, curr) => { acc[curr.name] = (acc[curr.name] || 0) + 1; return acc; }, {});
-            const itemLines = Object.keys(grouped).map(name => `- ${name} (x${grouped[name]})`).join('%0A');
+            const items = typeof itemsJson === 'string' ? JSON.parse(itemsJson) : itemsJson;
+            const grouped = items.reduce((acc, curr) => { 
+                acc[curr.name] = acc[curr.name] || { qty: 0, price: curr.price };
+                acc[curr.name].qty++;
+                return acc; 
+            }, {});
             
-            const gstinText = state.settings.gstin ? `%0A*GSTIN:* ${state.settings.gstin}` : '';
+            const itemLines = Object.keys(grouped).map(name => `• *${name}* x ${grouped[name].qty} = ₹${grouped[name].qty * grouped[name].price}`).join('\n');
+            const gstinText = state.settings.gstin ? `\n*GSTIN:* ${state.settings.gstin}` : '';
             
-            const billMsg = `*NARAYANI SALES - TAX INVOICE*${gstinText}%0A%0A*Order ID:* %23${orderId}%0A*Subtotal:* ₹${subtotal}%0A*GST Tax:* ₹${gstAmt}%0A*Platform Fee:* ₹${feeAmt}%0A*Grand Total:* ₹${grandTotal}%0A%0A*Items:*%0A${itemLines}%0A%0AThank you for doing business with us!`;
+            const billMsg = `🧾 *NARAYANI SALES - TAX INVOICE*${gstinText}\n` +
+                `----------------------------------------\n` +
+                `*Invoice No:* #${orderId}\n` +
+                `*Customer:* ${custName || 'Valued Customer'}\n` +
+                `*User ID:* ${userId || 'N/A'}\n` +
+                `*Shop:* ${custShop || 'N/A'}\n` +
+                `----------------------------------------\n` +
+                `*ITEMS PURCHASED:*\n${itemLines}\n` +
+                `----------------------------------------\n` +
+                `*Subtotal:* ₹${subtotal}\n` +
+                `*Tax (GST):* ₹${gstAmt}\n` +
+                `*Platform Charge:* ₹${feeAmt}\n` +
+                `*GRAND TOTAL:* ₹${grandTotal}\n` +
+                `----------------------------------------\n` +
+                `Thank you for doing business with Narayani Sales! 🙏`;
 
             let targetNumber = custPhone;
             if (recipientRole === 'Admin') {
@@ -786,7 +973,8 @@
             }
 
             const cleanPhone = targetNumber.toString().replace(/\D/g, ''); 
-            window.open(`https://wa.me/91${cleanPhone}?text=${billMsg}`, '_blank');
+            const encodedText = encodeURIComponent(billMsg);
+            window.open(`https://wa.me/91${cleanPhone}?text=${encodedText}`, '_blank');
         } catch(e) { console.error(e); showToast("WhatsApp Error"); }
     }
 
@@ -809,13 +997,23 @@
             const upiUrl = `upi://pay?pa=${state.settings.upi}&pn=Narayani%20Sales&am=${o[3]}&cu=INR`;
             const qrImg = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(upiUrl)}`;
 
-            // o[13] Cust Name, o[14] Shop, o[15] Addr, o[16] Phone, o[17] Loc, o[18] AgentName, o[19] AgentPhone
+            const isPaid = o[8] === 'Paid';
+
             return `
             <div class="s-card p-3 mb-3 animate__animated animate__fadeIn">
-                <div class="d-flex justify-content-between mb-2"><span class="badge bg-light text-dark small">${new Date(o[6]).toLocaleDateString()}</span><span class="badge ${o[5]=='Delivered'?'bg-success':'bg-warning text-dark'}">${o[5]}</span></div>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="badge bg-light text-dark small">${new Date(o[6]).toLocaleDateString()}</span>
+                    <div class="d-flex gap-1">
+                        <span class="badge ${o[5]=='Delivered'?'bg-success':'bg-warning text-dark'}">${o[5]}</span>
+                        <span class="badge ${isPaid ? 'bg-success' : 'bg-danger'}">${o[8] || 'Unpaid'}</span>
+                    </div>
+                </div>
                 
                 <div class="bg-light p-2 rounded mb-2 small">
-                    <div class="fw-bold border-bottom mb-1 pb-1">Customer Details:</div>
+                    <div class="fw-bold border-bottom mb-1 pb-1 d-flex justify-content-between">
+                        <span>Customer Details:</span>
+                        <span class="text-primary">${o[20] || ''}</span>
+                    </div>
                     <b>Name:</b> ${o[13]}<br>
                     <b>Shop:</b> ${o[14]}<br>
                     <b>Address:</b> ${o[15]}<br>
@@ -841,12 +1039,18 @@
                     <div class="small mt-1 text-muted">Scan to Pay ₹${Math.round(o[3])}</div>
                 </div>
 
-                ${state.user.role !== 'User' ? `
                 <div class="d-flex gap-2 mt-3">
-                    <button onclick="shareWhatsAppBill('${o[16]}', '${o[0]}', '${o[10]}', '${o[11]}', '${o[9]}', '${o[3]}', '${JSON.stringify(cartItems).replace(/'/g, "\\'")}', 'Customer')" class="btn btn-sm btn-success rounded-pill flex-fill" style="font-size:0.75rem">📲 Bill to Cust</button>
-                    <button onclick="shareWhatsAppBill('${o[16]}', '${o[0]}', '${o[10]}', '${o[11]}', '${o[9]}', '${o[3]}', '${JSON.stringify(cartItems).replace(/'/g, "\\'")}', 'Admin')" class="btn btn-sm btn-dark rounded-pill flex-fill" style="font-size:0.75rem">📲 Bill to Admin</button>
-                </div>` : ''}
+                    <button onclick="shareWhatsAppBill('${o[16]}', '${o[0]}', '${o[10]}', '${o[11]}', '${o[9]}', '${o[3]}', \`${o[2]}\`, 'Customer', '${o[13]}', '${o[14]}', '${o[20]}')" class="btn btn-sm btn-success rounded-pill flex-fill" style="font-size:0.75rem">📲 Bill to Cust</button>
+                    <button onclick="shareWhatsAppBill('${o[16]}', '${o[0]}', '${o[10]}', '${o[11]}', '${o[9]}', '${o[3]}', \`${o[2]}\`, 'Admin', '${o[13]}', '${o[14]}', '${o[20]}')" class="btn btn-sm btn-dark rounded-pill flex-fill" style="font-size:0.75rem">📲 Bill to Admin</button>
+                </div>
                 
+                ${state.user.role === 'Admin' ? `
+                <div class="mt-2 d-flex gap-2">
+                    <button class="btn btn-sm ${isPaid ? 'btn-outline-danger' : 'btn-outline-success'} rounded-pill flex-fill" onclick="updateOrderPaymentStatus('${o[0]}', '${isPaid ? 'Unpaid' : 'Paid'}')">
+                        Mark as ${isPaid ? 'Unpaid ❌' : 'Paid ✅'}
+                    </button>
+                </div>` : ''}
+
                 <div class="mt-3 d-flex justify-content-between gap-2">
                     ${state.user.role=='Admin' ? `<button class="btn btn-sm text-danger" onclick="deleteOrder('${o[0]}')">Delete</button>` : '<span></span>'}
                     ${state.user.role=='Admin' ? `<select class="form-select form-select-sm w-50 rounded-pill" onchange="assignOrder('${o[0]}', this.value)"><option value="">Assign Agent</option>${state.agents.map(a => `<option value="${a[0]}" ${o[7]==a[0]?'selected':''}>${a[3]}</option>`).join('')}</select>` : ''}
@@ -856,32 +1060,79 @@
         }).join('');
     }
 
-    // KHATA FUNCTIONS
     async function loadKhata() {
-        const res = await call('getKhata');
-        if(res.success) {
-            document.getElementById('kh-total-sale').innerText = '₹' + Math.round(res.summary.totalSale);
-            document.getElementById('kh-total-rec').innerText = '₹' + Math.round(res.summary.totalRecovery);
-            document.getElementById('kh-total-pend').innerText = '₹' + Math.round(res.summary.totalPending);
+        const [kRes, oRes] = await Promise.all([call('getKhata'), call('getOrders', { role: state.user.role })]);
+        if(kRes.success) {
+            state.orders = oRes.orders || [];
+            document.getElementById('kh-total-sale').innerText = '₹' + Math.round(kRes.summary.totalSale);
+            document.getElementById('kh-total-rec').innerText = '₹' + Math.round(kRes.summary.totalRecovery);
+            document.getElementById('kh-total-pend').innerText = '₹' + Math.round(kRes.summary.totalPending);
             
-            document.getElementById('khata-customer-list').innerHTML = res.customers.map(c => `
+            document.getElementById('khata-customer-list').innerHTML = kRes.customers.map(c => `
                 <div class="s-card p-3 mb-2">
                     <div class="d-flex justify-content-between align-items-center mb-1">
-                        <h6 class="fw-bold m-0">${c.name}</h6>
+                        <div>
+                            <h6 class="fw-bold m-0 d-inline-block">${c.name}</h6>
+                            <span class="user-id-badge ms-1">${c.userId}</span>
+                        </div>
                         <span class="badge ${c.pendingAmount > 0 ? 'bg-danger' : 'bg-success'}">${c.pendingAmount > 0 ? 'Pending' : 'Clear'}</span>
                     </div>
                     <div class="small text-muted mb-2">${c.shop} (${c.phone})</div>
-                    <div class="row g-1 text-center bg-light p-2 rounded small">
+                    <div class="row g-1 text-center bg-light p-2 rounded small mb-2">
                         <div class="col-4"><b>Billed:</b><br>₹${Math.round(c.totalBilling)}</div>
                         <div class="col-4 text-success"><b>Paid:</b><br>₹${Math.round(c.paidAmount)}</div>
                         <div class="col-4 text-danger"><b>Due:</b><br>₹${Math.round(c.pendingAmount)}</div>
                     </div>
+
+                    <div class="d-flex gap-1 mb-2">
+                        <button class="btn btn-xs btn-outline-primary rounded-pill flex-fill py-1" style="font-size:0.7rem" onclick="showCustomerBillsFilter('${c.phone}', '${c.name}', 'all')">📋 All Bills</button>
+                        <button class="btn btn-xs btn-outline-success rounded-pill flex-fill py-1" style="font-size:0.7rem" onclick="showCustomerBillsFilter('${c.phone}', '${c.name}', 'paid')">✅ Paid</button>
+                        <button class="btn btn-xs btn-outline-danger rounded-pill flex-fill py-1" style="font-size:0.7rem" onclick="showCustomerBillsFilter('${c.phone}', '${c.name}', 'due')">⚠️ Due</button>
+                    </div>
+
                     ${state.user.role === 'Admin' ? `
-                        <button class="btn btn-sm btn-outline-dark rounded-pill w-100 mt-2" onclick="openKhataPayModal('${c.phone}', '${c.name}')">Record Payment Received</button>
+                        <button class="btn btn-sm btn-outline-dark rounded-pill w-100" onclick="openKhataPayModal('${c.phone}', '${c.name}')">Record Payment Received</button>
                     ` : ''}
                 </div>
             `).join('');
         }
+    }
+
+    function showCustomerBillsFilter(phone, name, filterType) {
+        const custOrders = state.orders.filter(o => o[1] == phone && o[5] !== 'Cancelled');
+        let filtered = custOrders;
+        if(filterType === 'paid') filtered = custOrders.filter(o => o[8] === 'Paid');
+        if(filterType === 'due') filtered = custOrders.filter(o => o[8] !== 'Paid');
+
+        document.getElementById('cust-bills-title').innerText = name + "'s Invoices";
+        document.getElementById('cust-bills-subtitle').innerText = `Filter: ${filterType.toUpperCase()} (${filtered.length} Invoices)`;
+
+        const container = document.getElementById('cust-bills-container');
+        if(filtered.length === 0) {
+            container.innerHTML = `<p class="text-center text-muted my-3">No ${filterType} bills found.</p>`;
+        } else {
+            container.innerHTML = filtered.map(o => {
+                const isPaid = o[8] === 'Paid';
+                return `
+                <div class="border rounded p-2 mb-2 bg-light small">
+                    <div class="d-flex justify-content-between fw-bold">
+                        <span>Invoice #${o[0]}</span>
+                        <span class="${isPaid ? 'text-success' : 'text-danger'}">${o[8] || 'Unpaid'}</span>
+                    </div>
+                    <div class="text-muted" style="font-size:0.7rem">${new Date(o[6]).toLocaleDateString()}</div>
+                    <div class="d-flex justify-content-between mt-1">
+                        <span>Total: ₹${Math.round(o[3])}</span>
+                        <span>Paid: ₹${Math.round(o[12]||0)}</span>
+                    </div>
+                    ${state.user.role === 'Admin' ? `
+                    <button class="btn btn-xs ${isPaid ? 'btn-outline-danger' : 'btn-outline-success'} w-100 mt-2 py-0" style="font-size:0.7rem" onclick="updateOrderPaymentStatus('${o[0]}', '${isPaid ? 'Unpaid' : 'Paid'}')">
+                        Toggle to ${isPaid ? 'Unpaid' : 'Paid'}
+                    </button>` : ''}
+                </div>`;
+            }).join('');
+        }
+
+        document.getElementById('modal-cust-bills').classList.remove('hidden');
     }
 
     function openKhataPayModal(phone, name) {
@@ -959,8 +1210,9 @@
     function deleteUserJS() {
         const phone = document.getElementById('adm-u-phone').value;
         confirmAction("Delete this user account?", async () => {
-            const res = await call('deleteUser', { phone });
+            const res = await call('deleteUser', { executorRole: state.user.role, phone });
             if(res.success) { showToast("User Deleted"); closeModals(); loadData(); }
+            else showToast(res.msg || "Failed to delete");
         });
     }
 
@@ -968,7 +1220,14 @@
         document.getElementById('btn-show-users').classList.toggle('active', role === 'User');
         document.getElementById('btn-show-agents').classList.toggle('active', role === 'Agent');
         const filtered = state.allUsers.filter(u => u[2] === role);
-        document.getElementById('user-directory-list').innerHTML = filtered.map(u => `<div class="s-card p-3 mb-2 d-flex justify-content-between align-items-center" onclick="openUserModal('${u[0]}')"><div><h6 class="fw-bold m-0">${u[3]}</h6><small class="text-muted">${u[0]} | ${u[4]||''}</small></div><div class="text-primary">Edit 〉</div></div>`).join('');
+        document.getElementById('user-directory-list').innerHTML = filtered.map(u => `
+            <div class="s-card p-3 mb-2 d-flex justify-content-between align-items-center" onclick="openUserModal('${u[0]}')">
+                <div>
+                    <h6 class="fw-bold m-0">${u[3]} <span class="user-id-badge">${u[8]||''}</span></h6>
+                    <small class="text-muted">${u[0]} | ${u[4]||''}</small>
+                </div>
+                <div class="text-primary">Edit 〉</div>
+            </div>`).join('');
     }
 
     function openSettingsModal() {
@@ -1028,143 +1287,5 @@
         }
     }
 </script>
-
-<div id="narayani-preloader-v3">
-    <style>
-        #narayani-preloader-v3 {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #08080a;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999999;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            overflow: hidden;
-            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .n-loader-visual {
-            width: 100px;
-            height: 100px;
-            perspective: 1000px;
-            margin-bottom: 30px;
-        }
-
-        .n-cube-4d {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            transform-style: preserve-3d;
-            animation: n-rotate4d 4s infinite linear;
-        }
-
-        .n-cube-4d div {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: rgba(212, 175, 55, 0.05);
-            border: 1.5px solid #d4af37;
-            box-shadow: inset 0 0 15px rgba(212, 175, 55, 0.2), 0 0 20px rgba(212, 175, 55, 0.1);
-        }
-
-        .n-face-1 { transform: rotateY(0deg) translateZ(50px); }
-        .n-face-2 { transform: rotateY(90deg) translateZ(50px); }
-        .n-face-3 { transform: rotateY(180deg) translateZ(50px); }
-        .n-face-4 { transform: rotateY(-90deg) translateZ(50px); }
-        .n-face-5 { transform: rotateX(90deg) translateZ(50px); }
-        .n-face-6 { transform: rotateX(-90deg) translateZ(50px); }
-
-        .n-brand-title {
-            color: #ffffff;
-            font-size: 28px;
-            font-weight: 700;
-            letter-spacing: 3px;
-            margin: 0;
-            text-transform: uppercase;
-            text-shadow: 0 0 15px rgba(255,255,255,0.3);
-        }
-
-        .n-tagline {
-            color: #d4af37;
-            font-size: 18px;
-            margin-top: 8px;
-            font-weight: 400;
-            letter-spacing: 1px;
-            opacity: 0;
-            animation: n-fadeInUp 0.8s forwards 0.5s;
-        }
-
-        .n-powered {
-            position: absolute;
-            bottom: 40px;
-            color: rgba(255,255,255,0.4);
-            font-size: 11px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        .n-powered b {
-            color: #00d2ff;
-            font-weight: 600;
-        }
-
-        @keyframes n-rotate4d {
-            0% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale3d(1,1,1); }
-            50% { transform: rotateX(180deg) rotateY(360deg) rotateZ(90deg) scale3d(1.2, 1.2, 1.2); }
-            100% { transform: rotateX(360deg) rotateY(720deg) rotateZ(0deg) scale3d(1,1,1); }
-        }
-
-        @keyframes n-fadeInUp {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .n-preloader-hidden {
-            opacity: 0 !important;
-            pointer-events: none !important;
-        }
-
-        body.n-no-scroll {
-            overflow: hidden !important;
-        }
-    </style>
-
-    <div class="n-loader-visual">
-        <div class="n-cube-4d">
-            <div class="n-face-1"></div>
-            <div class="n-face-2"></div>
-            <div class="n-face-3"></div>
-            <div class="n-face-4"></div>
-            <div class="n-face-5"></div>
-            <div class="n-face-6"></div>
-        </div>
-    </div>
-
-    <h1 class="n-brand-title">Narayani Sales</h1>
-    <div class="n-tagline">आपकी दुकान की असली उड़ान</div>
-
-    <div class="n-powered">
-        Powered by <b>NPCH India</b>
-    </div>
-
-    <script>
-        document.body.classList.add('n-no-scroll');
-        window.addEventListener('load', function() {
-            const preloader = document.getElementById('narayani-preloader-v3');
-            setTimeout(() => {
-                preloader.classList.add('n-preloader-hidden');
-                document.body.classList.remove('n-no-scroll');
-                setTimeout(() => {
-                    preloader.style.display = 'none';
-                }, 600);
-            }, 10000); 
-        });
-    </script>
-</div>
 </body>
 </html>
