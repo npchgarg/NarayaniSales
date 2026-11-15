@@ -7,6 +7,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
     <style>
         :root { 
             --accent: #00b894; 
@@ -58,7 +60,7 @@
         .hidden { display: none !important; }
         .category-header { background: #e9ecef; padding: 8px 15px; border-radius: 12px; margin: 20px 0 10px 0; font-weight: 700; color: #495057; font-size: 0.9rem; text-transform: uppercase; }
         .stat-card { background: white; padding: 12px; border-radius: 16px; text-align: center; border-bottom: 4px solid var(--accent); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .bill-table { width: 100%; font-size: 0.75rem; margin-top: 10px; border-top: 1px solid #eee; }
+        .bill-table { width: 100%; font-size: 0.72rem; margin-top: 10px; border-top: 1px solid #eee; }
         .bill-table th { color: #636e72; padding: 5px 2px; }
         .bill-table td { padding: 4px 2px; border-bottom: 1px solid #f9f9f9; }
         .out-of-stock { filter: grayscale(1); opacity: 0.8; }
@@ -202,18 +204,20 @@
             </div>
             <hr>
             <div class="small">
-                <p><b>Shop:</b> <span id="prof-shop"></span></p>
-                <p><b>Address:</b> <span id="prof-addr"></span></p>
-                <p><b>Phone:</b> <span id="prof-phone"></span></p>
-                <p><b>Location URL:</b> <span id="prof-loc"></span></p>
+                <p class="mb-1"><b>Shop:</b> <span id="prof-shop"></span></p>
+                <p class="mb-1"><b>GSTIN:</b> <span id="prof-gstin"></span></p>
+                <p class="mb-1"><b>Address:</b> <span id="prof-addr"></span></p>
+                <p class="mb-1"><b>Phone:</b> <span id="prof-phone"></span></p>
+                <p class="mb-0"><b>Location URL:</b> <span id="prof-loc"></span></p>
             </div>
-            <button class="btn btn-outline-danger btn-sm w-100 rounded-pill mt-2" onclick="logout()">Sign Out</button>
+            <button class="btn btn-outline-danger btn-sm w-100 rounded-pill mt-3" onclick="logout()">Sign Out</button>
         </div>
 
         <div class="s-card p-4 mb-3">
             <h6 class="fw-bold mb-3">Edit Profile & Account Settings</h6>
             <input type="text" id="edit-p-name" class="form-control mb-2" placeholder="Full Name">
             <input type="text" id="edit-p-shop" class="form-control mb-2" placeholder="Shop Name">
+            <input type="text" id="edit-p-gstin" class="form-control mb-2" placeholder="Customer GST Number (Optional)">
             <input type="text" id="edit-p-addr" class="form-control mb-2" placeholder="Address">
             <input type="text" id="edit-p-loc" class="form-control mb-2" placeholder="Google Maps Location URL">
             <input type="password" id="edit-p-pass" class="form-control mb-3" placeholder="New Password (optional)">
@@ -274,23 +278,31 @@
 
     <div id="page-cart" class="page hidden animate__animated animate__slideInUp">
         <div class="s-card p-4">
-            <h5 class="fw-bold mb-3">Checkout</h5>
+            <h5 class="fw-bold mb-3">Checkout (GST Inclusive)</h5>
             <div id="cart-items" class="mb-3"></div>
             
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="text-muted small">Subtotal:</span>
-                <span class="small fw-bold">₹<span id="cart-subtotal">0</span></span>
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="text-muted small">Taxable Value (Excl. GST):</span>
+                <span class="small fw-bold">₹<span id="cart-subtotal">0.00</span></span>
             </div>
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="text-muted small">Calculated Total GST:</span>
-                <span class="small fw-bold">₹<span id="cart-gst">0</span></span>
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="text-muted small">CGST (50%):</span>
+                <span class="small fw-bold">₹<span id="cart-cgst">0.00</span></span>
             </div>
-            <div class="d-flex justify-content-between align-items-center mb-2">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="text-muted small">SGST (50%):</span>
+                <span class="small fw-bold">₹<span id="cart-sgst">0.00</span></span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-1">
                 <span class="text-muted small">Platform Fee:</span>
-                <span class="small fw-bold">₹<span id="cart-fee">0</span></span>
+                <span class="small fw-bold">₹<span id="cart-fee">0.00</span></span>
             </div>
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <span class="text-muted">Payable Total:</span>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="text-muted small">Round Off:</span>
+                <span class="small fw-bold">₹<span id="cart-roundoff">0.00</span></span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-4 border-top pt-2">
+                <span class="text-muted fw-bold">Payable Grand Total:</span>
                 <h2 class="fw-bold text-success m-0">₹<span id="cart-total">0</span></h2>
             </div>
 
@@ -326,13 +338,13 @@
     <textarea id="adm-p-desc" class="form-control mb-2" placeholder="Product Description"></textarea>
     
     <div class="row g-2 mb-2">
-        <div class="col-6"><input type="number" id="adm-p-price" class="form-control" placeholder="Our Price" onkeyup="calcMargin()"></div>
+        <div class="col-6"><input type="number" id="adm-p-price" class="form-control" placeholder="Selling Price (Incl. GST)" onkeyup="calcMargin()"></div>
         <div class="col-6"><input type="number" id="adm-p-saleprice" class="form-control" placeholder="MRP Price" onkeyup="calcMargin()"></div>
     </div>
     
     <div class="mb-2">
-        <label class="small fw-bold">Custom GST Rate % (Leave blank for default)</label>
-        <input type="number" id="adm-p-gst" class="form-control form-control-sm" placeholder="e.g. 18 (Optional)">
+        <label class="small fw-bold">GST Rate % (Included in Selling Price)</label>
+        <input type="number" id="adm-p-gst" class="form-control form-control-sm" placeholder="e.g. 18 (Leave blank for default)">
     </div>
 
     <div class="small text-muted mb-2 ps-1">Margin: ₹<span id="adm-p-margin">0</span> (<span id="adm-p-margin-perc">0</span>%)</div>
@@ -374,17 +386,18 @@
 </div>
 
 <div id="modal-user" class="position-fixed top-50 start-50 translate-middle s-card p-4 hidden animate__animated animate__zoomIn" style="z-index:3000; width:92%; max-width:400px; max-height: 90vh; overflow-y: auto;">
-    <h6 class="fw-bold mb-3">User Record</h6>
+    <h6 class="fw-bold mb-3">User / Customer Registration</h6>
     <input type="hidden" id="adm-u-oldphone">
-    <input type="text" id="adm-u-phone" class="form-control mb-2" placeholder="Phone">
+    <input type="text" id="adm-u-phone" class="form-control mb-2" placeholder="Phone Number">
     <input type="text" id="adm-u-pass" class="form-control mb-2" placeholder="Password">
     <select id="adm-u-role" class="form-select mb-2">
         <option value="User">Customer</option>
         <option value="Agent">Agent</option>
         <option value="Admin">Admin</option>
     </select>
-    <input type="text" id="adm-u-name" class="form-control mb-2" placeholder="Name">
-    <input type="text" id="adm-u-shop" class="form-control mb-2" placeholder="Shop Name">
+    <input type="text" id="adm-u-name" class="form-control mb-2" placeholder="Full Name">
+    <input type="text" id="adm-u-shop" class="form-control mb-2" placeholder="Shop / Business Name">
+    <input type="text" id="adm-u-gstin" class="form-control mb-2" placeholder="Customer GST Number (Optional)">
     <input type="text" id="adm-u-addr" class="form-control mb-2" placeholder="Address">
     <input type="text" id="adm-u-loc" class="form-control mb-2" placeholder="Location URL">
     <div class="mb-3">
@@ -396,7 +409,7 @@
     <button class="btn btn-light w-100 rounded-pill" onclick="closeModals()">Close</button>
 </div>
 
-<div id="modal-cust-bills" class="position-fixed top-50 start-50 translate-middle s-card p-4 hidden animate__animated animate__zoomIn" style="z-index:3200; width:92%; max-width:420px; max-height: 85vh; overflow-y: auto;">
+<div id="modal-cust-bills" class="position-fixed top-50 start-50 translate-middle s-card p-4 hidden animate__animated animate__zoomIn" style="z-index:3200; width:92%; max-width:430px; max-height: 85vh; overflow-y: auto;">
     <button class="close-btn" onclick="closeModals()">✕</button>
     <h6 class="fw-bold mb-1" id="cust-bills-title">Customer Bills</h6>
     <div class="small text-muted mb-3" id="cust-bills-subtitle">Filter</div>
@@ -405,11 +418,13 @@
 
 <div id="modal-settings" class="position-fixed top-50 start-50 translate-middle s-card p-4 hidden animate__animated animate__zoomIn" style="z-index:3000; width:92%; max-width:400px; max-height: 90vh; overflow-y: auto;">
     <button class="close-btn" onclick="closeModals()">✕</button>
-    <h6 class="fw-bold mb-3">App Configuration</h6>
+    <h6 class="fw-bold mb-3">App Configuration & Invoice Info</h6>
+    <input type="text" id="set-comp-name" class="form-control mb-2" placeholder="Company / Firm Name">
+    <input type="text" id="set-comp-addr" class="form-control mb-2" placeholder="Company Address">
+    <input type="text" id="set-gstin" class="form-control mb-2" placeholder="Company GSTIN">
+    <input type="number" id="set-gst" class="form-control mb-2" placeholder="Default GST Tax %">
     <input type="text" id="set-upi" class="form-control mb-2" placeholder="UPI ID">
     <input type="text" id="set-contact" class="form-control mb-2" placeholder="Admin WhatsApp Contact No">
-    <input type="text" id="set-gstin" class="form-control mb-2" placeholder="GSTIN / GST Reg No">
-    <input type="number" id="set-gst" class="form-control mb-2" placeholder="Default GST Tax %">
     <input type="text" id="set-bank-name" class="form-control mb-2" placeholder="Bank Name">
     <input type="text" id="set-ac-name" class="form-control mb-2" placeholder="A/C Name">
     <input type="text" id="set-ac-no" class="form-control mb-2" placeholder="A/C Number">
@@ -428,7 +443,7 @@
 </div>
 
 <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbwIYmEPEgmIbvZeUjQ7g5JXmiYvrFokQqxHbodcZZ-KG2fBJoey7LYp4rr0FQ3QVgPFvA/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbyQ7gfNdDxOxG4EkE6ZLruWPT4giWKs2J3iH9zbbOWR7Omk64FfhLG-KPl1b7hMVj87/exec";
     let state = { 
         user: JSON.parse(localStorage.getItem('narayani_u_v4')), 
         cart: JSON.parse(localStorage.getItem('narayani_c_v4')) || [], 
@@ -655,7 +670,7 @@
                         <img src="${p[4] || 'https://via.placeholder.com/100'}" style="height:100px; object-fit:contain; border-radius:15px" onclick="showProductDetail('${p[0]}')">
                         <div class="small fw-bold mt-2 text-truncate" onclick="showProductDetail('${p[0]}')">${p[2]}</div>
                         <div class="small text-muted">MRP: ₹${p[5] || p[3]}</div>
-                        <div class="text-success small fw-bold">₹${p[3]} <span class="text-muted" style="font-size:0.65rem">(GST: ${pGst}%)</span></div>
+                        <div class="text-success small fw-bold">₹${p[3]} <span class="text-muted" style="font-size:0.65rem">(Incl. ${pGst}% GST)</span></div>
                         <div class="margin-label">Margin: ₹${mRs} (${mP}%)</div>
                         ${!isOut ? (inCart > 0 ? `
                             <div class="qty-box">
@@ -792,12 +807,12 @@
             paidAmt = parseFloat(document.getElementById('agent-collected-amt').value) || 0;
         }
 
-        const subtotal = state.cart.reduce((a,c)=>a+c.price, 0);
+        const inclusiveSubtotal = state.cart.reduce((a,c)=>a+parseFloat(c.price || 0), 0);
 
         await call('addOrder', { 
             phone: targetPhone, 
             cart: state.cart, 
-            total: subtotal, 
+            total: inclusiveSubtotal, 
             method, 
             feePercent: state.settings.fee,
             gstPercent: state.settings.gst,
@@ -812,6 +827,7 @@
     async function saveSelfProfile() {
         const name = document.getElementById('edit-p-name').value;
         const shop = document.getElementById('edit-p-shop').value;
+        const gstin = document.getElementById('edit-p-gstin').value.trim();
         const address = document.getElementById('edit-p-addr').value;
         const locUrl = document.getElementById('edit-p-loc').value;
         const password = document.getElementById('edit-p-pass').value;
@@ -820,12 +836,13 @@
 
         const res = await call('updateProfile', {
             phone: state.user.phone,
-            name, shop, address, locUrl, password
+            name, shop, gstin, address, locUrl, password
         });
 
         if(res.success) {
             state.user.name = name;
             state.user.shop = shop;
+            state.user.gstin = gstin;
             state.user.address = address;
             state.user.locUrl = locUrl;
             localStorage.setItem('narayani_u_v4', JSON.stringify(state.user));
@@ -850,12 +867,14 @@
             document.getElementById('prof-sub').innerText = state.user.role;
             document.getElementById('prof-phone').innerText = state.user.phone;
             document.getElementById('prof-shop').innerText = state.user.shop;
+            document.getElementById('prof-gstin').innerText = state.user.gstin || 'N/A';
             document.getElementById('prof-addr').innerText = state.user.address;
             document.getElementById('prof-loc').innerText = state.user.locUrl || 'N/A';
             document.getElementById('prof-userid-badge').innerText = state.user.userId || 'NS000000';
 
             document.getElementById('edit-p-name').value = state.user.name || '';
             document.getElementById('edit-p-shop').value = state.user.shop || '';
+            document.getElementById('edit-p-gstin').value = state.user.gstin || '';
             document.getElementById('edit-p-addr').value = state.user.address || '';
             document.getElementById('edit-p-loc').value = state.user.locUrl || '';
             document.getElementById('edit-p-pass').value = '';
@@ -866,7 +885,7 @@
         if(delta > 0) { 
             const p = state.products.find(x => x[0] == id); 
             const pGst = (p[12] !== undefined && p[12] !== '') ? p[12] : (state.settings.gst || 0);
-            state.cart.push({ id: p[0], name: p[2], price: p[3], productGST: pGst }); 
+            state.cart.push({ id: p[0], name: p[2], price: parseFloat(p[3]), productGST: pGst }); 
         } else { 
             const idx = state.cart.findIndex(i => i.id == id); 
             if(idx > -1) state.cart.splice(idx, 1); 
@@ -879,41 +898,51 @@
 
     function renderCart() {
         const grouped = state.cart.reduce((acc, curr) => { 
-            acc[curr.id] = acc[curr.id] || { name: curr.name, price: curr.price, productGST: curr.productGST, qty: 0 }; 
+            acc[curr.id] = acc[curr.id] || { name: curr.name, price: parseFloat(curr.price), productGST: curr.productGST, qty: 0 }; 
             acc[curr.id].qty++; 
             return acc; 
         }, {});
         
-        let subtotal = 0;
+        let inclusiveTotal = 0;
+        let taxableSubtotal = 0;
         let totalGstAmt = 0;
         const defaultGst = parseFloat(state.settings.gst) || 0;
 
         document.getElementById('cart-items').innerHTML = Object.keys(grouped).map(id => {
             const itm = grouped[id]; 
-            const itemSub = (itm.price * itm.qty);
+            const itemInclusiveSub = (itm.price * itm.qty);
             const rate = itm.productGST !== undefined && itm.productGST !== '' ? parseFloat(itm.productGST) : defaultGst;
-            const itemGst = (itemSub * rate) / 100;
+            const itemBaseTaxable = rate > 0 ? (itemInclusiveSub / (1 + (rate / 100))) : itemInclusiveSub;
+            const itemGst = itemInclusiveSub - itemBaseTaxable;
             
-            subtotal += itemSub;
+            inclusiveTotal += itemInclusiveSub;
+            taxableSubtotal += itemBaseTaxable;
             totalGstAmt += itemGst;
 
             return `
-            <div class="d-flex justify-content-between mb-2">
+            <div class="d-flex justify-content-between mb-2 border-bottom pb-2">
                 <div class="small">
-                    <b>${itm.name}</b> <span class="text-muted" style="font-size:0.7rem">(GST ${rate}%)</span><br>
-                    ₹${itm.price} x ${itm.qty}
+                    <b>${itm.name}</b> <span class="text-muted" style="font-size:0.7rem">(Incl. GST ${rate}%)</span><br>
+                    Base: ₹${(itemBaseTaxable / itm.qty).toFixed(2)} + GST: ₹${(itemGst / itm.qty).toFixed(2)} × ${itm.qty}
                 </div>
-                <div class="fw-bold">₹${itemSub}</div>
+                <div class="fw-bold">₹${itemInclusiveSub.toFixed(2)}</div>
             </div>`;
         }).join('');
 
         const feePerc = parseFloat(state.settings.fee) || 0;
-        const feeAmt = (subtotal * feePerc) / 100;
-        const payable = Math.round(subtotal + totalGstAmt + feeAmt);
+        const feeAmt = (inclusiveTotal * feePerc) / 100;
+        const rawGrand = inclusiveTotal + feeAmt;
+        const payable = Math.round(rawGrand);
+        const roundOff = payable - rawGrand;
 
-        document.getElementById('cart-subtotal').innerText = subtotal;
-        document.getElementById('cart-gst').innerText = totalGstAmt.toFixed(2);
+        const cgst = totalGstAmt / 2;
+        const sgst = totalGstAmt / 2;
+
+        document.getElementById('cart-subtotal').innerText = taxableSubtotal.toFixed(2);
+        document.getElementById('cart-cgst').innerText = cgst.toFixed(2);
+        document.getElementById('cart-sgst').innerText = sgst.toFixed(2);
         document.getElementById('cart-fee').innerText = feeAmt.toFixed(2);
+        document.getElementById('cart-roundoff').innerText = (roundOff >= 0 ? '+' : '') + roundOff.toFixed(2);
         document.getElementById('cart-total').innerText = payable;
     }
 
@@ -929,7 +958,7 @@
             <img src="${p[4]}" class="img-fluid rounded mb-3" style="max-height:220px; object-fit:contain">
             <h5 class="fw-bold">${p[2]}</h5>
             <div class="badge bg-light text-dark mb-2">${p[1]}</div>
-            <div class="small text-muted mb-2">GST Rate: <b>${pGst}%</b></div>
+            <div class="small text-muted mb-2">Selling Price includes <b>${pGst}% GST</b></div>
             <p class="text-muted small">${p[9] || 'Premium quality product.'}</p>
             <h4 class="text-success fw-bold">₹${p[3]}</h4>
         `;
@@ -939,43 +968,359 @@
         document.getElementById('modal-detail').classList.remove('hidden');
     }
 
-    function shareWhatsAppBill(custPhone, orderId, subtotal, gstAmt, feeAmt, grandTotal, itemsJson, recipientRole, custName, custShop, userId) {
-        try {
-            const items = typeof itemsJson === 'string' ? JSON.parse(itemsJson) : itemsJson;
-            const grouped = items.reduce((acc, curr) => { 
-                acc[curr.name] = acc[curr.name] || { qty: 0, price: curr.price };
-                acc[curr.name].qty++;
-                return acc; 
-            }, {});
-            
-            const itemLines = Object.keys(grouped).map(name => `• *${name}* x ${grouped[name].qty} = ₹${grouped[name].qty * grouped[name].price}`).join('\n');
-            const gstinText = state.settings.gstin ? `\n*GSTIN:* ${state.settings.gstin}` : '';
-            
-            const billMsg = `🧾 *NARAYANI SALES - TAX INVOICE*${gstinText}\n` +
-                `----------------------------------------\n` +
-                `*Invoice No:* #${orderId}\n` +
-                `*Customer:* ${custName || 'Valued Customer'}\n` +
-                `*User ID:* ${userId || 'N/A'}\n` +
-                `*Shop:* ${custShop || 'N/A'}\n` +
-                `----------------------------------------\n` +
-                `*ITEMS PURCHASED:*\n${itemLines}\n` +
-                `----------------------------------------\n` +
-                `*Subtotal:* ₹${subtotal}\n` +
-                `*Tax (GST):* ₹${gstAmt}\n` +
-                `*Platform Charge:* ₹${feeAmt}\n` +
-                `*GRAND TOTAL:* ₹${grandTotal}\n` +
-                `----------------------------------------\n` +
-                `Thank you for doing business with Narayani Sales! 🙏`;
+    // Helper to compute exact inclusive GST breakup for any stored order
+    function computeOrderBreakup(o) {
+        const cartItems = JSON.parse(o[2] || "[]");
+        const defaultGst = parseFloat(state.settings.gst) || 0;
+        const groupedMap = {};
 
-            let targetNumber = custPhone;
-            if (recipientRole === 'Admin') {
-                targetNumber = state.settings.contact || custPhone;
+        let calcTaxable = 0;
+        let calcTotalGst = 0;
+        let calcInclusiveSum = 0;
+
+        cartItems.forEach(item => {
+            const incPrice = parseFloat(item.price || 0);
+            const rate = (item.productGST !== undefined && item.productGST !== '' && item.productGST !== null)
+                ? parseFloat(item.productGST)
+                : defaultGst;
+            const basePrice = rate > 0 ? (incPrice / (1 + (rate / 100))) : incPrice;
+            const gstAmt = incPrice - basePrice;
+
+            calcTaxable += basePrice;
+            calcTotalGst += gstAmt;
+            calcInclusiveSum += incPrice;
+
+            const key = item.name + '_' + rate + '_' + incPrice;
+            if (!groupedMap[key]) {
+                groupedMap[key] = {
+                    name: item.name,
+                    qty: 0,
+                    incRate: incPrice,
+                    baseRate: basePrice,
+                    gstRate: rate,
+                    totalBase: 0,
+                    totalGst: 0,
+                    totalInc: 0
+                };
+            }
+            groupedMap[key].qty += 1;
+            groupedMap[key].totalBase += basePrice;
+            groupedMap[key].totalGst += gstAmt;
+            groupedMap[key].totalInc += incPrice;
+        });
+
+        const feeAmt = parseFloat(o[9] || 0);
+        const rawGrand = calcInclusiveSum + feeAmt;
+        const grandTotal = Math.round(parseFloat(o[3] || rawGrand));
+        const roundOff = grandTotal - rawGrand;
+
+        return {
+            items: Object.values(groupedMap),
+            taxableSubtotal: calcTaxable,
+            totalGst: calcTotalGst,
+            cgst: calcTotalGst / 2,
+            sgst: calcTotalGst / 2,
+            inclusiveSum: calcInclusiveSum,
+            feeAmt: feeAmt,
+            roundOff: roundOff,
+            grandTotal: grandTotal
+        };
+    }
+
+    // Fixed WhatsApp sharing using orderId lookup (avoids broken JSON quoting in HTML attributes)
+    function shareWhatsAppBillById(orderId, recipientRole) {
+        const o = state.orders.find(x => String(x[0]) === String(orderId));
+        if (!o) return showToast("Order data not found");
+
+        try {
+            const b = computeOrderBreakup(o);
+            const itemLines = b.items.map(it =>
+                `• *${it.name}* x ${it.qty} = ₹${Math.round(it.totalInc)} (Base ₹${it.totalBase.toFixed(2)} + GST ${it.gstRate}%)`
+            ).join('\n');
+
+            const compName = state.settings.companyName || 'NARAYANI SALES';
+            const gstinText = state.settings.gstin ? `\n*GSTIN:* ${state.settings.gstin}` : '';
+            const custGstinText = o[21] ? `\n*Cust GSTIN:* ${o[21]}` : '';
+
+            const billMsg = `🧾 *${compName} - TAX INVOICE*${gstinText}\n` +
+                `----------------------------------------\n` +
+                `*Invoice No:* #${o[0]}\n` +
+                `*Date:* ${new Date(o[6]).toLocaleDateString('en-IN')}\n` +
+                `*Customer:* ${o[13] || 'Valued Customer'}\n` +
+                `*User ID:* ${o[20] || 'N/A'}\n` +
+                `*Shop:* ${o[14] || 'N/A'}${custGstinText}\n` +
+                `----------------------------------------\n` +
+                `*ITEMS PURCHASED (GST Inclusive):*\n${itemLines}\n` +
+                `----------------------------------------\n` +
+                `*Taxable Value:* ₹${b.taxableSubtotal.toFixed(2)}\n` +
+                `*CGST:* ₹${b.cgst.toFixed(2)}\n` +
+                `*SGST:* ₹${b.sgst.toFixed(2)}\n` +
+                (b.feeAmt > 0 ? `*Platform Charge:* ₹${b.feeAmt.toFixed(2)}\n` : '') +
+                `*Round Off:* ₹${(b.roundOff >= 0 ? '+' : '') + b.roundOff.toFixed(2)}\n` +
+                `*GRAND TOTAL:* ₹${b.grandTotal}\n` +
+                `*Payment Status:* ${o[8] || 'Unpaid'}\n` +
+                `----------------------------------------\n` +
+                `Thank you for doing business with ${compName}! 🙏`;
+
+            let targetNumber = recipientRole === 'Admin'
+                ? (state.settings.contact || '')
+                : (o[16] || '');
+
+            let cleanPhone = targetNumber.toString().replace(/\D/g, '');
+            if (!cleanPhone) {
+                return showToast(recipientRole === 'Admin' ? "Admin WhatsApp number not configured in Settings" : "Customer phone number missing");
+            }
+            if (cleanPhone.length === 10) {
+                cleanPhone = '91' + cleanPhone;
             }
 
-            const cleanPhone = targetNumber.toString().replace(/\D/g, ''); 
             const encodedText = encodeURIComponent(billMsg);
-            window.open(`https://wa.me/91${cleanPhone}?text=${encodedText}`, '_blank');
-        } catch(e) { console.error(e); showToast("WhatsApp Error"); }
+            const waUrl = `https://wa.me/${cleanPhone}?text=${encodedText}`;
+            window.open(waUrl, '_blank');
+        } catch (e) {
+            console.error(e);
+            showToast("Unable to open WhatsApp");
+        }
+    }
+
+    // Generate GST / Non-GST PDF Invoice matching attached layout (no PAN column, Round Off included)
+    function downloadInvoicePDF(orderId, withGst = true) {
+        const o = state.orders.find(x => String(x[0]) === String(orderId));
+        if (!o) return showToast("Order details not loaded");
+        if (!window.jspdf) return showToast("PDF library loading, please wait...");
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('p', 'mm', 'a4');
+        const b = computeOrderBreakup(o);
+
+        const compName = (state.settings.companyName || 'NARAYANI SALES').toUpperCase();
+        const compAddr = state.settings.companyAddress || 'Jaipur, Rajasthan';
+        const compGstin = state.settings.gstin || 'N/A';
+        const compMobile = state.settings.contact || 'N/A';
+
+        const custName = o[13] || 'N/A';
+        const custShop = o[14] || 'N/A';
+        const custAddr = o[15] || 'N/A';
+        const custPhone = o[16] || 'N/A';
+        const custGstin = o[21] || 'N/A';
+
+        const invDate = new Date(o[6]).toLocaleDateString('en-IN');
+        const invPrefix = withGst ? 'GST-' : 'EST-';
+
+        // Outer Page Border
+        doc.setDrawColor(40, 40, 40);
+        doc.setLineWidth(0.4);
+        doc.rect(10, 10, 190, 277);
+
+        // Header Section (Company Name, Address, GSTIN | Mobile)
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(15);
+        doc.text(compName, 105, 19, { align: 'center' });
+
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(9);
+        doc.text(compAddr, 105, 24.5, { align: 'center' });
+
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(9);
+        const subHeader = withGst
+            ? `GSTIN: ${compGstin} | Mobile: ${compMobile}`
+            : `Mobile: ${compMobile}`;
+        doc.text(subHeader, 105, 29.5, { align: 'center' });
+
+        // Title Bar (No PAN column as requested)
+        doc.line(10, 33, 200, 33);
+        doc.line(10, 40, 200, 40);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(10);
+        doc.text(withGst ? 'TAX INVOICE' : 'ESTIMATE / BILL OF SUPPLY', 105, 37.8, { align: 'center' });
+        doc.setFontSize(7.5);
+        doc.setFont('helvetica', 'normal');
+        doc.text('ORIGINAL FOR RECIPIENT', 197, 37.8, { align: 'right' });
+
+        // Customer Details & Invoice Metadata Box
+        doc.line(105, 40, 105, 72);
+        doc.line(10, 72, 200, 72);
+
+        // Left: Customer Details
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(9);
+        doc.text('Customer Details', 13, 45.5);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8.5);
+        doc.text(`M/S: ${custShop !== 'N/A' && custShop ? custShop : custName}`, 13, 50.5);
+        doc.text(`Name: ${custName}`, 13, 55);
+        const addrLines = doc.splitTextToSize(`Address: ${custAddr}`, 88);
+        doc.text(addrLines[0] || 'Address: N/A', 13, 59.5);
+        doc.text(`Phone: ${custPhone}`, 13, 64);
+        if (withGst) {
+            doc.text(`GSTIN: ${custGstin}`, 13, 68.5);
+        }
+
+        // Right: Invoice Metadata
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(8.5);
+        doc.text(`Invoice No: ${invPrefix}${o[0]}`, 108, 46);
+        doc.setFont('helvetica', 'normal');
+        doc.text(`Invoice Date: ${invDate}`, 108, 51.5);
+        doc.text(`Payment Mode: ${o[4] || 'COD'} (${o[8] || 'Unpaid'})`, 108, 57);
+        doc.text(`Place of Supply: Local`, 108, 62.5);
+
+        // Items Table
+        let tableHead = [];
+        let tableBody = [];
+
+        if (withGst) {
+            tableHead = [['Sr.', 'Name of Product / Service', 'GST %', 'Qty', 'Taxable Rate', 'Taxable Value', 'CGST', 'SGST', 'Total']];
+            b.items.forEach((it, idx) => {
+                const halfGst = it.totalGst / 2;
+                tableBody.push([
+                    idx + 1,
+                    it.name,
+                    `${it.gstRate}%`,
+                    `${it.qty} NOS`,
+                    it.baseRate.toFixed(2),
+                    it.totalBase.toFixed(2),
+                    halfGst.toFixed(2),
+                    halfGst.toFixed(2),
+                    it.totalInc.toFixed(2)
+                ]);
+            });
+        } else {
+            tableHead = [['Sr.', 'Name of Product / Service', 'Qty', 'Rate', 'Amount']];
+            b.items.forEach((it, idx) => {
+                tableBody.push([
+                    idx + 1,
+                    it.name,
+                    `${it.qty} NOS`,
+                    it.incRate.toFixed(2),
+                    it.totalInc.toFixed(2)
+                ]);
+            });
+        }
+
+        doc.autoTable({
+            startY: 74,
+            head: tableHead,
+            body: tableBody,
+            theme: 'grid',
+            margin: { left: 10, right: 10 },
+            styles: {
+                fontSize: 8,
+                cellPadding: 2,
+                lineColor: [60, 60, 60],
+                lineWidth: 0.25,
+                textColor: [20, 20, 20]
+            },
+            headStyles: {
+                fillColor: [242, 244, 247],
+                textColor: [20, 20, 20],
+                fontStyle: 'bold'
+            },
+            columnStyles: withGst
+                ? {
+                    0: { halign: 'center', cellWidth: 10 },
+                    2: { halign: 'center', cellWidth: 14 },
+                    3: { halign: 'center', cellWidth: 18 },
+                    4: { halign: 'right', cellWidth: 22 },
+                    5: { halign: 'right', cellWidth: 23 },
+                    6: { halign: 'right', cellWidth: 18 },
+                    7: { halign: 'right', cellWidth: 18 },
+                    8: { halign: 'right', cellWidth: 22 }
+                }
+                : {
+                    0: { halign: 'center', cellWidth: 12 },
+                    2: { halign: 'center', cellWidth: 25 },
+                    3: { halign: 'right', cellWidth: 30 },
+                    4: { halign: 'right', cellWidth: 33 }
+                }
+        });
+
+        let curY = doc.lastAutoTable.finalY;
+
+        // Summary Rows (Aligned right-side summary rows matching sample)
+        const summaryRows = [];
+        if (withGst) {
+            summaryRows.push(['Total Taxable Value', `Rs. ${b.taxableSubtotal.toFixed(2)}`]);
+            summaryRows.push(['CGST Amount', `Rs. ${b.cgst.toFixed(2)}`]);
+            summaryRows.push(['SGST Amount', `Rs. ${b.sgst.toFixed(2)}`]);
+            summaryRows.push(['Total GST', `Rs. ${b.totalGst.toFixed(2)}`]);
+        } else {
+            summaryRows.push(['Sub Total', `Rs. ${b.inclusiveSum.toFixed(2)}`]);
+        }
+        if (b.feeAmt > 0) {
+            summaryRows.push(['Platform Charge', `Rs. ${b.feeAmt.toFixed(2)}`]);
+        }
+        summaryRows.push(['Round Off', `Rs. ${(b.roundOff >= 0 ? '+' : '') + b.roundOff.toFixed(2)}`]);
+        summaryRows.push(['Grand Total', `Rs. ${b.grandTotal}`]);
+
+        doc.autoTable({
+            startY: curY,
+            body: summaryRows,
+            theme: 'grid',
+            margin: { left: 10, right: 10 },
+            styles: {
+                fontSize: 8.5,
+                cellPadding: 2.2,
+                lineColor: [60, 60, 60],
+                lineWidth: 0.25,
+                textColor: [20, 20, 20],
+                fontStyle: 'bold'
+            },
+            columnStyles: {
+                0: { halign: 'right', cellWidth: 155 },
+                1: { halign: 'right', cellWidth: 35 }
+            },
+            didParseCell: function(data) {
+                if (data.row.index === summaryRows.length - 1) {
+                    data.cell.styles.fontSize = 10;
+                    data.cell.styles.fillColor = [242, 244, 247];
+                }
+            }
+        });
+
+        curY = doc.lastAutoTable.finalY + 3;
+
+        // Bank Details Box
+        const bank = state.settings.bank || {};
+        doc.rect(10, curY, 190, 32);
+        doc.line(110, curY, 110, curY + 32);
+
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(8.5);
+        doc.text('Bank Details', 13, curY + 5);
+        doc.line(13, curY + 6, 33, curY + 6);
+
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8);
+        doc.text(`Bank Name: ${bank.name || 'N/A'}`, 13, curY + 11);
+        doc.text(`Account Name: ${bank.acName || 'N/A'}`, 13, curY + 15.5);
+        doc.text(`Account Number: ${bank.acNo || 'N/A'}`, 13, curY + 20);
+        doc.text(`IFSC Code: ${bank.ifsc || 'N/A'}`, 13, curY + 24.5);
+        doc.text(`UPI ID: ${state.settings.upi || 'N/A'}`, 13, curY + 29);
+
+        curY += 35;
+
+        // Footer: Terms & Conditions + Authorized Signatory
+        doc.rect(10, curY, 190, 26);
+        doc.line(110, curY, 110, curY + 26);
+
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(8.5);
+        doc.text('Terms & Conditions:', 13, curY + 5.5);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8);
+        doc.text('1. Goods once sold will not be taken back.', 13, curY + 11);
+        doc.text('2. Subject to local jurisdiction.', 13, curY + 16);
+
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(8.5);
+        doc.text(`For ${compName}`, 155, curY + 6, { align: 'center' });
+        doc.text('Authorized Signatory', 155, curY + 22, { align: 'center' });
+
+        const fileName = `${withGst ? 'GST_Invoice' : 'Estimate_Bill'}_${o[0]}.pdf`;
+        doc.save(fileName);
+        showToast("PDF Downloaded!");
     }
 
     function copyToClipboard(text) {
@@ -990,19 +1335,23 @@
 
     function renderOrders(orders, target) {
         document.getElementById(target).innerHTML = [...orders].reverse().map(o => {
-            const cartItems = JSON.parse(o[2] || "[]");
-            const grouped = cartItems.reduce((acc, curr) => { acc[curr.name] = acc[curr.name] || { price: curr.price, qty: 0 }; acc[curr.name].qty++; return acc; }, {});
-            let billRows = Object.keys(grouped).map(name => `<tr><td>${name}</td><td>${grouped[name].qty}</td><td>₹${grouped[name].price}</td><td>₹${grouped[name].qty * grouped[name].price}</td></tr>`).join('');
+            const b = computeOrderBreakup(o);
+            let billRows = b.items.map(it => `
+                <tr>
+                    <td>${it.name}<br><span class="text-muted" style="font-size:0.65rem">Base ₹${it.baseRate.toFixed(2)} + GST ${it.gstRate}%</span></td>
+                    <td>${it.qty}</td>
+                    <td>₹${it.incRate}</td>
+                    <td>₹${Math.round(it.totalInc)}</td>
+                </tr>`).join('');
             
-            const upiUrl = `upi://pay?pa=${state.settings.upi}&pn=Narayani%20Sales&am=${o[3]}&cu=INR`;
+            const upiUrl = `upi://pay?pa=${state.settings.upi}&pn=Narayani%20Sales&am=${b.grandTotal}&cu=INR`;
             const qrImg = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(upiUrl)}`;
-
             const isPaid = o[8] === 'Paid';
 
             return `
             <div class="s-card p-3 mb-3 animate__animated animate__fadeIn">
                 <div class="d-flex justify-content-between align-items-center mb-2">
-                    <span class="badge bg-light text-dark small">${new Date(o[6]).toLocaleDateString()}</span>
+                    <span class="badge bg-light text-dark small">#${o[0]} • ${new Date(o[6]).toLocaleDateString()}</span>
                     <div class="d-flex gap-1">
                         <span class="badge ${o[5]=='Delivered'?'bg-success':'bg-warning text-dark'}">${o[5]}</span>
                         <span class="badge ${isPaid ? 'bg-success' : 'bg-danger'}">${o[8] || 'Unpaid'}</span>
@@ -1016,6 +1365,7 @@
                     </div>
                     <b>Name:</b> ${o[13]}<br>
                     <b>Shop:</b> ${o[14]}<br>
+                    ${o[21] ? `<b>GSTIN:</b> ${o[21]}<br>` : ''}
                     <b>Address:</b> ${o[15]}<br>
                     <b>Phone:</b> ${o[16]}<br>
                     <div class="mt-2 d-flex gap-2">
@@ -1028,20 +1378,27 @@
                     <b>Assigned Agent:</b> ${o[18]} ${o[19] ? '| ' + o[19] : ''}
                 </div>
 
-                <table class="bill-table"><thead><tr><th>Item</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead><tbody>${billRows}</tbody></table>
-                <div class="d-flex justify-content-between small text-muted mt-2"><span>Subtotal</span><span>₹${o[10]||0}</span></div>
-                <div class="d-flex justify-content-between small text-muted"><span>GST Tax</span><span>₹${o[11]||0}</span></div>
-                <div class="d-flex justify-content-between small text-muted"><span>Platform Fee</span><span>₹${o[9]||0}</span></div>
-                <div class="d-flex justify-content-between fw-bold text-success border-top pt-2"><span>Payable</span><span>₹${Math.round(o[3])}</span></div>
+                <table class="bill-table"><thead><tr><th>Item</th><th>Qty</th><th>Rate</th><th>Total</th></tr></thead><tbody>${billRows}</tbody></table>
+                <div class="d-flex justify-content-between small text-muted mt-2"><span>Taxable Value (Excl. GST)</span><span>₹${b.taxableSubtotal.toFixed(2)}</span></div>
+                <div class="d-flex justify-content-between small text-muted"><span>CGST (50%)</span><span>₹${b.cgst.toFixed(2)}</span></div>
+                <div class="d-flex justify-content-between small text-muted"><span>SGST (50%)</span><span>₹${b.sgst.toFixed(2)}</span></div>
+                ${b.feeAmt > 0 ? `<div class="d-flex justify-content-between small text-muted"><span>Platform Fee</span><span>₹${b.feeAmt.toFixed(2)}</span></div>` : ''}
+                <div class="d-flex justify-content-between small text-muted"><span>Round Off</span><span>₹${(b.roundOff >= 0 ? '+' : '') + b.roundOff.toFixed(2)}</span></div>
+                <div class="d-flex justify-content-between fw-bold text-success border-top pt-2"><span>Grand Total</span><span>₹${b.grandTotal}</span></div>
                 
                 <div class="text-center mt-3 p-2 bg-light rounded">
                     <img src="${qrImg}" style="width:120px; height:120px;">
-                    <div class="small mt-1 text-muted">Scan to Pay ₹${Math.round(o[3])}</div>
+                    <div class="small mt-1 text-muted">Scan to Pay ₹${b.grandTotal}</div>
                 </div>
 
                 <div class="d-flex gap-2 mt-3">
-                    <button onclick="shareWhatsAppBill('${o[16]}', '${o[0]}', '${o[10]}', '${o[11]}', '${o[9]}', '${o[3]}', \`${o[2]}\`, 'Customer', '${o[13]}', '${o[14]}', '${o[20]}')" class="btn btn-sm btn-success rounded-pill flex-fill" style="font-size:0.75rem">📲 Bill to Cust</button>
-                    <button onclick="shareWhatsAppBill('${o[16]}', '${o[0]}', '${o[10]}', '${o[11]}', '${o[9]}', '${o[3]}', \`${o[2]}\`, 'Admin', '${o[13]}', '${o[14]}', '${o[20]}')" class="btn btn-sm btn-dark rounded-pill flex-fill" style="font-size:0.75rem">📲 Bill to Admin</button>
+                    <button onclick="downloadInvoicePDF('${o[0]}', true)" class="btn btn-sm btn-outline-primary rounded-pill flex-fill" style="font-size:0.72rem">📄 PDF (With GST)</button>
+                    <button onclick="downloadInvoicePDF('${o[0]}', false)" class="btn btn-sm btn-outline-secondary rounded-pill flex-fill" style="font-size:0.72rem">📄 PDF (No GST)</button>
+                </div>
+
+                <div class="d-flex gap-2 mt-2">
+                    <button onclick="shareWhatsAppBillById('${o[0]}', 'Customer')" class="btn btn-sm btn-success rounded-pill flex-fill" style="font-size:0.72rem">📲 Bill to Cust</button>
+                    <button onclick="shareWhatsAppBillById('${o[0]}', 'Admin')" class="btn btn-sm btn-dark rounded-pill flex-fill" style="font-size:0.72rem">📲 Bill to Admin</button>
                 </div>
                 
                 ${state.user.role === 'Admin' ? `
@@ -1077,7 +1434,7 @@
                         </div>
                         <span class="badge ${c.pendingAmount > 0 ? 'bg-danger' : 'bg-success'}">${c.pendingAmount > 0 ? 'Pending' : 'Clear'}</span>
                     </div>
-                    <div class="small text-muted mb-2">${c.shop} (${c.phone})</div>
+                    <div class="small text-muted mb-2">${c.shop} (${c.phone}) ${c.gstin ? `• GSTIN: ${c.gstin}` : ''}</div>
                     <div class="row g-1 text-center bg-light p-2 rounded small mb-2">
                         <div class="col-4"><b>Billed:</b><br>₹${Math.round(c.totalBilling)}</div>
                         <div class="col-4 text-success"><b>Paid:</b><br>₹${Math.round(c.paidAmount)}</div>
@@ -1124,8 +1481,12 @@
                         <span>Total: ₹${Math.round(o[3])}</span>
                         <span>Paid: ₹${Math.round(o[12]||0)}</span>
                     </div>
+                    <div class="d-flex gap-1 mt-2">
+                        <button class="btn btn-xs btn-outline-primary flex-fill py-1" style="font-size:0.68rem" onclick="downloadInvoicePDF('${o[0]}', true)">📄 GST PDF</button>
+                        <button class="btn btn-xs btn-outline-secondary flex-fill py-1" style="font-size:0.68rem" onclick="downloadInvoicePDF('${o[0]}', false)">📄 No-GST PDF</button>
+                    </div>
                     ${state.user.role === 'Admin' ? `
-                    <button class="btn btn-xs ${isPaid ? 'btn-outline-danger' : 'btn-outline-success'} w-100 mt-2 py-0" style="font-size:0.7rem" onclick="updateOrderPaymentStatus('${o[0]}', '${isPaid ? 'Unpaid' : 'Paid'}')">
+                    <button class="btn btn-xs ${isPaid ? 'btn-outline-danger' : 'btn-outline-success'} w-100 mt-1 py-0" style="font-size:0.7rem" onclick="updateOrderPaymentStatus('${o[0]}', '${isPaid ? 'Unpaid' : 'Paid'}')">
                         Toggle to ${isPaid ? 'Unpaid' : 'Paid'}
                     </button>` : ''}
                 </div>`;
@@ -1188,7 +1549,19 @@
 
     async function saveUser() {
         const selectedCats = Array.from(document.querySelectorAll('.cat-check:checked')).map(c => c.value).join(',');
-        const data = { executorRole: state.user.role, oldPhone: document.getElementById('adm-u-oldphone').value, phone: document.getElementById('adm-u-phone').value, pass: document.getElementById('adm-u-pass').value, role: document.getElementById('adm-u-role').value, name: document.getElementById('adm-u-name').value, shop: document.getElementById('adm-u-shop').value, addr: document.getElementById('adm-u-addr').value, locUrl: document.getElementById('adm-u-loc').value, allowedCats: selectedCats };
+        const data = { 
+            executorRole: state.user.role, 
+            oldPhone: document.getElementById('adm-u-oldphone').value, 
+            phone: document.getElementById('adm-u-phone').value, 
+            pass: document.getElementById('adm-u-pass').value, 
+            role: document.getElementById('adm-u-role').value, 
+            name: document.getElementById('adm-u-name').value, 
+            shop: document.getElementById('adm-u-shop').value, 
+            gstin: document.getElementById('adm-u-gstin').value.trim(),
+            addr: document.getElementById('adm-u-addr').value, 
+            locUrl: document.getElementById('adm-u-loc').value, 
+            allowedCats: selectedCats 
+        };
         await call(data.oldPhone ? 'editUser' : 'createUser', data);
         showToast("User Saved"); closeModals(); loadData();
     }
@@ -1200,10 +1573,19 @@
         catBox.innerHTML = state.cats.map(c => `<div class="form-check small"><input class="form-check-input cat-check" type="checkbox" value="${c}" id="chk-${c}"><label class="form-check-label" for="chk-${c}">${c}</label></div>`).join('');
         if(phone) { 
             const u = state.allUsers.find(x => x[0] == phone); 
-            document.getElementById('adm-u-oldphone').value = u[0]; document.getElementById('adm-u-phone').value = u[0]; document.getElementById('adm-u-pass').value = u[1]; document.getElementById('adm-u-role').value = u[2]; document.getElementById('adm-u-name').value = u[3]; document.getElementById('adm-u-shop').value = u[4]; document.getElementById('adm-u-addr').value = u[5]; document.getElementById('adm-u-loc').value = u[7] || ""; 
+            document.getElementById('adm-u-oldphone').value = u[0]; 
+            document.getElementById('adm-u-phone').value = u[0]; 
+            document.getElementById('adm-u-pass').value = u[1]; 
+            document.getElementById('adm-u-role').value = u[2]; 
+            document.getElementById('adm-u-name').value = u[3]; 
+            document.getElementById('adm-u-shop').value = u[4]; 
+            document.getElementById('adm-u-gstin').value = u[9] || "";
+            document.getElementById('adm-u-addr').value = u[5]; 
+            document.getElementById('adm-u-loc').value = u[7] || ""; 
             (u[6] || "").split(',').forEach(c => { if(document.getElementById('chk-'+c.trim())) document.getElementById('chk-'+c.trim()).checked = true; });
         } else { 
-            document.getElementById('adm-u-oldphone').value = ""; document.querySelectorAll('#modal-user input').forEach(i => i.value = ""); 
+            document.getElementById('adm-u-oldphone').value = ""; 
+            document.querySelectorAll('#modal-user input').forEach(i => i.value = ""); 
         }
     }
 
@@ -1224,7 +1606,7 @@
             <div class="s-card p-3 mb-2 d-flex justify-content-between align-items-center" onclick="openUserModal('${u[0]}')">
                 <div>
                     <h6 class="fw-bold m-0">${u[3]} <span class="user-id-badge">${u[8]||''}</span></h6>
-                    <small class="text-muted">${u[0]} | ${u[4]||''}</small>
+                    <small class="text-muted">${u[0]} | ${u[4]||''} ${u[9] ? `• GST: ${u[9]}` : ''}</small>
                 </div>
                 <div class="text-primary">Edit 〉</div>
             </div>`).join('');
@@ -1232,13 +1614,15 @@
 
     function openSettingsModal() {
         const s = state.settings;
-        document.getElementById('set-upi').value = s.upi; 
-        document.getElementById('set-contact').value = s.contact; 
-        document.getElementById('set-bank-name').value = s.bank.name; 
-        document.getElementById('set-ac-name').value = s.bank.acName; 
-        document.getElementById('set-ac-no').value = s.bank.acNo; 
-        document.getElementById('set-ifsc').value = s.bank.ifsc; 
-        document.getElementById('set-fee').value = s.fee;
+        document.getElementById('set-comp-name').value = s.companyName || 'NARAYANI SALES';
+        document.getElementById('set-comp-addr').value = s.companyAddress || '';
+        document.getElementById('set-upi').value = s.upi || ''; 
+        document.getElementById('set-contact').value = s.contact || ''; 
+        document.getElementById('set-bank-name').value = s.bank ? s.bank.name : ''; 
+        document.getElementById('set-ac-name').value = s.bank ? s.bank.acName : ''; 
+        document.getElementById('set-ac-no').value = s.bank ? s.bank.acNo : ''; 
+        document.getElementById('set-ifsc').value = s.bank ? s.bank.ifsc : ''; 
+        document.getElementById('set-fee').value = s.fee || 0;
         document.getElementById('set-gst').value = s.gst || 0;
         document.getElementById('set-gstin').value = s.gstin || '';
         document.getElementById('modal-settings').classList.remove('hidden');
@@ -1247,6 +1631,8 @@
     async function saveSettings() {
         const data = { 
             role: 'Admin', 
+            companyName: document.getElementById('set-comp-name').value,
+            companyAddress: document.getElementById('set-comp-addr').value,
             upi: document.getElementById('set-upi').value, 
             contact: document.getElementById('set-contact').value, 
             bankName: document.getElementById('set-bank-name').value, 
